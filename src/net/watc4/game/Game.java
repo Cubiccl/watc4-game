@@ -69,6 +69,14 @@ public class Game implements Runnable
 				ticks = 0;
 				timer = 0;
 			}
+			
+			try
+			{
+				Thread.sleep(1);
+			} catch (InterruptedException e)
+			{
+				e.printStackTrace();
+			}
 		}
 
 		// When not running, exit the game.
