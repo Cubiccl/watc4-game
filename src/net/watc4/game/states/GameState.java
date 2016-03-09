@@ -6,9 +6,8 @@ import net.watc4.game.GameObject;
 import net.watc4.game.entity.EntityPlayer;
 import net.watc4.game.map.Map;
 
-public class GameState implements GameObject
 /** Represents the main game engine. */
-public class GameState
+public class GameState implements GameObject
 {
 	/** The Light Player. */
 	private EntityPlayer entityLumi;
@@ -33,9 +32,13 @@ public class GameState
 
 	@Override
 	public void render(Graphics g)
-	{}
+	{
+		this.map.render(g);
+	}
 
 	@Override
 	public void update()
-	{}
+	{
+		this.map.update();
+	}
 }

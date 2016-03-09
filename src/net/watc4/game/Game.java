@@ -34,7 +34,7 @@ public class Game implements Runnable
 
 		g.clearRect(0, 0, Main.getCanvas().getWidth(), Main.getCanvas().getHeight());
 		// Render here
-		state.render(g);
+		this.state.render(g);
 
 		for (int i = 0; i < 10; i++)
 			for (int j = 0; j < 10; j++)
