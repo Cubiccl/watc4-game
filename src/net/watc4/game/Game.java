@@ -26,11 +26,11 @@ public class Game implements Runnable
 	{
 		BufferStrategy bufferStrategy = Main.getCanvas().getBufferStrategy();
 		Graphics g = bufferStrategy.getDrawGraphics();
-		
+
 		g.clearRect(0, 0, Main.getCanvas().getWidth(), Main.getCanvas().getHeight());
 		// Render here
 		g.drawString("Current FPS : " + GameUtils.currentFPS, 0, g.getFont().getSize());
-		
+
 		bufferStrategy.show();
 		g.dispose();
 	}
@@ -44,7 +44,6 @@ public class Game implements Runnable
 		long now, lastTime = System.nanoTime(), timer = 0;
 
 		this.isRunning = true;
-
 		while (this.isRunning)
 		{
 			// Calculate elapsed time
@@ -69,7 +68,7 @@ public class Game implements Runnable
 				ticks = 0;
 				timer = 0;
 			}
-			
+
 			try
 			{
 				Thread.sleep(1);

@@ -22,7 +22,7 @@ public class Window extends JFrame
 	private void createFrame()
 	{
 		this.setTitle(GameUtils.NAME);
-		this.setSize(960, 640);
+		this.setSize(800, 600);
 		this.setResizable(false);
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
