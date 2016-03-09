@@ -1,9 +1,12 @@
 package net.watc4.game.states;
 
+import java.awt.Graphics;
+
+import net.watc4.game.GameObject;
 import net.watc4.game.entity.EntityPlayer;
 import net.watc4.game.map.Map;
 
-public class GameState
+public class GameState implements GameObject
 {
 	private EntityPlayer entityLumi;
 	private EntityPlayer entityPattou;
@@ -20,4 +23,12 @@ public class GameState
 	{
 		return this.map;
 	}
+
+	@Override
+	public void render(Graphics g)
+	{}
+
+	@Override
+	public void update()
+	{}
 }

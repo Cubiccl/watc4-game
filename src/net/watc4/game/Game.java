@@ -6,6 +6,7 @@ import java.awt.image.BufferStrategy;
 
 import net.watc4.game.display.Sprite;
 import net.watc4.game.display.Window;
+import net.watc4.game.states.GameState;
 
 /** Main object. Contains a thread to run the game. */
 public class Game implements Runnable
@@ -16,6 +17,8 @@ public class Game implements Runnable
 	/** A Thread used to update & render the <code>Game</code>. */
 	private Thread thread;
 
+	private GameState state;
+	
 	public Game()
 	{
 		this.isRunning = false;
@@ -31,6 +34,7 @@ public class Game implements Runnable
 
 		g.clearRect(0, 0, Main.getCanvas().getWidth(), Main.getCanvas().getHeight());
 		// Render here
+		state.render(g);
 
 		for (int i = 0; i < 10; i++)
 			for (int j = 0; j < 10; j++)
@@ -40,7 +44,7 @@ public class Game implements Runnable
 		g.drawImage(Sprite.TILE_GROUND.getImage(), 320 + 32, 0, 32, 32, null);
 		g.setColor(Color.WHITE);
 		g.drawString("Current FPS : " + GameUtils.currentFPS, 0, g.getFont().getSize());
-
+		
 		bufferStrategy.show();
 		g.dispose();
 	}
@@ -101,8 +105,7 @@ public class Game implements Runnable
 	/** Manages the <code>Game</code> logic. */
 	private void update()
 	{
-		// TODO Auto-generated method stub
-
+		state.update();
 	}
 
 }
