@@ -2,6 +2,7 @@ package net.watc4.game;
 
 import java.awt.Canvas;
 
+import net.watc4.game.display.AnimationManager;
 import net.watc4.game.display.Window;
 
 /** Main class. Contains all important objects of the game. */
@@ -11,6 +12,8 @@ public class Main
 	private static Game game;
 	/** The <code>Window</code> to display the <code>Game</code>. */
 	private static Window window;
+	/** Used to tick all Animations. */
+	private static AnimationManager animationManager;
 
 	/** @return The Canvas used to draw the <code>Game</code>. */
 	public static Canvas getCanvas()
@@ -24,6 +27,12 @@ public class Main
 		return game;
 	}
 
+	/** @return The Animation Manager. */
+	public static AnimationManager getAnimationManager()
+	{
+		return animationManager;
+	}
+
 	/** @return The <code>Window</code> to display the <code>Game</code>. */
 	public static Window getWindow()
 	{
@@ -33,6 +42,7 @@ public class Main
 	public static void main(String[] args)
 	{
 		window = new Window();
+		animationManager = new AnimationManager();
 		game = new Game();
 	}
 
