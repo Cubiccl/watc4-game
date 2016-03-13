@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 
-import net.watc4.game.display.Animation;
 import net.watc4.game.display.Sprite;
 import net.watc4.game.display.Window;
 import net.watc4.game.states.GameState;
@@ -15,12 +14,11 @@ public class Game implements Runnable
 
 	/** True if the <code>Game</code> is running. */
 	private boolean isRunning;
-	private GameState state;
-
-	private Animation testAnimation; // TODO remove this test Animation
 	/** A Thread used to update & render the <code>Game</code>. */
 	private Thread thread;
 
+	private GameState state;
+	
 	public Game()
 	{
 		this.isRunning = false;
@@ -44,10 +42,9 @@ public class Game implements Runnable
 
 		g.drawImage(Sprite.TILE_WALL.getImage(), 320, 0, 32, 32, null);
 		g.drawImage(Sprite.TILE_GROUND.getImage(), 320 + 32, 0, 32, 32, null);
-		g.drawImage(this.testAnimation.getImage(), 320 + 64, 0, 32, 32, null);
 		g.setColor(Color.WHITE);
 		g.drawString("Current FPS : " + GameUtils.currentFPS, 0, g.getFont().getSize());
-
+		
 		bufferStrategy.show();
 		g.dispose();
 	}
@@ -59,8 +56,6 @@ public class Game implements Runnable
 		int fps = 60, ticks = 0;
 		double timePerTick = 1000000000 / fps, delta = 0;
 		long now, lastTime = System.nanoTime(), timer = 0;
-		this.testAnimation = new Animation(10, Sprite.PATTOU_MOVING1, Sprite.PATTOU_MOVING2, Sprite.PATTOU_MOVING3, Sprite.PATTOU_MOVING4,
-				Sprite.PATTOU_MOVING5, Sprite.PATTOU_MOVING6);
 
 		this.isRunning = true;
 		while (this.isRunning)
@@ -110,8 +105,7 @@ public class Game implements Runnable
 	/** Manages the <code>Game</code> logic. */
 	private void update()
 	{
-		Main.getAnimationManager().update();
-		this.state.update();
+		state.update();
 	}
 
 }
