@@ -49,10 +49,10 @@ public class Main
 
 	public static void main(String[] args)
 	{
-		window = new Window();
-		inputManager = new InputManager(window);
 		animationManager = new AnimationManager();
 		TileRegistry.createTiles();
+		window = new Window();
+		inputManager = new InputManager(window);
 		game = new Game();
 	}
 

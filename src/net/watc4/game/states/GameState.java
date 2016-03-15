@@ -27,9 +27,9 @@ public class GameState implements GameObject
 	public GameState()
 	{
 		this.entityManager = new EntityManager();
-		this.entityLumi = new EntityPlayer(0, 0, this);
-		this.entityPattou = new EntityPlayer(0, 0, this);
 		this.map = FileUtils.createMap("res/maps/testmap.txt");
+		this.entityLumi = new EntityPlayer(this.map.lumiSpawnX, this.map.lumiSpawnY, this);
+		this.entityPattou = new EntityPlayer(this.map.pattouSpawnX, this.map.pattouSpawnY, this);
 	}
 
 	/** @return The <code>Map</code>. */

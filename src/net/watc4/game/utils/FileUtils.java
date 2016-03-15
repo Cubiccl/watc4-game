@@ -20,23 +20,24 @@ public class FileUtils
 
 		String[] mapText = readFileAsStringArray(url);
 
-		int info[] = new int[6]; // width, height, lightSpawnX, lightSpawnY, shadowSpawnX and shadowSpawnY
+		int info[] = new int[6]; // width, height, lumiSpawnX, lumiSpawnY, pattouSpawnX and pattouSpawnY
 
 		for (int i = 0; i < info.length; i++)
 		{
 			info[i] = Integer.valueOf(mapText[i].split(" = ")[1]);
 		}
 
-		Map map = new Map(info[0], info[1], info[2], info[3], info[4], info[5]);
+		Map map = new Map(info[0], info[1], info[2] * Map.TILESIZE, info[3] * Map.TILESIZE, info[4] * Map.TILESIZE, info[5] * Map.TILESIZE);
 		String[] values; // Tiles values temporarily stored per line from the map file
 
 		for (int i = 0; i < info[0]; i++)
 		{
 			values = mapText[i + 7].split("\t");
 
-			for (int j = 0; i < info[1]; i++)
+			for (int j = 0; j < info[1]; j++)
 			{
-				map.setTileAt(i, j, TileRegistry.getTileFromId(Integer.valueOf(values[j])));
+				System.out.println(Integer.valueOf(values[j]));
+				map.setTileAt(j, i, TileRegistry.getTileFromId(Integer.valueOf(values[j])));
 			}
 		}
 

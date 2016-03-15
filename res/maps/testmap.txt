@@ -1,9 +1,9 @@
 width = 10
 height = 10
-lightSpawnX = 5
-lightSpawnY = 5
-shadowSpawnX = 5
-shadowSpawnY = 5
+lumiSpawnX = 5
+lumiSpawnY = 5
+pattouSpawnX = 4
+pattouSpawnY = 5
 tiles = 
 0	0	0	0	0	0	0	0	0	0
 0	1	1	1	1	1	1	1	1	0

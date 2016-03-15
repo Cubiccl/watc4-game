@@ -1,11 +1,8 @@
 package net.watc4.game.map;
 
-import java.awt.Graphics;
-
-import net.watc4.game.GameObject;
 import net.watc4.game.display.Animation;
 
-public class Tile implements GameObject
+public class Tile
 {
 	int id;
 	Animation sprite;
@@ -14,25 +11,12 @@ public class Tile implements GameObject
 	{
 		this.id = id;
 		this.sprite = sprite;
+		TileRegistry.registerTile(this);
 	}
 
 	public int getId()
 	{
 		return this.id;
-	}
-
-	@Override
-	public void render(Graphics g)
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void update()
-	{
-		// TODO Auto-generated method stub
-
 	}
 
 }

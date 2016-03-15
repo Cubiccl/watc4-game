@@ -7,37 +7,37 @@ import net.watc4.game.GameObject;
 /** @author Krowk */
 public class Map implements GameObject
 {
+	/** Const: size a each Tile */
+	public static final int TILESIZE = 32;
 	/**
 	* 
 	*/
-	int height;
+	public final int height;
 	/**
 	 * 
 	 */
-	int lumiSpawnX;
+	public final int lumiSpawnX;
 	/**
 	 * 
 	 */
-	int lumiSpawnY;
+	public final int lumiSpawnY;
 	/**
 	 * 
 	 */
-	int pattouSpawnX;
+	public final int pattouSpawnX;
 	/**
 	 * 
 	 */
-	int pattouSpawnY;
-	/**
-	 * 
-	 */
-	int[][] tiles;
+	public final int pattouSpawnY;
 
-	/** Const: size a each Tile */
-	public final int TILESIZE = 32;
+	/**
+	 * 
+	 */
+	private int[][] tiles;
 	/**
 	 *  
 	 */
-	int width;
+	public final int width;
 
 	/** @param width
 	 * @param height
@@ -54,6 +54,13 @@ public class Map implements GameObject
 		this.pattouSpawnX = pattouSpawnX;
 		this.pattouSpawnY = pattouSpawnY;
 		this.tiles = new int[this.width][this.height];
+		for (int i = 0; i < this.tiles.length; i++)
+		{
+			for (int j = 0; j < this.tiles[i].length; j++)
+			{
+				this.tiles[i][j] = 0;
+			}
+		}
 	}
 
 	/** @param width
@@ -61,7 +68,7 @@ public class Map implements GameObject
 	 * @return */
 	public Tile getTileAt(int width, int height)
 	{
-		return TileRegistry.getTileFromId(tiles[width][height]);
+		return TileRegistry.getTileFromId(this.tiles[width][height]);
 	}
 
 	/**
@@ -70,13 +77,18 @@ public class Map implements GameObject
 	@Override
 	public void render(Graphics g)
 	{
-		for (int i = 0; i < tiles.length; i++)
+		for (int i = 0; i < this.tiles.length; i++)
 		{
-			for (int j = 0; j < tiles[i].length; j++)
+			for (int j = 0; j < this.tiles[i].length; j++)
 			{
-				// g.drawImage(this.getTileAt(i, i).sprite.getImage(), i * 32, j * 32, null);
+				g.drawImage(this.getTileAt(i, j).sprite.getImage(), i * 32, j * 32, null);
 			}
 		}
+	}
+
+	public void setTileAt(int x, int y, int id)
+	{
+		this.tiles[x][y] = id;
 	}
 
 	/** @param x
@@ -84,7 +96,7 @@ public class Map implements GameObject
 	 * @param tile */
 	public void setTileAt(int x, int y, Tile tile)
 	{
-		if (tile != null) this.tiles[x][y] = tile.getId();
+		this.setTileAt(x, y, tile.getId());
 	}
 
 	/**
