@@ -2,22 +2,28 @@ package net.watc4.game.map;
 
 import java.util.HashMap;
 
+import net.watc4.game.display.Animation;
+import net.watc4.game.display.Sprite;
+
 public class TileRegistry
 {
-	static HashMap<Integer, Tile> tiles;
+	private static HashMap<Integer, Tile> tiles;
 
-	public void CreatTiles()
+	public static void createTiles()
 	{
 		tiles = new HashMap<Integer, Tile>();
+		new Tile(0, new Animation(Sprite.TILE_DEFAULT));
+		new Tile(1, new Animation(Sprite.TILE_GROUND));
+		new Tile(2, new Animation(Sprite.TILE_WALL));
 	}
 
 	public static Tile getTileFromId(int id)
 	{
-		return tiles.get(id);
+		return tiles.get(new Integer(id));
 	}
 
-	public void registerTile(Tile tile)
+	public static void registerTile(Tile tile)
 	{
-		this.tiles.put(tile.getId(), tile);
+		tiles.put(tile.getId(), tile);
 	}
 }

@@ -27,7 +27,7 @@ public class Window extends JFrame
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		
+
 		this.canvas = new Canvas();
 		this.add(this.canvas);
 		this.canvas.createBufferStrategy(2); // Allows to refresh the Canvas using the render method in Game.

@@ -7,6 +7,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import net.watc4.game.map.Map;
+import net.watc4.game.map.TileRegistry;
+
 public class FileUtils
 {
 
