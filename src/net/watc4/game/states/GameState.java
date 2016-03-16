@@ -14,10 +14,8 @@ public class GameState implements GameObject
 {
 	/** The Light Player. */
 	private EntityPlayer entityLumi;
-	/**
-	 * 
-	 */
-	EntityManager entityManager;
+	/** Manages Entities in this Game. */
+	private EntityManager entityManager;
 	/** The Shadow Player. */
 	private EntityPlayer entityPattou;
 	/** The world they evolve into. */
@@ -38,9 +36,12 @@ public class GameState implements GameObject
 		return this.map;
 	}
 
-	public void registerEntity(Entity animation)
+	/** Adds an Entity to the Game.
+	 * 
+	 * @param entity - The new Entity. */
+	public void registerEntity(Entity entity)
 	{
-		this.entityManager.registerEntity(animation);
+		this.entityManager.registerEntity(entity);
 	}
 
 	@Override
@@ -50,9 +51,12 @@ public class GameState implements GameObject
 		this.entityManager.render(g);
 	}
 
-	public void unregisterEntity(Entity animation)
+	/** Removes an Entity from the Game.
+	 * 
+	 * @param entity - The Entity to remove. */
+	public void unregisterEntity(Entity entity)
 	{
-		this.entityManager.unregisterEntity(animation);
+		this.entityManager.unregisterEntity(entity);
 	}
 
 	@Override

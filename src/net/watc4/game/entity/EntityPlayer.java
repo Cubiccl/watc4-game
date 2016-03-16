@@ -8,15 +8,20 @@ import net.watc4.game.display.Animation;
 import net.watc4.game.display.Sprite;
 import net.watc4.game.states.GameState;
 
+/** Entity controller by the user */
 public class EntityPlayer extends Entity
 {
 	private Animation animation;
 
+	/** Creates a new EntityPlayer
+	 * 
+	 * @param xPos - Its x position.
+	 * @param yPos - Its y position.
+	 * @param game - A reference to the GameState. */
 	public EntityPlayer(int xPos, int yPos, GameState game)
 	{
 		super(xPos, yPos, game);
-		this.animation = new Animation(10, Sprite.PATTOU_MOVING1, Sprite.PATTOU_MOVING2, Sprite.PATTOU_MOVING3, Sprite.PATTOU_MOVING4, Sprite.PATTOU_MOVING5,
-				Sprite.PATTOU_MOVING6);
+		this.animation = new Animation(40, Sprite.PATTOU_IDLE1, Sprite.PATTOU_IDLE2);
 	}
 
 	@Override

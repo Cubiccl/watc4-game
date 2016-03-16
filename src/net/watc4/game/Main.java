@@ -1,6 +1,7 @@
 package net.watc4.game;
 
 import java.awt.Canvas;
+import java.awt.event.KeyEvent;
 
 import net.watc4.game.display.AnimationManager;
 import net.watc4.game.display.Window;
@@ -14,6 +15,7 @@ public class Main
 	private static AnimationManager animationManager;
 	/** The game itself. */
 	private static Game game;
+	/** Manages keyboard inputs from the user. */
 	private static InputManager inputManager;
 	/** The <code>Window</code> to display the <code>Game</code>. */
 	private static Window window;
@@ -42,6 +44,9 @@ public class Main
 		return window;
 	}
 
+	/** @param key - The ID of the key pressed.
+	 * @see KeyEvent#VK_UP
+	 * @return True if the key is being pressed. */
 	public static boolean isKeyPressed(int key)
 	{
 		return inputManager.isKeyPressed(key);

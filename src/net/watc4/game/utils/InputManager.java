@@ -5,14 +5,19 @@ import java.awt.event.KeyListener;
 
 import net.watc4.game.display.Window;
 
+/** Manages keyboard input. */
 public class InputManager implements KeyListener
 {
 
+	/** Number of keys available. */
 	private static final int NUM_KEY_CODES = 256;
-
+	/** Contains all keys states. */
 	private boolean[] pressedKeys;
 
-	public InputManager(Window comp)
+	/** Creates the InputManager.
+	 * 
+	 * @param window - The window to listen for inputs from. */
+	public InputManager(Window window)
 	{
 		this.pressedKeys = new boolean[NUM_KEY_CODES];
 
@@ -21,38 +26,33 @@ public class InputManager implements KeyListener
 			this.pressedKeys[i] = false;
 		}
 
-		comp.getCanvas().addKeyListener(this);
-		comp.getCanvas().setFocusTraversalKeysEnabled(false);
+		window.getCanvas().addKeyListener(this);
+		window.getCanvas().setFocusTraversalKeysEnabled(false);
 
 	}
 
+	/** @param key - The identifier of a key.
+	 * @see KeyEvent#VK_UP
+	 * @return True if the key is pressed. */
 	public boolean isKeyPressed(int key)
 	{
-
 		return this.pressedKeys[key];
-
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e)
 	{
-
 		this.pressedKeys[e.getKeyCode()] = true;
-
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e)
 	{
-
 		this.pressedKeys[e.getKeyCode()] = false;
-
 	}
 
 	@Override
 	public void keyTyped(KeyEvent e)
-	{
-
-	}
+	{}
 
 }
