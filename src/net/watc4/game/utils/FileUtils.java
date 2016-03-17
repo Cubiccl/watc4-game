@@ -36,7 +36,6 @@ public class FileUtils
 
 			for (int j = 0; j < info[1]; j++)
 			{
-				System.out.println(Integer.valueOf(values[j]));
 				map.setTileAt(j, i, TileRegistry.getTileFromId(Integer.valueOf(values[j])));
 			}
 		}

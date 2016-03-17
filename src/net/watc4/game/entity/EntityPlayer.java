@@ -1,9 +1,7 @@
 package net.watc4.game.entity;
 
 import java.awt.Graphics;
-import java.awt.event.KeyEvent;
 
-import net.watc4.game.Main;
 import net.watc4.game.display.Animation;
 import net.watc4.game.display.Sprite;
 import net.watc4.game.states.GameState;
@@ -35,11 +33,6 @@ public class EntityPlayer extends Entity
 	public void update()
 	{
 		super.update();
-
-		if (Main.isKeyPressed(KeyEvent.VK_UP)) this.yPos--;
-		if (Main.isKeyPressed(KeyEvent.VK_DOWN)) this.yPos++;
-		if (Main.isKeyPressed(KeyEvent.VK_RIGHT)) this.xPos++;
-		if (Main.isKeyPressed(KeyEvent.VK_LEFT)) this.xPos--;
 	}
 
 }
