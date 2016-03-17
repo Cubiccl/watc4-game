@@ -3,6 +3,8 @@ package net.watc4.game.map;
 import java.awt.Graphics;
 
 import net.watc4.game.GameObject;
+import net.watc4.game.display.LightManager;
+import net.watc4.game.utils.FileUtils;
 
 /** Represents the world the player evolves in. */
 public class Map implements GameObject
@@ -20,6 +22,8 @@ public class Map implements GameObject
 	private int[][] tiles;
 	/** Height of the map in tiles. */
 	public final int width;
+	/** The LightManager */
+	public LightManager lightManager;
 
 	/** @param width - Its width, in Tiles.
 	 * @param height - Its height, in Tiles.
@@ -27,22 +31,34 @@ public class Map implements GameObject
 	 * @param lumiSpawnY - Lumi's spawn, y coordinate.
 	 * @param pattouSpawnX - Pattou's spawn, x coordinate.
 	 * @param pattouSpawnY - Pattou's spawn, y coordinate. */
-	public Map(int width, int height, int lumiSpawnX, int lumiSpawnY, int pattouSpawnX, int pattouSpawnY)
+	public Map(String url)
 	{
-		this.width = width;
-		this.height = height;
-		this.lumiSpawnX = lumiSpawnX;
-		this.lumiSpawnY = lumiSpawnY;
-		this.pattouSpawnX = pattouSpawnX;
-		this.pattouSpawnY = pattouSpawnY;
-		this.tiles = new int[this.width][this.height];
-		for (int i = 0; i < this.tiles.length; i++)
+		String[] mapText = FileUtils.readFileAsStringArray(url);
+		int info[] = new int[6]; // width, height, lumiSpawnX, lumiSpawnY, pattouSpawnX and pattouSpawnY
+		for (int i = 0; i < info.length; i++)
 		{
-			for (int j = 0; j < this.tiles[i].length; j++)
-			{
-				this.tiles[i][j] = 0;
-			}
+			info[i] = Integer.valueOf(mapText[i].split(" = ")[1]);
 		}
+		this.width = info[0];
+		this.height = info[1];
+		this.lumiSpawnX = info[2] * Map.TILESIZE;
+		this.lumiSpawnY = info[3] * Map.TILESIZE;
+		this.pattouSpawnX = info[4] * Map.TILESIZE;
+		this.pattouSpawnY = info[5] * Map.TILESIZE;
+		
+		this.tiles = new int[this.height][this.width];
+		String[] values; // Tiles values temporarily stored per line from the map file
+		for (int i = 0; i < info[0]; i++)
+		{
+			values = mapText[i + 7].split("\t");
+
+			for (int j = 0; j < info[1]; j++)
+			{
+				this.tiles[j][i] = Integer.valueOf(values[j]);
+			}
+
+		}
+		lightManager = new LightManager(tiles);
 	}
 
 	/** @param x - X position.
