@@ -9,7 +9,6 @@ import net.watc4.game.entity.EntityManager;
 import net.watc4.game.entity.EntityPattou;
 import net.watc4.game.entity.EntityPlayer;
 import net.watc4.game.map.Map;
-import net.watc4.game.utils.FileUtils;
 
 /** Represents the main game engine. */
 public class GameState implements GameObject
