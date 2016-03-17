@@ -12,7 +12,7 @@ public enum Sprite
 
 	TILE_DEFAULT("res/textures/tileset.png", 0, 0, 32),
 	TILE_GROUND("res/textures/tileset.png", 32, 0, 32),
-	TILE_BACKGROUND("res/textures/tileset.png", 64, 0, 32),
+	TILE_WALL("res/textures/tileset.png", 64, 0, 32),
 	PATTOU_IDLE1("res/textures/playerPattou.png", 0, 0, 32),
 	PATTOU_IDLE2("res/textures/playerPattou.png", 32, 0, 32),
 	PATTOU_MOVING1("res/textures/playerPattou.png", 0, 32, 32),

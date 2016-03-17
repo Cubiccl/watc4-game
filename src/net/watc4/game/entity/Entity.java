@@ -15,7 +15,7 @@ public abstract class Entity implements GameObject
 	/** True if this Entity is affected by Gravity. False if it flies. */
 	protected boolean hasGravity;
 	/** Its x and y positions. */
-	private int xPos, yPos;
+	private float xPos, yPos;
 	/** Its x and y speed. */
 	protected float xSpeed, ySpeed;
 
@@ -24,7 +24,7 @@ public abstract class Entity implements GameObject
 	 * @param xPos - Its x position.
 	 * @param yPos - Its y position.
 	 * @param game - A reference to the GameState. */
-	public Entity(int xPos, int yPos, GameState game)
+	public Entity(float xPos, float yPos, GameState game)
 	{
 		this.xPos = xPos;
 		this.yPos = yPos;
@@ -69,13 +69,13 @@ public abstract class Entity implements GameObject
 	}
 
 	/** @return The X position of this Entity. */
-	public int getX()
+	public float getX()
 	{
 		return this.xPos;
 	}
 
 	/** @return The Y position of this Entity. */
-	public int getY()
+	public float getY()
 	{
 		return this.yPos;
 	}

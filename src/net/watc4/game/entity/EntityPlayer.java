@@ -16,7 +16,7 @@ public class EntityPlayer extends Entity
 	 * @param xPos - Its x position.
 	 * @param yPos - Its y position.
 	 * @param game - A reference to the GameState. */
-	public EntityPlayer(int xPos, int yPos, GameState game)
+	public EntityPlayer(float xPos, float yPos, GameState game)
 	{
 		super(xPos, yPos, game);
 		this.animation = new Animation(40, Sprite.PATTOU_IDLE1, Sprite.PATTOU_IDLE2);
@@ -26,7 +26,7 @@ public class EntityPlayer extends Entity
 	public void render(Graphics g)
 	{
 		super.render(g);
-		g.drawImage(this.animation.getImage(), this.getX(), this.getY(), null);
+		g.drawImage(this.animation.getImage(), (int)this.getX(),(int) this.getY(), null);
 	}
 
 	@Override

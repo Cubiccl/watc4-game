@@ -15,9 +15,9 @@ public class TileRegistry
 	public static void createTiles()
 	{
 		tiles = new HashMap<Integer, Tile>();
-		new Tile(0, new Animation(Sprite.TILE_DEFAULT));
-		new Tile(1, new Animation(Sprite.TILE_GROUND));
-		new Tile(2, new Animation(Sprite.TILE_BACKGROUND));
+		new Tile(0, new Animation(Sprite.TILE_DEFAULT), false, false);
+		new Tile(1, new Animation(Sprite.TILE_GROUND), true, true);
+		new Tile(2, new Animation(Sprite.TILE_WALL), false, false);
 	}
 
 	/** @param id - A Tile identifier.
