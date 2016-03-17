@@ -18,10 +18,17 @@ public class EntityLumi extends EntityPlayer
 	/** Checks for movement input and applies it. */
 	private void manageInput()
 	{
-		if (Main.isKeyPressed(GameUtils.LUMI_UP) && this.ySpeed > -MAX_SPEED) this.ySpeed -= ACCELERATION;
-		if (Main.isKeyPressed(GameUtils.LUMI_DOWN) && this.ySpeed < MAX_SPEED) this.ySpeed += ACCELERATION;
-		if (Main.isKeyPressed(GameUtils.LUMI_LEFT) && this.xSpeed > -MAX_SPEED) this.xSpeed -= ACCELERATION;
-		if (Main.isKeyPressed(GameUtils.LUMI_RIGHT) && this.xSpeed < MAX_SPEED) this.xSpeed += ACCELERATION;
+		boolean up = Main.isKeyPressed(GameUtils.LUMI_UP);
+		boolean down = Main.isKeyPressed(GameUtils.LUMI_DOWN);
+		boolean left = Main.isKeyPressed(GameUtils.LUMI_LEFT);
+		boolean right = Main.isKeyPressed(GameUtils.LUMI_RIGHT);
+		boolean doubleInput = (up && right) || (up && left) || (down && right) || (down && left);
+		float multiplier = 1;
+		if (doubleInput) multiplier = 0.7f;
+		if (up && this.ySpeed > -MAX_SPEED) this.ySpeed -= ACCELERATION * multiplier;
+		if (down && this.ySpeed < MAX_SPEED) this.ySpeed += ACCELERATION * multiplier;
+		if (left && this.xSpeed > -MAX_SPEED) this.xSpeed -= ACCELERATION * multiplier;
+		if (right && this.xSpeed < MAX_SPEED) this.xSpeed += ACCELERATION * multiplier;
 	}
 
 	@Override
