@@ -12,51 +12,51 @@ import javax.imageio.ImageIO;
 public enum Sprite
 {
 
-	UNKNOWN("res/textures/unknown.png", 0, 0, 32),
 	LUMI("res/textures/playerLumi.png", 0, 0, 32),
 	LUMI_EYE("res/textures/playerLumi.png", 32, 0, 15),
-	PATTOU_IDLE_RIGHT1("res/textures/playerPattou.png", 0, 0, 32),
-	PATTOU_IDLE_RIGHT2("res/textures/playerPattou.png", 32, 0, 32),
+	PATTOU_FALLING_LEFT("res/textures/playerPattou.png", 160, 64, 32, true),
+	PATTOU_FALLING_RIGHT("res/textures/playerPattou.png", 160, 64, 32),
 	PATTOU_IDLE_LEFT1("res/textures/playerPattou.png", 0, 0, 32, true),
 	PATTOU_IDLE_LEFT2("res/textures/playerPattou.png", 32, 0, 32, true),
-	PATTOU_JUMPING_RIGHT1("res/textures/playerPattou.png", 0, 64, 32),
-	PATTOU_JUMPING_RIGHT2("res/textures/playerPattou.png", 32, 64, 32),
-	PATTOU_JUMPING_RIGHT3("res/textures/playerPattou.png", 64, 64, 32),
-	PATTOU_JUMPING_RIGHT4("res/textures/playerPattou.png", 96, 64, 32),
-	PATTOU_JUMPING_RIGHT5("res/textures/playerPattou.png", 128, 64, 32),
-	PATTOU_JUMPING_RIGHT6("res/textures/playerPattou.png", 160, 64, 32),
+	PATTOU_IDLE_RIGHT1("res/textures/playerPattou.png", 0, 0, 32),
+	PATTOU_IDLE_RIGHT2("res/textures/playerPattou.png", 32, 0, 32),
+	PATTOU_JUMPING_LEFT("res/textures/playerPattou.png", 64, 64, 32, true),
 	PATTOU_JUMPING_LEFT1("res/textures/playerPattou.png", 0, 64, 32, true),
 	PATTOU_JUMPING_LEFT2("res/textures/playerPattou.png", 32, 64, 32, true),
-	PATTOU_JUMPING_LEFT3("res/textures/playerPattou.png", 64, 64, 32, true),
 	PATTOU_JUMPING_LEFT4("res/textures/playerPattou.png", 96, 64, 32, true),
 	PATTOU_JUMPING_LEFT5("res/textures/playerPattou.png", 128, 64, 32, true),
-	PATTOU_JUMPING_LEFT6("res/textures/playerPattou.png", 160, 64, 32, true),
-	PATTOU_MOVING_RIGHT1("res/textures/playerPattou.png", 0, 32, 32),
-	PATTOU_MOVING_RIGHT2("res/textures/playerPattou.png", 32, 32, 32),
-	PATTOU_MOVING_RIGHT3("res/textures/playerPattou.png", 64, 32, 32),
-	PATTOU_MOVING_RIGHT4("res/textures/playerPattou.png", 96, 32, 32),
-	PATTOU_MOVING_RIGHT5("res/textures/playerPattou.png", 128, 32, 32),
-	PATTOU_MOVING_RIGHT6("res/textures/playerPattou.png", 160, 32, 32),
+	PATTOU_JUMPING_RIGHT("res/textures/playerPattou.png", 64, 64, 32),
+	PATTOU_JUMPING_RIGHT1("res/textures/playerPattou.png", 0, 64, 32),
+	PATTOU_JUMPING_RIGHT2("res/textures/playerPattou.png", 32, 64, 32),
+	PATTOU_JUMPING_RIGHT4("res/textures/playerPattou.png", 96, 64, 32),
+	PATTOU_JUMPING_RIGHT5("res/textures/playerPattou.png", 128, 64, 32),
 	PATTOU_MOVING_LEFT1("res/textures/playerPattou.png", 0, 32, 32, true),
 	PATTOU_MOVING_LEFT2("res/textures/playerPattou.png", 32, 32, 32, true),
 	PATTOU_MOVING_LEFT3("res/textures/playerPattou.png", 64, 32, 32, true),
 	PATTOU_MOVING_LEFT4("res/textures/playerPattou.png", 96, 32, 32, true),
 	PATTOU_MOVING_LEFT5("res/textures/playerPattou.png", 128, 32, 32, true),
 	PATTOU_MOVING_LEFT6("res/textures/playerPattou.png", 160, 32, 32, true),
+	PATTOU_MOVING_RIGHT1("res/textures/playerPattou.png", 0, 32, 32),
+	PATTOU_MOVING_RIGHT2("res/textures/playerPattou.png", 32, 32, 32),
+	PATTOU_MOVING_RIGHT3("res/textures/playerPattou.png", 64, 32, 32),
+	PATTOU_MOVING_RIGHT4("res/textures/playerPattou.png", 96, 32, 32),
+	PATTOU_MOVING_RIGHT5("res/textures/playerPattou.png", 128, 32, 32),
+	PATTOU_MOVING_RIGHT6("res/textures/playerPattou.png", 160, 32, 32),
 	TILE_DEFAULT("res/textures/tileset.png", 0, 0, 32),
 	TILE_GROUND("res/textures/tileset.png", 32, 0, 32),
-	TILE_WALL("res/textures/tileset.png", 64, 0, 32);
+	TILE_WALL("res/textures/tileset.png", 64, 0, 32),
+	UNKNOWN("res/textures/unknown.png", 0, 0, 32);
 
 	/** The actual Image. */
 	private BufferedImage image;
+	/** True if the Sprite is a mirror of the actual Image. */
+	private boolean reversed;
 	/** Its size. -1 if it is the entire Sprite sheet. */
 	private int size;
 	/** The URL to the Sprite sheet file. */
 	private String url;
 	/** The position of the Sprite in the Sprite sheet. */
 	private int x, y;
-	/** True if the Sprite is a mirror of the actual Image. */
-	private boolean reversed;
 
 	/** A Sprite.
 	 * 

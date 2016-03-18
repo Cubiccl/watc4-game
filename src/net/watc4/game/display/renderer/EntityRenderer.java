@@ -44,8 +44,9 @@ public class EntityRenderer implements GameObject
 	 * @param animation - The new Animation to use. */
 	public void setAnimation(Animation animation)
 	{
-		this.animation.dispose();
+		if (this.animation != null) this.animation.dispose();
 		this.animation = animation;
+		if (this.animation != null) this.animation.register();
 	}
 
 	/** EntityRenderers don't update. */

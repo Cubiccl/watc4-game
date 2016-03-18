@@ -4,9 +4,7 @@ import static net.watc4.game.GameUtils.ACCELERATION;
 import static net.watc4.game.GameUtils.MAX_SPEED;
 import net.watc4.game.GameUtils;
 import net.watc4.game.Main;
-import net.watc4.game.display.Animation;
-import net.watc4.game.display.Sprite;
-import net.watc4.game.display.renderer.EntityRenderer;
+import net.watc4.game.display.renderer.PattouRenderer;
 import net.watc4.game.states.GameState;
 
 /** Second player : must stay in the shadows and is affected by gravity. */
@@ -28,7 +26,7 @@ public class EntityPattou extends EntityPlayer
 		super(xPos, yPos, game);
 		this.jumpTime = 1;
 		this.onGround = true;
-		this.setRenderer(new EntityRenderer(this, new Animation(30, Sprite.PATTOU_IDLE_RIGHT1, Sprite.PATTOU_IDLE_RIGHT2)));
+		this.setRenderer(new PattouRenderer(this));
 	}
 
 	/** Checks for movement input and applies it. */

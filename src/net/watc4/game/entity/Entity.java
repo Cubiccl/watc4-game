@@ -79,10 +79,22 @@ public abstract class Entity implements GameObject
 		return this.xPos;
 	}
 
+	/** @return This Entity's horizontal speed. */
+	public float getXSpeed()
+	{
+		return this.xSpeed;
+	}
+
 	/** @return The Y position of this Entity. */
 	public float getY()
 	{
 		return this.yPos;
+	}
+
+	/** @return This Entity's vertical speed. */
+	public float getYSpeed()
+	{
+		return this.ySpeed;
 	}
 
 	/** Destroys this Entity. */
@@ -110,16 +122,6 @@ public abstract class Entity implements GameObject
 	public void update()
 	{
 		this.applySpeed();
-	}
-
-	public float getXSpeed()
-	{
-		return this.xSpeed;
-	}
-
-	public float getYSpeed()
-	{
-		return this.ySpeed;
 	}
 
 }

@@ -18,14 +18,6 @@ public class Animation implements GameObject
 	/** Number of ticks the current Sprite has been displayed. */
 	private int tick;
 
-	/** Creates a new Animation, with one Sprite.
-	 * 
-	 * @param sprite */
-	public Animation(Sprite sprite)
-	{
-		this(0, sprite);
-	}
-
 	/** Creates a new Animation.
 	 * 
 	 * @param sprites - The Sprites to cycle into.
@@ -36,7 +28,15 @@ public class Animation implements GameObject
 		this.currentSprite = 0;
 		this.tick = 0;
 		this.speed = speed;
-		Main.getAnimationManager().registerAnimation(this);
+		this.register();
+	}
+
+	/** Creates a new Animation, with one Sprite.
+	 * 
+	 * @param sprite */
+	public Animation(Sprite sprite)
+	{
+		this(0, sprite);
 	}
 
 	/** Unregisters the Animation from the Animation Manager. Call when you stop using the Animation. */
@@ -59,6 +59,12 @@ public class Animation implements GameObject
 		this.currentSprite = (this.currentSprite + 1) % this.sprites.length;
 		this.tick = 0;
 		return this.getImage();
+	}
+
+	/** Registers this Animation into the AnimationManager. */
+	public void register()
+	{
+		Main.getAnimationManager().registerAnimation(this);
 	}
 
 	/** Do not use render(Graphics) on this <code>Animation</code>. Use getImage() and render with the Object using this <code>Animation</code>.

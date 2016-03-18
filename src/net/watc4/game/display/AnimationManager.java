@@ -21,7 +21,7 @@ public class AnimationManager implements GameObject
 	 * @param animation */
 	public void registerAnimation(Animation animation)
 	{
-		this.animations.add(animation);
+		if (!this.animations.contains(animation)) this.animations.add(animation);
 	}
 
 	/** Has nothing to render. */
