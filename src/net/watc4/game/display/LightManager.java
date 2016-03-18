@@ -2,8 +2,6 @@ package net.watc4.game.display;
 
 import java.util.ArrayList;
 
-import com.sun.javafx.scene.control.skin.TitledPaneSkin;
-
 import net.watc4.game.map.Map;
 
 public class LightManager
