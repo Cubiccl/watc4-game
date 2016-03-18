@@ -68,14 +68,7 @@ public class LightManager
 
 	private void cleanSegments()
 	{
-		for (int i = 0; i < segments.size(); i++)
-		{
-			for (int j = 0; j < segments.get(i).length; j++)
-			{
-				System.out.print(segments.get(i)[j]/32 + "  ");
-			}
-			System.out.println();
-		}
+		//TODO
 	}
 
 }
