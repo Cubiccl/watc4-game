@@ -1,11 +1,13 @@
 package net.watc4.game.entity;
 
+import static net.watc4.game.GameUtils.DECELERATION;
+
 import java.awt.Graphics;
 
 import net.watc4.game.GameObject;
 import net.watc4.game.GameUtils;
+import net.watc4.game.display.renderer.EntityRenderer;
 import net.watc4.game.states.GameState;
-import static net.watc4.game.GameUtils.DECELERATION;
 
 /** Represents a moving object in the world. i.e. A monster, a moving block, etc. */
 public abstract class Entity implements GameObject
@@ -14,6 +16,8 @@ public abstract class Entity implements GameObject
 	protected final GameState game;
 	/** True if this Entity is affected by Gravity. False if it flies. */
 	protected boolean hasGravity;
+	/** Renders the Entity onto the screen. */
+	private EntityRenderer renderer;
 	/** Its x and y positions. */
 	private float xPos, yPos;
 	/** Its x and y speed. */
@@ -33,6 +37,7 @@ public abstract class Entity implements GameObject
 		this.hasGravity = true;
 		this.game = game;
 		game.registerEntity(this);
+		this.renderer = new EntityRenderer(this);
 	}
 
 	/** Applies current speed and modifies it according to the game physics. */
@@ -88,12 +93,33 @@ public abstract class Entity implements GameObject
 
 	@Override
 	public void render(Graphics g)
-	{}
+	{
+		this.renderer.render(g);
+	}
+
+	/** Changes this Entity's renderer.
+	 * 
+	 * @param renderer - The new Renderer to use. */
+	public void setRenderer(EntityRenderer renderer)
+	{
+		this.renderer.setAnimation(null);
+		this.renderer = renderer;
+	}
 
 	@Override
 	public void update()
 	{
 		this.applySpeed();
+	}
+
+	public float getXSpeed()
+	{
+		return this.xSpeed;
+	}
+
+	public float getYSpeed()
+	{
+		return this.ySpeed;
 	}
 
 }

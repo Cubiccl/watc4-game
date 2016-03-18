@@ -4,6 +4,7 @@ import static net.watc4.game.GameUtils.ACCELERATION;
 import static net.watc4.game.GameUtils.MAX_SPEED;
 import net.watc4.game.GameUtils;
 import net.watc4.game.Main;
+import net.watc4.game.display.renderer.LumiRenderer;
 import net.watc4.game.states.GameState;
 
 /** First Player : can fly and spreads light. */
@@ -13,6 +14,7 @@ public class EntityLumi extends EntityPlayer
 	{
 		super(xPos, yPos, game);
 		this.hasGravity = false;
+		this.setRenderer(new LumiRenderer(this));
 	}
 
 	/** Checks for movement input and applies it. */

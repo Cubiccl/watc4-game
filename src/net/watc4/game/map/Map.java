@@ -3,7 +3,7 @@ package net.watc4.game.map;
 import java.awt.Graphics;
 
 import net.watc4.game.GameObject;
-import net.watc4.game.display.LightManager;
+//import net.watc4.game.display.LightManager;
 import net.watc4.game.utils.FileUtils;
 
 /** Represents the world the player evolves in. */
@@ -23,7 +23,7 @@ public class Map implements GameObject
 	/** Height of the map in tiles. */
 	public final int width;
 	/** The LightManager */
-	public LightManager lightManager;
+	//public LightManager lightManager;
 
 	/** @param width - Its width, in Tiles.
 	 * @param height - Its height, in Tiles.
@@ -54,11 +54,11 @@ public class Map implements GameObject
 
 			for (int j = 0; j < info[1]; j++)
 			{
-				this.tiles[j][i] = Integer.valueOf(values[j]);
+				this.setTileAt(j, i, Integer.valueOf(values[j]));
 			}
 
 		}
-		lightManager = new LightManager(tiles);
+		//lightManager = new LightManager(tiles);
 	}
 
 	/** @param x - X position.
