@@ -13,12 +13,23 @@ import net.watc4.game.map.Map;
 /** Represents the main game engine. */
 public class GameState implements GameObject
 {
+	/** The instance of the Game State. */
+	private static GameState instance;
+
+	/** @return The instance of the Game. */
+	public static GameState getInstance()
+	{
+		if (instance == null) instance = new GameState();
+		return instance;
+	}
+
 	/** The Light Player. */
 	public final EntityPlayer entityLumi;
 	/** Manages Entities in this Game. */
 	private EntityManager entityManager;
 	/** The Shadow Player. */
 	public final EntityPlayer entityPattou;
+
 	/** The world they evolve into. */
 	private Map map;
 
@@ -27,7 +38,7 @@ public class GameState implements GameObject
 	{
 		this.entityManager = new EntityManager();
 		this.map = new Map("res/maps/testmap.txt");
-		
+
 		this.entityLumi = new EntityLumi(this.map.lumiSpawnX, this.map.lumiSpawnY, this);
 		this.entityPattou = new EntityPattou(this.map.pattouSpawnX, this.map.pattouSpawnY, this);
 	}

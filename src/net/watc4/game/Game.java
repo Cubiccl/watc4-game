@@ -46,7 +46,7 @@ public class Game implements Runnable
 		int fps = 60, ticks = 0;
 		double timePerTick = 1000000000 / fps, delta = 0;
 		long now, lastTime = System.nanoTime(), timer = 0;
-		this.state = new GameState();
+		this.state = GameState.getInstance();
 
 		this.isRunning = true;
 		while (this.isRunning)
