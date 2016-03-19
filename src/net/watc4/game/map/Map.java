@@ -79,6 +79,7 @@ public class Map implements GameObject
 				g.drawImage(this.getTileAt(i, j).sprite.getImage(), i * 32, j * 32, null);
 			}
 		}
+		lightManager.render(g);
 	}
 
 	/** Sets the Tile at x, y to the input Tile's id.
@@ -103,5 +104,7 @@ public class Map implements GameObject
 
 	@Override
 	public void update()
-	{}
+	{
+		lightManager.update();
+	}
 }
