@@ -1,6 +1,7 @@
 package net.watc4.game.display.renderer;
 
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 
 import net.watc4.game.display.Animation;
 import net.watc4.game.display.Sprite;
@@ -33,19 +34,21 @@ public class PattouRenderer extends EntityRenderer
 		boolean isRight = this.entity.getXSpeed() > 0;
 		boolean isJumping = this.entity.getYSpeed() < 0;
 		boolean isFalling = this.entity.getYSpeed() > 0;
+		BufferedImage image = this.animation.getImage();
 
 		if (isJumping)
 		{
-			if (isRight || !this.wasLeft) g.drawImage(Sprite.PATTOU_JUMPING_RIGHT.getImage(), (int) this.entity.getX(), (int) this.entity.getY(), null);
-			else g.drawImage(Sprite.PATTOU_JUMPING_LEFT.getImage(), (int) this.entity.getX(), (int) this.entity.getY(), null);
+			if (isRight || !this.wasLeft) image = Sprite.PATTOU_JUMPING_RIGHT.getImage();
+			else image = Sprite.PATTOU_JUMPING_LEFT.getImage();
 		} else if (isFalling)
 		{
-			if (isRight || !this.wasLeft) g.drawImage(Sprite.PATTOU_FALLING_RIGHT.getImage(), (int) this.entity.getX(), (int) this.entity.getY(), null);
-			else g.drawImage(Sprite.PATTOU_FALLING_LEFT.getImage(), (int) this.entity.getX(), (int) this.entity.getY(), null);
-		} else if (isRight) g.drawImage(this.walkingRight.getImage(), (int) this.entity.getX(), (int) this.entity.getY(), null);
-		else if (this.entity.getXSpeed() < 0) g.drawImage(this.walkingLeft.getImage(), (int) this.entity.getX(), (int) this.entity.getY(), null);
-		else if (this.wasLeft) g.drawImage(this.idleLeft.getImage(), (int) this.entity.getX(), (int) this.entity.getY(), null);
-		else super.render(g);
+			if (isRight || !this.wasLeft) image = Sprite.PATTOU_FALLING_RIGHT.getImage();
+			else image = Sprite.PATTOU_FALLING_LEFT.getImage();
+		} else if (isRight) image = this.walkingRight.getImage();
+		else if (this.entity.getXSpeed() < 0) image = this.walkingLeft.getImage();
+		else if (this.wasLeft) image = this.idleLeft.getImage();
+
+		g.drawImage(image, (int) this.entity.getX() - image.getWidth() / 2, (int) this.entity.getY() - image.getHeight() / 2, null);
 
 		this.wasLeft = (this.wasLeft && !isRight) || this.entity.getXSpeed() < 0;
 	}

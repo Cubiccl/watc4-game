@@ -19,7 +19,7 @@ public class LumiRenderer extends EntityRenderer
 	public void render(Graphics g)
 	{
 		super.render(g);
-		g.drawImage(Sprite.LUMI_EYE.getImage(), (int) (this.entity.getX() + 8 + this.entity.getXSpeed()),
-				(int) (this.entity.getY() + 8 + this.entity.getYSpeed()), null);
+		g.drawImage(Sprite.LUMI_EYE.getImage(), (int) (this.entity.getX() + 8 + this.entity.getXSpeed()) - Sprite.LUMI.getImage().getWidth() / 2,
+				(int) (this.entity.getY() + 8 + this.entity.getYSpeed()) - Sprite.LUMI.getImage().getHeight() / 2, null);
 	}
 }

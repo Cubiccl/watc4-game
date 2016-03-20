@@ -23,7 +23,7 @@ public class Map implements GameObject
 	/** Height of the map in tiles. */
 	public final int width;
 	/** The LightManager */
-	public LightManager lightManager;
+	public final LightManager lightManager;
 
 	/** @param width - Its width, in Tiles.
 	 * @param height - Its height, in Tiles.

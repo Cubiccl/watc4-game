@@ -11,7 +11,7 @@ import net.watc4.game.entity.Entity;
 public class EntityRenderer implements GameObject
 {
 	/** The Animation used to draw. */
-	private Animation animation;
+	protected Animation animation;
 	/** The Entity to draw. */
 	protected Entity entity;
 
@@ -36,7 +36,8 @@ public class EntityRenderer implements GameObject
 	@Override
 	public void render(Graphics g)
 	{
-		g.drawImage(this.animation.getImage(), (int) this.entity.getX(), (int) this.entity.getY(), null);
+		g.drawImage(this.animation.getImage(), (int) this.entity.getX() - this.animation.getImage().getWidth() / 2, (int) this.entity.getY()
+				- this.animation.getImage().getHeight() / 2, null);
 	}
 
 	/** Changes the current Animation.

@@ -6,21 +6,21 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-import net.watc4.game.Game;
 import net.watc4.game.GameObject;
 import net.watc4.game.map.Map;
 import net.watc4.game.states.GameState;
 
+/** Calculates and displays shadows. */
 public class LightManager implements GameObject
 {
-	/** Width, in pixel of the light manager */
-	private int width;
+	/** List of points to link */
+	private ArrayList<float[]> endPoints;
 	/** Height, in pixel of the light manager */
 	private int height;
-	/**	 */
+	/** List of segments stopping light */
 	private ArrayList<float[]> segments;
-	/**	 */
-	private ArrayList<float[]> endPoints;
+	/** Width, in pixel of the light manager */
+	private int width;
 
 	public LightManager(Map map)
 	{
@@ -80,6 +80,28 @@ public class LightManager implements GameObject
 
 	}
 
+	/** Applies a mask onto an image.
+	 * 
+	 * @param image - The Image to modify.
+	 * @param mask - The mask to apply. */
+	private void applyGrayscaleMaskToAlpha(BufferedImage image, BufferedImage mask)
+	{
+		int width = image.getWidth();
+		int height = image.getHeight();
+
+		int[] imagePixels = image.getRGB(0, 0, width, height, null, 0, width);
+		int[] maskPixels = mask.getRGB(0, 0, width, height, null, 0, width);
+
+		for (int i = 0; i < imagePixels.length; i++)
+		{
+			int color = imagePixels[i] & 0x00ffffff; // Mask preexisting alpha
+			int alpha = maskPixels[i] << 24; // Shift blue to alpha
+			imagePixels[i] = color | alpha;
+		}
+		image.setRGB(0, 0, width, height, imagePixels, 0, width);
+	}
+
+	/** Merges adjacent segments into single ones. */
 	private void cleanSegments()
 	{
 		ArrayList<float[]> segFind = new ArrayList<>();
@@ -127,19 +149,21 @@ public class LightManager implements GameObject
 		BufferedImage shadows = new BufferedImage(this.width, this.height, BufferedImage.TYPE_INT_ARGB);
 		Graphics lightMapG = lightMap.getGraphics();
 		Graphics shadowsG = shadows.getGraphics();
-		int posX = (int)GameState.getInstance().entityLumi.getX();
-		int posY = (int)GameState.getInstance().entityLumi.getY();
-				
+		int posX = (int) GameState.getInstance().entityLumi.getX();
+		int posY = (int) GameState.getInstance().entityLumi.getY();
+
 		lightMapG.setColor(Color.WHITE);
 		shadowsG.setColor(Color.BLACK);
 		lightMapG.fillRect(0, 0, this.width, this.height);
 		shadowsG.fillRect(0, 0, this.width, this.height);
-		
+
 		lightMapG.setColor(Color.BLACK);
 		for (int i = 0; i < this.endPoints.size(); i++)
 		{
-			int[]baseTriangleX = {posX, (int)this.endPoints.get(i%this.endPoints.size())[1],(int)this.endPoints.get((i+1)%this.endPoints.size())[1]};
-			int[]baseTriangleY = {posY, (int)this.endPoints.get(i%this.endPoints.size())[2],(int)this.endPoints.get((i+1)%this.endPoints.size())[2]};
+			int[] baseTriangleX =
+			{ posX, (int) this.endPoints.get(i % this.endPoints.size())[1], (int) this.endPoints.get((i + 1) % this.endPoints.size())[1] };
+			int[] baseTriangleY =
+			{ posY, (int) this.endPoints.get(i % this.endPoints.size())[2], (int) this.endPoints.get((i + 1) % this.endPoints.size())[2] };
 			lightMapG.fillPolygon(baseTriangleX, baseTriangleY, 3);
 		}
 		applyGrayscaleMaskToAlpha(shadows, lightMap);
@@ -159,8 +183,8 @@ public class LightManager implements GameObject
 		// Get the angle
 		for (int i = 0; i < this.segments.size(); i++)
 		{
-			cos = ((this.segments.get(i)[0] - rp_x) / (Math
-					.sqrt((double) ((this.segments.get(i)[0] - rp_x) * (this.segments.get(i)[0] - rp_x) + (this.segments.get(i)[1] - rp_y) * (this.segments.get(i)[1] - rp_y)))));
+			cos = ((this.segments.get(i)[0] - rp_x) / (Math.sqrt((double) ((this.segments.get(i)[0] - rp_x) * (this.segments.get(i)[0] - rp_x) + (this.segments
+					.get(i)[1] - rp_y) * (this.segments.get(i)[1] - rp_y)))));
 			angle = (this.segments.get(i)[1] - rp_y > 0) ? (float) Math.acos(cos) : (float) -Math.acos(cos);
 			this.endPoints.add(new float[]
 			{ angle, -1, -1 });
@@ -211,7 +235,7 @@ public class LightManager implements GameObject
 						tempTr = (sp_x + sd_x * ts - rp_x) / rd_x;
 						if (tempTr > 0 && tempTr < tr)
 
-							tr = tempTr;
+						tr = tempTr;
 
 					}
 				}
@@ -219,22 +243,5 @@ public class LightManager implements GameObject
 			this.endPoints.get(i)[1] = rp_x + tr * rd_x;
 			this.endPoints.get(i)[2] = rp_y + tr * rd_y;
 		}
-	}
-
-	private void applyGrayscaleMaskToAlpha(BufferedImage image, BufferedImage mask)
-	{
-		int width = image.getWidth();
-		int height = image.getHeight();
-
-		int[] imagePixels = image.getRGB(0, 0, width, height, null, 0, width);
-		int[] maskPixels = mask.getRGB(0, 0, width, height, null, 0, width);
-
-		for (int i = 0; i < imagePixels.length; i++)
-		{
-			int color = imagePixels[i] & 0x00ffffff; // Mask preexisting alpha
-			int alpha = maskPixels[i] << 24; // Shift blue to alpha
-			imagePixels[i] = color | alpha;
-		}
-		image.setRGB(0, 0, width, height, imagePixels, 0, width);
 	}
 }
