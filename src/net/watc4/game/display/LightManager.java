@@ -149,8 +149,8 @@ public class LightManager implements GameObject
 		BufferedImage shadows = new BufferedImage(this.width, this.height, BufferedImage.TYPE_INT_ARGB);
 		Graphics lightMapG = lightMap.getGraphics();
 		Graphics shadowsG = shadows.getGraphics();
-		int posX = (int) GameState.getInstance().entityLumi.getX();
-		int posY = (int) GameState.getInstance().entityLumi.getY();
+		int posX = floatToInt(GameState.getInstance().entityLumi.getX());
+		int posY = floatToInt(GameState.getInstance().entityLumi.getY());
 
 		lightMapG.setColor(Color.WHITE);
 		shadowsG.setColor(Color.BLACK);
@@ -161,9 +161,9 @@ public class LightManager implements GameObject
 		for (int i = 0; i < this.endPoints.size(); i++)
 		{
 			int[] baseTriangleX =
-			{ posX, (int) this.endPoints.get(i % this.endPoints.size())[1], (int) this.endPoints.get((i + 1) % this.endPoints.size())[1] };
+			{ posX, floatToInt(this.endPoints.get(i % this.endPoints.size())[1]), floatToInt(this.endPoints.get((i + 1) % this.endPoints.size())[1]) };
 			int[] baseTriangleY =
-			{ posY, (int) this.endPoints.get(i % this.endPoints.size())[2], (int) this.endPoints.get((i + 1) % this.endPoints.size())[2] };
+			{ posY, floatToInt(this.endPoints.get(i % this.endPoints.size())[2]), floatToInt(this.endPoints.get((i + 1) % this.endPoints.size())[2]) };
 			lightMapG.fillPolygon(baseTriangleX, baseTriangleY, 3);
 		}
 		applyGrayscaleMaskToAlpha(shadows, lightMap);
@@ -183,8 +183,8 @@ public class LightManager implements GameObject
 		// Get the angle
 		for (int i = 0; i < this.segments.size(); i++)
 		{
-			cos = ((this.segments.get(i)[0] - rp_x) / (Math.sqrt((double) ((this.segments.get(i)[0] - rp_x) * (this.segments.get(i)[0] - rp_x) + (this.segments
-					.get(i)[1] - rp_y) * (this.segments.get(i)[1] - rp_y)))));
+			cos = ((this.segments.get(i)[0] - rp_x) / (Math.sqrt((double) ((this.segments.get(i)[0] - rp_x) * (this.segments.get(i)[0] - rp_x)
+					+ (this.segments.get(i)[1] - rp_y) * (this.segments.get(i)[1] - rp_y)))));
 			angle = (this.segments.get(i)[1] - rp_y > 0) ? (float) Math.acos(cos) : (float) -Math.acos(cos);
 			this.endPoints.add(new float[]
 			{ angle, -1, -1 });
@@ -195,18 +195,24 @@ public class LightManager implements GameObject
 		}
 
 		// Sort the angle
-		this.endPoints.sort(new Comparator<float[]>()
+		try
 		{
-			@Override
-			public int compare(float[] o1, float[] o2)
+			this.endPoints.sort(new Comparator<float[]>()
 			{
-				if (o1.length == 0) return 1;
-				if (o2.length == 0) return -1;
-				if (o1[0] < o2[0]) return -1;
-				if (o1[0] >= o2[0]) return 1;
-				return 0;
-			}
-		});
+				@Override
+				public int compare(float[] o1, float[] o2)
+				{
+					if (o1.length == 0) return 1;
+					if (o2.length == 0) return -1;
+					if (o1[0] < o2[0]) return -1;
+					if (o1[0] >= o2[0]) return 1;
+					return 0;
+				}
+			});
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 
 		// Get all the end points
 		float cartesianProd;
@@ -235,7 +241,7 @@ public class LightManager implements GameObject
 						tempTr = (sp_x + sd_x * ts - rp_x) / rd_x;
 						if (tempTr > 0 && tempTr < tr)
 
-						tr = tempTr;
+							tr = tempTr;
 
 					}
 				}
@@ -243,5 +249,10 @@ public class LightManager implements GameObject
 			this.endPoints.get(i)[1] = rp_x + tr * rd_x;
 			this.endPoints.get(i)[2] = rp_y + tr * rd_y;
 		}
+	}
+
+	private int floatToInt(float f)
+	{
+		return (f - (float) ((int) f) < 0.5) ? (int) f : (int) f + 1;
 	}
 }
