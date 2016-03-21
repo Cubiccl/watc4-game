@@ -45,14 +45,14 @@ public class Map implements GameObject
 		this.lumiSpawnY = info[3] * Map.TILESIZE;
 		this.pattouSpawnX = info[4] * Map.TILESIZE;
 		this.pattouSpawnY = info[5] * Map.TILESIZE;
-		
-		this.tiles = new int[this.height][this.width];
+
+		this.tiles = new int[this.width][this.height];
 		String[] values; // Tiles values temporarily stored per line from the map file
-		for (int i = 0; i < info[0]; i++)
+		for (int i = 0; i < info[1]; i++)
 		{
 			values = mapText[i + 7].split("\t");
 
-			for (int j = 0; j < info[1]; j++)
+			for (int j = 0; j < info[0]; j++)
 			{
 				this.setTileAt(j, i, Integer.valueOf(values[j]));
 			}
@@ -76,7 +76,7 @@ public class Map implements GameObject
 		{
 			for (int j = 0; j < this.tiles[i].length; j++)
 			{
-				g.drawImage(this.getTileAt(i, j).sprite.getImage(), i * 32, j * 32, null);
+				g.drawImage(this.getTileAt(i, j).sprite.getImage(), i * TILESIZE, j * TILESIZE, null);
 			}
 		}
 		lightManager.render(g);
@@ -96,7 +96,7 @@ public class Map implements GameObject
 	 * 
 	 * @param x - The X coordinate.
 	 * @param y - The Y coordinate.
-	 * @param tiel - The Tile to set. */
+	 * @param tile - The Tile to set. */
 	public void setTileAt(int x, int y, Tile tile)
 	{
 		this.setTileAt(x, y, tile.id);

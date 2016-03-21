@@ -18,6 +18,7 @@ public class TileRegistry
 		new Tile(0, new Animation(Sprite.TILE_DEFAULT), false, false);
 		new Tile(1, new Animation(Sprite.TILE_GROUND), true, true);
 		new Tile(2, new Animation(Sprite.TILE_WALL), false, false);
+		new Tile(3, new Animation(Sprite.TILE_GLASS), true, false);
 	}
 
 	/** @param id - A Tile identifier.

@@ -45,6 +45,7 @@ public enum Sprite
 	TILE_DEFAULT("res/textures/tileset.png", 0, 0, 32),
 	TILE_GROUND("res/textures/tileset.png", 32, 0, 32),
 	TILE_WALL("res/textures/tileset.png", 64, 0, 32),
+	TILE_GLASS("res/textures/tileset.png", 96, 0, 32),
 	UNKNOWN("res/textures/unknown.png", 0, 0, 32);
 
 	/** The actual Image. */
