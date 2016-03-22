@@ -15,10 +15,14 @@ public class LightManager implements GameObject
 {
 	/** List of points to link */
 	private ArrayList<float[]> endPoints;
+	/** True if the shadows have changed, thus the shadows Image should be updated. */
+	private boolean hasChanged;
 	/** Height, in pixel of the light manager */
 	private int height;
 	/** List of segments stopping light */
 	private ArrayList<float[]> segments;
+	/** The shadows to draw. */
+	private BufferedImage shadows;
 	/** Width, in pixel of the light manager */
 	private int width;
 
@@ -95,7 +99,7 @@ public class LightManager implements GameObject
 		for (int i = 0; i < imagePixels.length; i++)
 		{
 			int color = imagePixels[i] & 0x00ffffff; // Mask preexisting alpha
-			int alpha = maskPixels[i] << 24; // Shift blue to alpha
+			int alpha = maskPixels[i] << 27; // Shift blue to alpha
 			imagePixels[i] = color | alpha;
 		}
 		image.setRGB(0, 0, width, height, imagePixels, 0, width);
@@ -137,6 +141,11 @@ public class LightManager implements GameObject
 		}
 	}
 
+	private int floatToInt(float f)
+	{
+		return (f - (float) ((int) f) < 0.5) ? (int) f : (int) f + 1;
+	}
+
 	public ArrayList<float[]> getSegment()
 	{
 		return this.segments;
@@ -145,30 +154,8 @@ public class LightManager implements GameObject
 	@Override
 	public void render(Graphics g)
 	{
-		BufferedImage lightMap = new BufferedImage(this.width, this.height, BufferedImage.TYPE_INT_RGB);
-		BufferedImage shadows = new BufferedImage(this.width, this.height, BufferedImage.TYPE_INT_ARGB);
-		Graphics lightMapG = lightMap.getGraphics();
-		Graphics shadowsG = shadows.getGraphics();
-		int posX = floatToInt(GameState.getInstance().entityLumi.getX());
-		int posY = floatToInt(GameState.getInstance().entityLumi.getY());
-
-		lightMapG.setColor(Color.WHITE);
-		shadowsG.setColor(Color.BLACK);
-		lightMapG.fillRect(0, 0, this.width, this.height);
-		shadowsG.fillRect(0, 0, this.width, this.height);
-
-		lightMapG.setColor(Color.BLACK);
-		for (int i = 0; i < this.endPoints.size(); i++)
-		{
-			int[] baseTriangleX =
-			{ posX, floatToInt(this.endPoints.get(i % this.endPoints.size())[1]), floatToInt(this.endPoints.get((i + 1) % this.endPoints.size())[1]) };
-			int[] baseTriangleY =
-			{ posY, floatToInt(this.endPoints.get(i % this.endPoints.size())[2]), floatToInt(this.endPoints.get((i + 1) % this.endPoints.size())[2]) };
-			lightMapG.fillPolygon(baseTriangleX, baseTriangleY, 3);
-		}
-		applyGrayscaleMaskToAlpha(shadows, lightMap);
-		g.drawImage(shadows, 0, 0, null);
-
+		if (this.hasChanged) this.updateShadows();
+		g.drawImage(this.shadows, 0, 0, null);
 	}
 
 	@Override
@@ -183,8 +170,8 @@ public class LightManager implements GameObject
 		// Get the angle
 		for (int i = 0; i < this.segments.size(); i++)
 		{
-			cos = ((this.segments.get(i)[0] - rp_x) / (Math.sqrt((double) ((this.segments.get(i)[0] - rp_x) * (this.segments.get(i)[0] - rp_x)
-					+ (this.segments.get(i)[1] - rp_y) * (this.segments.get(i)[1] - rp_y)))));
+			cos = ((this.segments.get(i)[0] - rp_x) / (Math.sqrt((double) ((this.segments.get(i)[0] - rp_x) * (this.segments.get(i)[0] - rp_x) + (this.segments
+					.get(i)[1] - rp_y) * (this.segments.get(i)[1] - rp_y)))));
 			angle = (this.segments.get(i)[1] - rp_y > 0) ? (float) Math.acos(cos) : (float) -Math.acos(cos);
 			this.endPoints.add(new float[]
 			{ angle, -1, -1 });
@@ -241,7 +228,7 @@ public class LightManager implements GameObject
 						tempTr = (sp_x + sd_x * ts - rp_x) / rd_x;
 						if (tempTr > 0 && tempTr < tr)
 
-							tr = tempTr;
+						tr = tempTr;
 
 					}
 				}
@@ -249,10 +236,35 @@ public class LightManager implements GameObject
 			this.endPoints.get(i)[1] = rp_x + tr * rd_x;
 			this.endPoints.get(i)[2] = rp_y + tr * rd_y;
 		}
+
+		this.hasChanged = true;
 	}
 
-	private int floatToInt(float f)
+	/** Updates the shadows to draw. */
+	private void updateShadows()
 	{
-		return (f - (float) ((int) f) < 0.5) ? (int) f : (int) f + 1;
+		BufferedImage lightMap = new BufferedImage(this.width, this.height, BufferedImage.TYPE_INT_RGB);
+		this.shadows = new BufferedImage(this.width, this.height, BufferedImage.TYPE_INT_ARGB);
+		Graphics lightMapG = lightMap.getGraphics();
+		Graphics shadowsG = this.shadows.getGraphics();
+		int posX = floatToInt(GameState.getInstance().entityLumi.getX());
+		int posY = floatToInt(GameState.getInstance().entityLumi.getY());
+
+		lightMapG.setColor(Color.WHITE);
+		shadowsG.setColor(Color.BLACK);
+		lightMapG.fillRect(0, 0, this.width, this.height);
+		shadowsG.fillRect(0, 0, this.width, this.height);
+
+		lightMapG.setColor(Color.BLACK);
+		for (int i = 0; i < this.endPoints.size(); i++)
+		{
+			int[] baseTriangleX =
+			{ posX, floatToInt(this.endPoints.get(i % this.endPoints.size())[1]), floatToInt(this.endPoints.get((i + 1) % this.endPoints.size())[1]) };
+			int[] baseTriangleY =
+			{ posY, floatToInt(this.endPoints.get(i % this.endPoints.size())[2]), floatToInt(this.endPoints.get((i + 1) % this.endPoints.size())[2]) };
+			lightMapG.fillPolygon(baseTriangleX, baseTriangleY, 3);
+		}
+		applyGrayscaleMaskToAlpha(this.shadows, lightMap);
+		this.hasChanged = false;
 	}
 }

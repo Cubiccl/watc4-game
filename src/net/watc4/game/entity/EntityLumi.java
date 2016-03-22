@@ -38,6 +38,8 @@ public class EntityLumi extends EntityPlayer
 	{
 		super.update();
 		this.manageInput();
+
+		if (this.ySpeed != 0 || this.xSpeed != 0) GameState.getInstance().getMap().lightManager.update();
 	}
 
 }

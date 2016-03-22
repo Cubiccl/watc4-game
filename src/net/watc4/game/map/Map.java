@@ -13,17 +13,17 @@ public class Map implements GameObject
 	public static final int TILESIZE = 32;
 	/** Height of the map in tiles. */
 	public final int height;
+	/** The LightManager */
+	public final LightManager lightManager;
 	/** Pattou's spawn point. */
 	public final int lumiSpawnX, lumiSpawnY;
+
 	/** Pattou's spawn point. */
 	public final int pattouSpawnX, pattouSpawnY;
-
 	/** List of Tiles. */
 	private int[][] tiles;
 	/** Height of the map in tiles. */
 	public final int width;
-	/** The LightManager */
-	public final LightManager lightManager;
 
 	/** @param width - Its width, in Tiles.
 	 * @param height - Its height, in Tiles.
@@ -104,7 +104,5 @@ public class Map implements GameObject
 
 	@Override
 	public void update()
-	{
-		lightManager.update();
-	}
+	{}
 }

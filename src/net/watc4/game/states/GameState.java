@@ -19,7 +19,11 @@ public class GameState implements GameObject
 	/** @return The instance of the Game. */
 	public static GameState getInstance()
 	{
-		if (instance == null) instance = new GameState();
+		if (instance == null)
+		{
+			instance = new GameState();
+			instance.getMap().lightManager.update();
+		}
 		return instance;
 	}
 
