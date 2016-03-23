@@ -54,7 +54,7 @@ public class EntityPattou extends EntityPlayer
 	{
 		super.update();
 		this.manageInput();
-		this.onGround = this.getY() >= 200;
+		this.onGround = this.onGround();
 	}
 
 }

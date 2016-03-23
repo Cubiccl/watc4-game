@@ -9,9 +9,9 @@ public class Tile
 	public final int id;
 	/** Its sprite. */
 	public final Animation sprite;
-	
+
 	public final boolean solid;
-	
+
 	public final boolean opaque;
 
 	/** Creates a new Tile.
@@ -26,10 +26,16 @@ public class Tile
 		this.opaque = opaque;
 		TileRegistry.registerTile(this);
 	}
-	
+
 	/** @return opaque attribute */
-	public boolean isOpaque(){
+	public boolean isOpaque()
+	{
 		return this.opaque;
 	}
 
+	/** @return solid attribute */
+	public boolean isSolid()
+	{
+		return this.solid;
+	}
 }

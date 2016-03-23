@@ -8,6 +8,7 @@ import net.watc4.game.GameObject;
 import net.watc4.game.GameUtils;
 import net.watc4.game.display.renderer.EntityRenderer;
 import net.watc4.game.states.GameState;
+import net.watc4.game.utils.Hitbox;
 
 /** Represents a moving object in the world. i.e. A monster, a moving block, etc. */
 public abstract class Entity implements GameObject
@@ -22,6 +23,7 @@ public abstract class Entity implements GameObject
 	private float xPos, yPos;
 	/** Its x and y speed. */
 	protected float xSpeed, ySpeed;
+	private Hitbox hitbox;
 
 	/** Creates a new Entity.
 	 * 
@@ -38,13 +40,33 @@ public abstract class Entity implements GameObject
 		this.game = game;
 		game.registerEntity(this);
 		this.renderer = new EntityRenderer(this);
+		this.hitbox = new Hitbox(32, 32, this.xPos, this.yPos);
 	}
 
 	/** Applies current speed and modifies it according to the game physics. */
 	private void applySpeed()
 	{
+		if (hitbox.leftContact() && this.xSpeed < 0)
+		{
+			this.xSpeed = 0;
+		} else if (hitbox.rightContact() && this.xSpeed > 0)
+		{
+			this.xSpeed = 0;
+		}
+
+		if (hitbox.topContact() && this.ySpeed < 0)
+		{
+			this.ySpeed = 0;
+		}
+
+		else if (hitbox.botContact() && this.ySpeed > 0)
+		{
+			this.ySpeed = 0;
+		}
+
 		this.xPos += this.xSpeed;
 		this.yPos += this.ySpeed;
+		this.hitbox.setPosition(this.xPos, this.yPos);
 		if (this.xSpeed > 0)
 		{
 			this.xSpeed -= DECELERATION;
@@ -101,6 +123,12 @@ public abstract class Entity implements GameObject
 	public void kill()
 	{
 		this.game.unregisterEntity(this);
+	}
+
+	/** @return true if the entity is on the ground, false if not */
+	public boolean onGround()
+	{
+		return this.hitbox.botContact();
 	}
 
 	@Override

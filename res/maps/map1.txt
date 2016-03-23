@@ -3,7 +3,7 @@ height = 15
 lumiSpawnX = 18
 lumiSpawnY = 12
 pattouSpawnX = 4
-pattouSpawnY = 14
+pattouSpawnY = 12
 tiles =
 1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1
 2	2	2	2	2	2	2	2	2	2	2	2	2	2	2	2	2	2	1	1

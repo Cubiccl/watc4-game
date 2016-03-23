@@ -35,4 +35,5 @@ public class TileRegistry
 	{
 		tiles.put(tile.id, tile);
 	}
+
 }
