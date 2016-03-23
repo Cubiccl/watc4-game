@@ -47,5 +47,7 @@ public class EntityManager implements GameObject
 		for (Entity entity : this.entities)
 			entity.update();
 	}
+	
+	
 
 }

@@ -7,6 +7,7 @@ import java.awt.Graphics;
 import net.watc4.game.GameObject;
 import net.watc4.game.GameUtils;
 import net.watc4.game.display.renderer.EntityRenderer;
+import net.watc4.game.map.Map;
 import net.watc4.game.states.GameState;
 import net.watc4.game.utils.Hitbox;
 
@@ -129,6 +130,15 @@ public abstract class Entity implements GameObject
 	public boolean onGround()
 	{
 		return this.hitbox.botContact();
+	}
+
+	public void setPosition(int x, int y)
+	{
+		this.xSpeed = 0;
+		this.ySpeed = 0;
+		this.xPos = x;
+		this.yPos = y;
+
 	}
 
 	@Override
