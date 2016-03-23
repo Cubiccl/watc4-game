@@ -7,6 +7,7 @@ import java.awt.Graphics;
 import net.watc4.game.GameObject;
 import net.watc4.game.GameUtils;
 import net.watc4.game.display.renderer.EntityRenderer;
+import net.watc4.game.map.Map;
 import net.watc4.game.states.GameState;
 
 /** Represents a moving object in the world. i.e. A monster, a moving block, etc. */
@@ -101,6 +102,14 @@ public abstract class Entity implements GameObject
 	public void kill()
 	{
 		this.game.unregisterEntity(this);
+	}
+
+	public void setPosition(int x, int y)
+	{
+		this.xSpeed = 0;
+		this.ySpeed = 0;
+		this.xPos = x;		
+		this.yPos = y;
 	}
 
 	@Override

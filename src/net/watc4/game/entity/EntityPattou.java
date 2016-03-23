@@ -5,6 +5,7 @@ import static net.watc4.game.GameUtils.MAX_SPEED;
 import net.watc4.game.GameUtils;
 import net.watc4.game.Main;
 import net.watc4.game.display.renderer.PattouRenderer;
+import net.watc4.game.map.Map;
 import net.watc4.game.states.GameState;
 
 /** Second player : must stay in the shadows and is affected by gravity. */
@@ -57,4 +58,11 @@ public class EntityPattou extends EntityPlayer
 		this.onGround = this.getY() >= 200;
 	}
 
+	/** Kill Pattou */
+	public void kill()
+	{
+		this.setPosition(GameState.getInstance().getMap().pattouSpawnX, GameState.getInstance().getMap().pattouSpawnY);
+	}
+
+	
 }

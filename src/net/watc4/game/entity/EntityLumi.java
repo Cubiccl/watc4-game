@@ -41,5 +41,9 @@ public class EntityLumi extends EntityPlayer
 
 		if (this.ySpeed != 0 || this.xSpeed != 0) GameState.getInstance().getMap().lightManager.update();
 	}
+	public void kill()
+	{
+		this.setPosition(GameState.getInstance().getMap().lumiSpawnX, GameState.getInstance().getMap().lumiSpawnY);
+	}
 
 }
