@@ -19,6 +19,14 @@ public class TileRegistry
 		new Tile(1, new Animation(Sprite.TILE_GROUND), true, true);
 		new Tile(2, new Animation(Sprite.TILE_WALL), false, false);
 		new Tile(3, new Animation(Sprite.TILE_GLASS), true, false);
+		new Tile(4, new Animation(Sprite.TILE_MIRROR_TOP), true, false);
+		new Tile(5, new Animation(Sprite.TILE_MIRROR_RIGHT), true, false);
+		new Tile(6, new Animation(Sprite.TILE_MIRROR_BACK), true, false);
+		new Tile(7, new Animation(Sprite.TILE_MIRROR_LEFT), true, false);
+		new Tile(8, new Animation(Sprite.TILE_LADDER_TOP), false, false);
+		new Tile(9, new Animation(Sprite.TILE_LADDER_BASE), false, false);
+		new Tile(10, new Animation(Sprite.TILE_LADDER_BACK), false, false);
+		
 	}
 
 	/** @param id - A Tile identifier.

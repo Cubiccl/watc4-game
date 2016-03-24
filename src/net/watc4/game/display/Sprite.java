@@ -46,6 +46,13 @@ public enum Sprite
 	TILE_GROUND("res/textures/tileset.png", 32, 0, 32),
 	TILE_WALL("res/textures/tileset.png", 64, 0, 32),
 	TILE_GLASS("res/textures/tileset.png", 96, 0, 32),
+	TILE_LADDER_BASE("res/textures/tileset.png", 128, 0, 32),
+	TILE_LADDER_TOP("res/textures/tileset.png", 160, 0, 32),
+	TILE_LADDER_BACK("res/textures/tileset.png", 192, 0, 32),
+	TILE_MIRROR_RIGHT("res/textures/tileset.png", 224, 0, 32),
+	TILE_MIRROR_BACK("res/textures/tileset.png", 256, 0, 32),
+	TILE_MIRROR_LEFT("res/textures/tileset.png", 288, 0, 32),
+	TILE_MIRROR_TOP("res/textures/tileset.png", 0, 32, 32),
 	UNKNOWN("res/textures/unknown.png", 0, 0, 32);
 
 	/** The actual Image. */
