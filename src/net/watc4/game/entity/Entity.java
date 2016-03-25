@@ -24,7 +24,7 @@ public abstract class Entity implements GameObject
 	private float xPos, yPos;
 	/** Its x and y speed. */
 	protected float xSpeed, ySpeed;
-	private Hitbox hitbox;
+	protected Hitbox hitbox;
 
 	/** Creates a new Entity.
 	 * 

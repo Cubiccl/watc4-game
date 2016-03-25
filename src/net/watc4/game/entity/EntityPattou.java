@@ -55,14 +55,22 @@ public class EntityPattou extends EntityPlayer
 	{
 		super.update();
 		this.manageInput();
-		this.onGround = this.onGround();
+		this.onGround = this.getY() >= 200;
 	}
 
-	/** Kill Pattou */
+	/** Kill Pattou and lumi
+	 * 	- reset Pattou Spawn and lumi Spawn
+	 *  - reset Hitbox at Pattou Spawn and Lumi Spawn */
 	public void kill()
 	{
-		this.setPosition(GameState.getInstance().getMap().pattouSpawnX, GameState.getInstance().getMap().pattouSpawnY);
+		GameState gameState = new GameState();
+		Map map = new GameState().getMap();
+
+		gameState.entityLumi.setPosition(map.lumiSpawnX, map.lumiSpawnY);
+		gameState.entityLumi.hitbox.setPosition(map.lumiSpawnX, map.lumiSpawnY);
+		this.setPosition(map.pattouSpawnX, map.pattouSpawnY);
+		this.hitbox.setPosition(map.pattouSpawnX, map.pattouSpawnY);
+
 	}
 
-	
 }
