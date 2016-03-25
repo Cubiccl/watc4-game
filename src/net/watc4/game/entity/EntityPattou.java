@@ -26,7 +26,7 @@ public class EntityPattou extends EntityPlayer
 	{
 		super(xPos, yPos, game);
 		this.jumpTime = 1;
-		this.onGround = true;
+		this.onGround =true;
 		this.setRenderer(new PattouRenderer(this));
 	}
 
@@ -55,7 +55,7 @@ public class EntityPattou extends EntityPlayer
 	{
 		super.update();
 		this.manageInput();
-		this.onGround = this.onGround();
+		this.onGround =this.onGround();
 	}
 
 	/** Kill Pattou */
