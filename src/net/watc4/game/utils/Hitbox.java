@@ -1,8 +1,7 @@
 package net.watc4.game.utils;
 
-import net.watc4.game.map.Map;
-import net.watc4.game.map.Tile;
 import net.watc4.game.states.GameState;
+import static net.watc4.game.map.Map.TILESIZE;
 
 /** */
 public class Hitbox
@@ -35,8 +34,7 @@ public class Hitbox
 	 * @return true if it collide, false if not */
 	public boolean topLeftCornerContact()
 	{
-		GameState gamestate = new GameState();
-		final int TILESIZE = gamestate.getMap().TILESIZE;
+		GameState gamestate = GameState.getInstance();
 		float halfWidth = this.width / 2, halfHeight = this.height / 2;
 		return gamestate.getMap().getTileAt((int) (this.x - halfWidth) / TILESIZE, (int) (this.y - halfHeight) / TILESIZE).isSolid();
 	}
@@ -46,8 +44,7 @@ public class Hitbox
 	 * @return true if it collide, false if not */
 	public boolean topRightCornerContact()
 	{
-		GameState gamestate = new GameState();
-		final int TILESIZE = gamestate.getMap().TILESIZE;
+		GameState gamestate = GameState.getInstance();
 		float halfWidth = this.width / 2, halfHeight = this.height / 2;
 		return gamestate.getMap().getTileAt((int) (this.x + halfWidth) / TILESIZE, (int) (this.y - halfHeight) / TILESIZE).isSolid();
 	}
@@ -57,8 +54,7 @@ public class Hitbox
 	 * @return true if it collide, false if not */
 	public boolean botLeftCornerContact()
 	{
-		GameState gamestate = new GameState();
-		final int TILESIZE = gamestate.getMap().TILESIZE;
+		GameState gamestate = GameState.getInstance();
 		float halfWidth = this.width / 2, halfHeight = this.height / 2;
 		return gamestate.getMap().getTileAt((int) (this.x - halfWidth) / TILESIZE, (int) (this.y + halfHeight) / TILESIZE).isSolid();
 	}
@@ -68,8 +64,7 @@ public class Hitbox
 	 * @return true if it collide, false if not */
 	public boolean botRightCornerContact()
 	{
-		GameState gamestate = new GameState();
-		final int TILESIZE = gamestate.getMap().TILESIZE;
+		GameState gamestate = GameState.getInstance();
 		float halfWidth = this.width / 2, halfHeight = this.height / 2;
 		return gamestate.getMap().getTileAt((int) (this.x + halfWidth) / TILESIZE, (int) (this.y + halfHeight) / TILESIZE).isSolid();
 	}
@@ -112,10 +107,9 @@ public class Hitbox
 	 * @return true if there's a colliding, false if not */
 	public boolean collidesWith(Hitbox hitbox)
 	{
-		return ((hitbox.x <= this.x && this.x <= hitbox.x + hitbox.width)
-				|| (hitbox.x <= this.x + this.width && this.x + this.width <= hitbox.x + hitbox.width))
-				&& ((hitbox.y <= this.y && this.y <= hitbox.y + hitbox.height)
-						|| (hitbox.y <= this.y + this.height && this.y + this.height <= hitbox.y + hitbox.height));
+		return ((hitbox.x <= this.x && this.x <= hitbox.x + hitbox.width) || (hitbox.x <= this.x + this.width && this.x + this.width <= hitbox.x + hitbox.width))
+				&& ((hitbox.y <= this.y && this.y <= hitbox.y + hitbox.height) || (hitbox.y <= this.y + this.height && this.y + this.height <= hitbox.y
+						+ hitbox.height));
 
 	}
 

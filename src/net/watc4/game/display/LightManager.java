@@ -99,7 +99,7 @@ public class LightManager implements GameObject
 		for (int i = 0; i < imagePixels.length; i++)
 		{
 			int color = imagePixels[i] & 0x00ffffff; // Mask preexisting alpha
-			int alpha = maskPixels[i] << 27; // Shift blue to alpha
+			int alpha = maskPixels[i] << 24; // Shift blue to alpha
 			imagePixels[i] = color | alpha;
 		}
 		image.setRGB(0, 0, width, height, imagePixels, 0, width);
