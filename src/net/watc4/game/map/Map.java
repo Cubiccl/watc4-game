@@ -4,6 +4,7 @@ import java.awt.Graphics;
 
 import net.watc4.game.GameObject;
 import net.watc4.game.display.LightManager;
+import net.watc4.game.entity.Entity;
 import net.watc4.game.utils.FileUtils;
 
 /** Represents the world the player evolves in. */
@@ -61,11 +62,30 @@ public class Map implements GameObject
 		lightManager = new LightManager(this);
 	}
 
+	/** @param entity - The Entity to test.
+	 * @param xPosition - Its x position.
+	 * @param yPosition - Its y position.
+	 * @return The coordinates of the Tile it collides with, if it does. null if it doesn't. */
+	public int[] detectCollision(Entity entity, float xPosition, float yPosition)
+	{
+		int tileXStart = (int) (xPosition / TILESIZE), tileYStart = (int) (yPosition / TILESIZE);
+		int tileXEnd = (int) ((xPosition + entity.getHitbox().getWidth() - 1) / TILESIZE + 1);
+		int tileYEnd = (int) ((yPosition + entity.getHitbox().getHeight() - 1) / TILESIZE + 1);
+		for (int x = tileXStart; x < tileXEnd; ++x)
+		{
+			for (int y = tileYStart; y < tileYEnd; ++y)
+				if (this.getTileAt(x, y).solid) return new int[]
+				{ x, y };
+		}
+		return null;
+	}
+
 	/** @param x - X position.
 	 * @param y - Y position.
 	 * @return The Tile at the given coordinates. */
 	public Tile getTileAt(int x, int y)
 	{
+		if (x < 0 || y < 0 || x >= this.tiles.length || y >= this.tiles[x].length) return TileRegistry.getTileFromId(2);
 		return TileRegistry.getTileFromId(this.tiles[x][y]);
 	}
 

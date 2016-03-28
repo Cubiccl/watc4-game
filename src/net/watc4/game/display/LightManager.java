@@ -164,8 +164,8 @@ public class LightManager implements GameObject
 		this.endPoints.clear();
 		double cos = 0;
 		float angle = 0;
-		float rp_x = GameState.getInstance().entityLumi.getX();
-		float rp_y = GameState.getInstance().entityLumi.getY();
+		float rp_x = GameState.getInstance().entityLumi.getX() + GameState.getInstance().entityLumi.getHitbox().getWidth() / 2;
+		float rp_y = GameState.getInstance().entityLumi.getY() + GameState.getInstance().entityLumi.getHitbox().getHeight() / 2;
 
 		// Get the angle
 		for (int i = 0; i < this.segments.size(); i++)
@@ -247,8 +247,8 @@ public class LightManager implements GameObject
 		this.shadows = new BufferedImage(this.width, this.height, BufferedImage.TYPE_INT_ARGB);
 		Graphics lightMapG = lightMap.getGraphics();
 		Graphics shadowsG = this.shadows.getGraphics();
-		int posX = floatToInt(GameState.getInstance().entityLumi.getX());
-		int posY = floatToInt(GameState.getInstance().entityLumi.getY());
+		int posX = floatToInt(GameState.getInstance().entityLumi.getX() + GameState.getInstance().entityLumi.getHitbox().getWidth() / 2);
+		int posY = floatToInt(GameState.getInstance().entityLumi.getY() + GameState.getInstance().entityLumi.getHitbox().getHeight() / 2);
 
 		lightMapG.setColor(Color.WHITE);
 		shadowsG.setColor(Color.BLACK);

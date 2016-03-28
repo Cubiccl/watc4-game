@@ -36,8 +36,7 @@ public class EntityRenderer implements GameObject
 	@Override
 	public void render(Graphics g)
 	{
-		g.drawImage(this.animation.getImage(), (int) this.entity.getX() - this.animation.getImage().getWidth() / 2, (int) this.entity.getY()
-				- this.animation.getImage().getHeight() / 2, null);
+		g.drawImage(this.animation.getImage(), (int) this.entity.getX(), (int) this.entity.getY(), null);
 	}
 
 	/** Changes the current Animation.

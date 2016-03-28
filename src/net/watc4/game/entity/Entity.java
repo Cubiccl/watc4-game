@@ -14,17 +14,21 @@ import net.watc4.game.utils.Hitbox;
 /** Represents a moving object in the world. i.e. A monster, a moving block, etc. */
 public abstract class Entity implements GameObject
 {
+	public static final float DEFAULT_SIZE = 32;
+
 	/** Reference to the GameState. */
 	protected final GameState game;
 	/** True if this Entity is affected by Gravity. False if it flies. */
 	protected boolean hasGravity;
+	protected Hitbox hitbox;
+	/** True if the Entity is standing on the Ground. */
+	protected boolean onGround;
 	/** Renders the Entity onto the screen. */
 	private EntityRenderer renderer;
-	/** Its x and y positions. */
+	/** Its x and y positions. Topleft of the Entity. */
 	private float xPos, yPos;
 	/** Its x and y speed. */
 	protected float xSpeed, ySpeed;
-	protected Hitbox hitbox;
 
 	/** Creates a new Entity.
 	 * 
@@ -41,33 +45,15 @@ public abstract class Entity implements GameObject
 		this.game = game;
 		game.registerEntity(this);
 		this.renderer = new EntityRenderer(this);
-		this.hitbox = new Hitbox(32, 32, this.xPos, this.yPos);
+		this.hitbox = new Hitbox(DEFAULT_SIZE, DEFAULT_SIZE, this.xPos, this.yPos);
 	}
 
 	/** Applies current speed and modifies it according to the game physics. */
 	private void applySpeed()
 	{
-		if (hitbox.leftContact() && this.xSpeed < 0)
-		{
-			this.xSpeed = 0;
-		} else if (hitbox.rightContact() && this.xSpeed > 0)
-		{
-			this.xSpeed = 0;
-		}
-
-		if (hitbox.topContact() && this.ySpeed < 0)
-		{
-			this.ySpeed = 0;
-		}
-
-		else if (hitbox.botContact() && this.ySpeed > 0)
-		{
-			this.ySpeed = 0;
-		}
-
-		this.xPos += this.xSpeed;
-		this.yPos += this.ySpeed;
+		this.testForCollisions();
 		this.hitbox.setPosition(this.xPos, this.yPos);
+
 		if (this.xSpeed > 0)
 		{
 			this.xSpeed -= DECELERATION;
@@ -78,9 +64,11 @@ public abstract class Entity implements GameObject
 			this.xSpeed += DECELERATION;
 			if (this.xSpeed > 0) this.xSpeed = 0;
 		}
+
 		if (this.hasGravity)
 		{
-			if (this.ySpeed < GameUtils.REAL_MAX_SPEED) this.ySpeed += GameUtils.GRAVITY;
+			this.ySpeed += GameUtils.GRAVITY;
+			if (this.ySpeed > GameUtils.REAL_MAX_SPEED) this.ySpeed = GameUtils.REAL_MAX_SPEED;
 		} else
 		{
 			if (this.ySpeed > 0)
@@ -94,6 +82,12 @@ public abstract class Entity implements GameObject
 				if (this.ySpeed > 0) this.ySpeed = 0;
 			}
 		}
+	}
+
+	/** @return The Hitbox of this Entity. */
+	public Hitbox getHitbox()
+	{
+		return this.hitbox;
 	}
 
 	/** @return The X position of this Entity. */
@@ -129,7 +123,13 @@ public abstract class Entity implements GameObject
 	/** @return true if the entity is on the ground, false if not */
 	public boolean onGround()
 	{
-		return this.hitbox.botContact();
+		return this.onGround;
+	}
+
+	@Override
+	public void render(Graphics g)
+	{
+		this.renderer.render(g);
 	}
 
 	public void setPosition(int x, int y)
@@ -141,12 +141,6 @@ public abstract class Entity implements GameObject
 
 	}
 
-	@Override
-	public void render(Graphics g)
-	{
-		this.renderer.render(g);
-	}
-
 	/** Changes this Entity's renderer.
 	 * 
 	 * @param renderer - The new Renderer to use. */
@@ -154,6 +148,32 @@ public abstract class Entity implements GameObject
 	{
 		this.renderer.setAnimation(null);
 		this.renderer = renderer;
+	}
+
+	/** Tests if the Entity collides with a Tile and applies the collision. */
+	private void testForCollisions()
+	{
+		float newX = this.xPos + this.xSpeed;
+		float newY = this.yPos + this.ySpeed;
+
+		int[] collision = GameState.getInstance().getMap().detectCollision(this, newX, this.yPos);
+		if (collision != null)
+		{
+			if (this.xSpeed > 0) this.xPos = collision[0] * Map.TILESIZE - this.getHitbox().getWidth();
+			else if (this.xSpeed < 0) this.xPos = (collision[0] + 1) * Map.TILESIZE;
+			this.xSpeed = 0;
+		} else this.xPos = newX;
+
+		collision = GameState.getInstance().getMap().detectCollision(this, this.xPos, newY);
+		if (collision != null)
+		{
+			if (this.ySpeed > 0)
+			{
+				this.yPos = collision[1] * Map.TILESIZE - this.getHitbox().getHeight();
+				this.onGround = true;
+			} else if (this.ySpeed < 0) this.yPos = (collision[1] + 1) * Map.TILESIZE;
+			this.ySpeed = 0;
+		} else this.yPos = newY;
 	}
 
 	@Override

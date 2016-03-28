@@ -36,7 +36,12 @@ public class PattouRenderer extends EntityRenderer
 		boolean isFalling = this.entity.getYSpeed() > 0;
 		BufferedImage image = this.animation.getImage();
 
-		if (isJumping)
+		if (this.entity.onGround())
+		{
+			if (isRight) image = this.walkingRight.getImage();
+			else if (this.entity.getXSpeed() < 0) image = this.walkingLeft.getImage();
+			else if (this.wasLeft) image = this.idleLeft.getImage();
+		} else if (isJumping)
 		{
 			if (isRight || !this.wasLeft) image = Sprite.PATTOU_JUMPING_RIGHT.getImage();
 			else image = Sprite.PATTOU_JUMPING_LEFT.getImage();
@@ -44,11 +49,9 @@ public class PattouRenderer extends EntityRenderer
 		{
 			if (isRight || !this.wasLeft) image = Sprite.PATTOU_FALLING_RIGHT.getImage();
 			else image = Sprite.PATTOU_FALLING_LEFT.getImage();
-		} else if (isRight) image = this.walkingRight.getImage();
-		else if (this.entity.getXSpeed() < 0) image = this.walkingLeft.getImage();
-		else if (this.wasLeft) image = this.idleLeft.getImage();
+		}
 
-		g.drawImage(image, (int) this.entity.getX() - image.getWidth() / 2, (int) this.entity.getY() - image.getHeight() / 2, null);
+		g.drawImage(image, (int) this.entity.getX() - 5, (int) this.entity.getY(), null);
 
 		this.wasLeft = (this.wasLeft && !isRight) || this.entity.getXSpeed() < 0;
 	}

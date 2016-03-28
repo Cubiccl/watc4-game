@@ -19,48 +19,16 @@ public class EntityPattou extends EntityPlayer
 	private boolean isJumping;
 	/** The time it has been jumping. */
 	private int jumpTime;
-	/** True if it is standing on the ground. False if in the air. */
-	private boolean onGround;
 
-	public EntityPattou(int xPos, int yPos, GameState game)
+	public EntityPattou(float xPos, float yPos, GameState game)
 	{
 		super(xPos, yPos, game);
 		this.jumpTime = 1;
-		this.onGround =true;
 		this.setRenderer(new PattouRenderer(this));
+		this.hitbox.setSize(20, 31);
 	}
 
-	/** Checks for movement input and applies it. */
-	private void manageInput()
-	{
-		boolean jump = Main.isKeyPressed(GameUtils.PATTOU_JUMP);
-		if (this.onGround && !jump) this.canJump = true;
-		if (this.canJump && jump) this.isJumping = true;
-		if (!jump) this.isJumping = false;
-		if (this.isJumping && jump)
-		{
-			if (this.ySpeed > -MAX_SPEED) this.ySpeed -= JUMP_SPEED / (this.jumpTime * 1.2);
-			this.jumpTime++;
-			this.canJump = false;
-		}
-		if (this.onGround) this.jumpTime = 1;
-		if (this.ySpeed > 0) this.isJumping = false;
-		if (Main.isKeyPressed(GameUtils.PATTOU_LEFT) && this.xSpeed > -MAX_SPEED) this.xSpeed -= ACCELERATION;
-		if (Main.isKeyPressed(GameUtils.PATTOU_RIGHT) && this.xSpeed < MAX_SPEED) this.xSpeed += ACCELERATION;
-		if (this.onGround && this.ySpeed > 0) this.ySpeed = 0;
-	}
-
-	@Override
-	public void update()
-	{
-		super.update();
-		this.manageInput();
-		this.onGround =this.onGround();
-	}
-
-	/** Kill Pattou and lumi
-	 * 	- reset Pattou Spawn and lumi Spawn
-	 *  - reset Hitbox at Pattou Spawn and Lumi Spawn */
+	/** Kill Pattou and lumi - reset Pattou Spawn and lumi Spawn - reset Hitbox at Pattou Spawn and Lumi Spawn */
 	public void kill()
 	{
 		GameState gameState = new GameState();
@@ -71,6 +39,43 @@ public class EntityPattou extends EntityPlayer
 		this.setPosition(map.pattouSpawnX, map.pattouSpawnY);
 		this.hitbox.setPosition(map.pattouSpawnX, map.pattouSpawnY);
 
+	}
+
+	/** Checks for movement input and applies it. */
+	private void manageInput()
+	{
+		boolean jump = Main.isKeyPressed(GameUtils.PATTOU_JUMP);
+		if (this.ySpeed >= 0 || this.onGround())
+		{
+			this.jumpTime = 0;
+			this.isJumping = false;
+		}
+		if (Main.isKeyPressed(GameUtils.PATTOU_LEFT)) this.xSpeed -= ACCELERATION;
+		if (Main.isKeyPressed(GameUtils.PATTOU_RIGHT)) this.xSpeed += ACCELERATION;
+		if (this.xSpeed > MAX_SPEED) this.xSpeed = MAX_SPEED;
+		if (this.xSpeed < -MAX_SPEED) this.xSpeed = -MAX_SPEED;
+
+		if (jump && this.canJump)
+		{
+			this.isJumping = true;
+			this.canJump = false;
+			this.onGround = false;
+		}
+		if (jump && this.isJumping)
+		{
+			this.ySpeed -= JUMP_SPEED / this.jumpTime;
+			if (this.ySpeed < -MAX_SPEED) this.ySpeed = -MAX_SPEED;
+			++this.jumpTime;
+		}
+		if (!jump && this.onGround) this.canJump = true;
+	}
+
+	@Override
+	public void update()
+	{
+		super.update();
+		this.manageInput();
+		this.onGround = this.onGround();
 	}
 
 }
