@@ -18,6 +18,9 @@ public final class GameUtils
 
 	/** The current Frames Per Second. */
 	public static int currentFPS = 60;
+	/** The current Updates Per Second. */
+	public static int currentUPS = 20;
+
 	/** Lumi's Controls:
 	 * <ul>
 	 * <li>UP : Z</li>

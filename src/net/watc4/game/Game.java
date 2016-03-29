@@ -27,13 +27,14 @@ public class Game implements Runnable
 	/** Displays the <code>Game</code> onto the {@link Window}. */
 	private void render()
 	{
+		Main.getAnimationManager().update();
 		BufferStrategy bufferStrategy = Main.getCanvas().getBufferStrategy();
 		Graphics g = bufferStrategy.getDrawGraphics();
 
 		g.clearRect(0, 0, Main.getCanvas().getWidth(), Main.getCanvas().getHeight());
 		// Render here
 		this.state.render(g);
-		g.drawString("Current FPS : " + GameUtils.currentFPS, 0, g.getFont().getSize());
+		g.drawString("FPS=" + GameUtils.currentFPS + ", UPS=" + GameUtils.currentUPS, 0, g.getFont().getSize());
 
 		bufferStrategy.show();
 		g.dispose();
@@ -43,40 +44,52 @@ public class Game implements Runnable
 	public void run()
 	{
 		// Preparing FPS handling
-		int fps = 60, ticks = 0;
-		double timePerTick = 1000000000 / fps, delta = 0;
-		long now, lastTime = System.nanoTime(), timer = 0;
+		long startTime = System.nanoTime(), currentTime = startTime, timer = 0;
+		int fps = 0, ups = 0;
+		double framesTime = 0, updatesTime = 0;
+		final int targetFPS = 60, targetUPS = 60;
+		double timePerFrame = 1000000000 / targetFPS, timePerUpdate = 1000000000 / targetUPS;
 		this.state = GameState.getInstance();
 
 		this.isRunning = true;
 		while (this.isRunning)
 		{
 			// Calculate elapsed time
-			now = System.nanoTime();
-			delta += (now - lastTime) / timePerTick;
-			timer += now - lastTime;
-			lastTime = now;
+			long elapsedTime = System.nanoTime() - currentTime;
+			currentTime += elapsedTime;
+			timer += elapsedTime;
+			framesTime += elapsedTime / timePerFrame;
+			updatesTime += elapsedTime / timePerUpdate;
 
-			// If a tick has passed, update and render
-			if (delta >= 1)
+			// If a tick has passed, update until there is no delayed update
+			while (updatesTime >= 1)
 			{
 				this.update();
+				ups += 1;
+				--updatesTime;
+			}
+
+			// If a frame passed, draw.
+			if (framesTime >= 1)
+			{
 				this.render();
-				delta--;
-				ticks++;
+				fps += 1;
+				--framesTime;
 			}
 
 			// If a second passed, update the FPS
 			if (timer >= 1000000000)
 			{
-				GameUtils.currentFPS = ticks;
-				ticks = 0;
+				GameUtils.currentFPS = fps;
+				GameUtils.currentUPS = ups;
+				fps = 0;
+				ups = 0;
 				timer = 0;
 			}
 
 			try
 			{
-				Thread.sleep(1);
+				Thread.sleep(5);
 			} catch (InterruptedException e)
 			{
 				e.printStackTrace();
@@ -96,7 +109,6 @@ public class Game implements Runnable
 	/** Manages the <code>Game</code> logic. */
 	private void update()
 	{
-		Main.getAnimationManager().update();
 		this.state.update();
 	}
 
