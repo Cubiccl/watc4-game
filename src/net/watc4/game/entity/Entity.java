@@ -173,7 +173,11 @@ public abstract class Entity implements GameObject
 				this.onGround = true;
 			} else if (this.ySpeed < 0) this.yPos = (collision[1] + 1) * Map.TILESIZE;
 			this.ySpeed = 0;
-		} else this.yPos = newY;
+		} else
+		{
+			this.yPos = newY;
+			if (this.ySpeed > GameUtils.GRAVITY) this.onGround = false;
+		}
 	}
 
 	@Override

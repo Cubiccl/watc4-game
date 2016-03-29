@@ -55,7 +55,8 @@ public class EntityPattou extends EntityPlayer
 		if (this.xSpeed > MAX_SPEED) this.xSpeed = MAX_SPEED;
 		if (this.xSpeed < -MAX_SPEED) this.xSpeed = -MAX_SPEED;
 
-		if (jump && this.canJump)
+		if (!jump && this.onGround()) this.canJump = true;
+		if (jump && this.canJump && this.onGround())
 		{
 			this.isJumping = true;
 			this.canJump = false;
@@ -67,7 +68,8 @@ public class EntityPattou extends EntityPlayer
 			if (this.ySpeed < -MAX_SPEED) this.ySpeed = -MAX_SPEED;
 			++this.jumpTime;
 		}
-		if (!jump && this.onGround) this.canJump = true;
+
+		if (jump) this.canJump = false;
 	}
 
 	@Override
