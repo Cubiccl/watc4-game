@@ -3,7 +3,6 @@ package net.watc4.game.states;
 import java.awt.Graphics;
 
 import net.watc4.game.GameObject;
-import net.watc4.game.entity.Entity;
 import net.watc4.game.entity.EntityLumi;
 import net.watc4.game.entity.EntityManager;
 import net.watc4.game.entity.EntityPattou;
@@ -30,7 +29,7 @@ public class GameState implements GameObject
 	/** The Light Player. */
 	public final EntityPlayer entityLumi;
 	/** Manages Entities in this Game. */
-	private EntityManager entityManager;
+	public final EntityManager entityManager;
 	/** The Shadow Player. */
 	public final EntityPlayer entityPattou;
 	/** The world they evolve into. */
@@ -52,27 +51,11 @@ public class GameState implements GameObject
 		return this.map;
 	}
 
-	/** Adds an Entity to the Game.
-	 * 
-	 * @param entity - The new Entity. */
-	public void registerEntity(Entity entity)
-	{
-		this.entityManager.registerEntity(entity);
-	}
-
 	@Override
 	public void render(Graphics g)
 	{
 		this.map.render(g);
 		this.entityManager.render(g);
-	}
-
-	/** Removes an Entity from the Game.
-	 * 
-	 * @param entity - The Entity to remove. */
-	public void unregisterEntity(Entity entity)
-	{
-		this.entityManager.unregisterEntity(entity);
 	}
 
 	@Override

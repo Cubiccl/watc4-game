@@ -43,7 +43,7 @@ public abstract class Entity implements GameObject
 		this.ySpeed = 0;
 		this.hasGravity = true;
 		this.game = game;
-		game.registerEntity(this);
+		this.game.entityManager.registerEntity(this);
 		this.renderer = new EntityRenderer(this);
 		this.hitbox = new Hitbox(DEFAULT_SIZE, DEFAULT_SIZE, this.xPos, this.yPos);
 	}
@@ -117,7 +117,7 @@ public abstract class Entity implements GameObject
 	/** Destroys this Entity. */
 	public void kill()
 	{
-		this.game.unregisterEntity(this);
+		this.game.entityManager.unregisterEntity(this);
 	}
 
 	/** @return true if the entity is on the ground, false if not */
