@@ -38,7 +38,7 @@ public class Hitbox
 	{
 		GameState gamestate = GameState.getInstance();
 		float halfWidth = this.width / 2, halfHeight = this.height / 2;
-		return gamestate.getMap().getTileAt((int) (this.x - halfWidth) / TILESIZE, (int) (this.y + halfHeight) / TILESIZE).isSolid();
+		return gamestate.getMap().getTileAt((int) (this.x - halfWidth) / TILESIZE, (int) (this.y + halfHeight) / TILESIZE).isSolid;
 	}
 
 	/** Check if the bot right corner of the hitbox collide with a solid Tile
@@ -48,7 +48,7 @@ public class Hitbox
 	{
 		GameState gamestate = GameState.getInstance();
 		float halfWidth = this.width / 2, halfHeight = this.height / 2;
-		return gamestate.getMap().getTileAt((int) (this.x + halfWidth) / TILESIZE, (int) (this.y + halfHeight) / TILESIZE).isSolid();
+		return gamestate.getMap().getTileAt((int) (this.x + halfWidth) / TILESIZE, (int) (this.y + halfHeight) / TILESIZE).isSolid;
 	}
 
 	/** test if a hitbox put in argument collides with the hitbox
@@ -137,7 +137,7 @@ public class Hitbox
 	{
 		GameState gamestate = GameState.getInstance();
 		float halfWidth = this.width / 2, halfHeight = this.height / 2;
-		return gamestate.getMap().getTileAt((int) (this.x - halfWidth) / TILESIZE, (int) (this.y - halfHeight) / TILESIZE).isSolid();
+		return gamestate.getMap().getTileAt((int) (this.x - halfWidth) / TILESIZE, (int) (this.y - halfHeight) / TILESIZE).isSolid;
 	}
 
 	/** Check if the top right corner of the hitbox collide with a solid Tile
@@ -147,6 +147,6 @@ public class Hitbox
 	{
 		GameState gamestate = GameState.getInstance();
 		float halfWidth = this.width / 2, halfHeight = this.height / 2;
-		return gamestate.getMap().getTileAt((int) (this.x + halfWidth) / TILESIZE, (int) (this.y - halfHeight) / TILESIZE).isSolid();
+		return gamestate.getMap().getTileAt((int) (this.x + halfWidth) / TILESIZE, (int) (this.y - halfHeight) / TILESIZE).isSolid;
 	}
 }

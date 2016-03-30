@@ -31,7 +31,7 @@ public final class GameUtils
 	public static final int LUMI_UP = KeyEvent.VK_Z, LUMI_DOWN = KeyEvent.VK_S, LUMI_LEFT = KeyEvent.VK_Q, LUMI_RIGHT = KeyEvent.VK_D;
 
 	/** The name of the Game. */
-	public static final String NAME = "WATCH";
+	public static final String NAME = "WATC4";
 
 	/** Pattou's Controls:
 	 * <ul>

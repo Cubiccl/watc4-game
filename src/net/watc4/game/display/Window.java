@@ -10,12 +10,16 @@ import net.watc4.game.GameUtils;
 public class Window extends JFrame
 {
 	/** The Canvas used to draw the <code>Game</code>. */
-	private Canvas canvas;
+	public final Canvas canvas;
 
 	public Window()
 	{
 		super();
 		this.createFrame();
+
+		this.canvas = new Canvas();
+		this.add(this.canvas);
+		this.canvas.createBufferStrategy(2); // Allows to refresh the Canvas using the render method in Game.
 	}
 
 	/** Creates and sets up the Frame. */
@@ -27,16 +31,6 @@ public class Window extends JFrame
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-
-		this.canvas = new Canvas();
-		this.add(this.canvas);
-		this.canvas.createBufferStrategy(2); // Allows to refresh the Canvas using the render method in Game.
-	}
-
-	/** @return The {@link Canvas} used to draw the <code>Game</code>. */
-	public Canvas getCanvas()
-	{
-		return this.canvas;
 	}
 
 }

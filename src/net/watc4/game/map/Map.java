@@ -18,7 +18,6 @@ public class Map implements GameObject
 	public final LightManager lightManager;
 	/** Pattou's spawn point. */
 	public final int lumiSpawnX, lumiSpawnY;
-
 	/** Pattou's spawn point. */
 	public final int pattouSpawnX, pattouSpawnY;
 	/** List of Tiles. */
@@ -74,7 +73,7 @@ public class Map implements GameObject
 		for (int x = tileXStart; x < tileXEnd; ++x)
 		{
 			for (int y = tileYStart; y < tileYEnd; ++y)
-				if (this.getTileAt(x, y).solid) return new int[]
+				if (this.getTileAt(x, y).isSolid) return new int[]
 				{ x, y };
 		}
 		return null;
@@ -99,7 +98,7 @@ public class Map implements GameObject
 				g.drawImage(this.getTileAt(i, j).sprite.getImage(), i * TILESIZE, j * TILESIZE, null);
 			}
 		}
-		lightManager.render(g);
+		this.lightManager.render(g);
 	}
 
 	/** Sets the Tile at x, y to the input Tile's id.

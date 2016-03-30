@@ -17,7 +17,7 @@ public abstract class Entity implements GameObject
 	public static final float DEFAULT_SIZE = 32;
 
 	/** Reference to the GameState. */
-	protected final GameState game;
+	public final GameState game;
 	/** True if this Entity is affected by Gravity. False if it flies. */
 	protected boolean hasGravity;
 	protected Hitbox hitbox;

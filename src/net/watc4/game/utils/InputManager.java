@@ -26,8 +26,8 @@ public class InputManager implements KeyListener
 			this.pressedKeys[i] = false;
 		}
 
-		window.getCanvas().addKeyListener(this);
-		window.getCanvas().setFocusTraversalKeysEnabled(false);
+		window.canvas.addKeyListener(this);
+		window.canvas.setFocusTraversalKeysEnabled(false);
 
 	}
 

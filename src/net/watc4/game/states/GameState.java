@@ -33,7 +33,6 @@ public class GameState implements GameObject
 	private EntityManager entityManager;
 	/** The Shadow Player. */
 	public final EntityPlayer entityPattou;
-
 	/** The world they evolve into. */
 	private Map map;
 

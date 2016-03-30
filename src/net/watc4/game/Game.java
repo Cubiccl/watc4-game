@@ -1,39 +1,73 @@
 package net.watc4.game;
 
+import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 
+import net.watc4.game.display.AnimationManager;
 import net.watc4.game.display.Window;
+import net.watc4.game.map.TileRegistry;
 import net.watc4.game.states.GameState;
+import net.watc4.game.utils.InputManager;
 
 /** Main object. Contains a thread to run the game. */
 public class Game implements Runnable
 {
+	/** The instance of the Game. */
+	private static Game instance;
 
+	/** @return The instance of the <code>Game</code> itself. */
+	public static Game getGame()
+	{
+		return instance;
+	}
+
+	public static void main(String[] args)
+	{
+		AnimationManager.create();
+		TileRegistry.createTiles();
+		instance = new Game();
+	}
+
+	/** Manages keyboard inputs from the user. */
+	private InputManager inputManager;
 	/** True if the <code>Game</code> is running. */
 	private boolean isRunning;
 	private GameState state;
-
 	/** A Thread used to update & render the <code>Game</code>. */
 	private Thread thread;
+	/** The <code>Window</code> to display the <code>Game</code>. */
+	public final Window window;
 
 	public Game()
 	{
+		this.window = new Window();
 		this.isRunning = false;
+		this.inputManager = new InputManager(window);
 		this.thread = new Thread(this);
 		this.thread.start();
+	}
+
+	/** @param key - The ID of the key pressed.
+	 * @see KeyEvent#VK_UP
+	 * @return True if the key is being pressed. */
+	public boolean isKeyPressed(int key)
+	{
+		return this.inputManager.isKeyPressed(key);
 	}
 
 	/** Displays the <code>Game</code> onto the {@link Window}. */
 	private void render()
 	{
-		Main.getAnimationManager().update();
-		BufferStrategy bufferStrategy = Main.getCanvas().getBufferStrategy();
+		AnimationManager.update();
+		BufferStrategy bufferStrategy = this.window.canvas.getBufferStrategy();
 		Graphics g = bufferStrategy.getDrawGraphics();
 
-		g.clearRect(0, 0, Main.getCanvas().getWidth(), Main.getCanvas().getHeight());
+		g.clearRect(0, 0, this.window.canvas.getWidth(), this.window.canvas.getHeight());
 		// Render here
 		this.state.render(g);
+		g.setColor(Color.GRAY);
 		g.drawString("FPS=" + GameUtils.currentFPS + ", UPS=" + GameUtils.currentUPS, 0, g.getFont().getSize());
 
 		bufferStrategy.show();
@@ -97,7 +131,7 @@ public class Game implements Runnable
 		}
 
 		// When not running, exit the game.
-		Main.getWindow().dispose();
+		this.window.dispose();
 	}
 
 	/** Exits the game. */

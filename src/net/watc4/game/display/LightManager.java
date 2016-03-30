@@ -54,18 +54,18 @@ public class LightManager implements GameObject
 			// Add the horizontal ones
 			for (int x = 0; x < map.width - 1; x++)
 			{
-				if (map.getTileAt(x, y).isOpaque() && !map.getTileAt(x + 1, y).isOpaque()) this.segments.add(new float[]
+				if (map.getTileAt(x, y).isOpaque && !map.getTileAt(x + 1, y).isOpaque) this.segments.add(new float[]
 				{ (x + 1) * Map.TILESIZE, y * Map.TILESIZE, 0, Map.TILESIZE });
-				else if (!map.getTileAt(x, y).isOpaque() && map.getTileAt(x + 1, y).isOpaque()) this.segments.add(new float[]
+				else if (!map.getTileAt(x, y).isOpaque && map.getTileAt(x + 1, y).isOpaque) this.segments.add(new float[]
 				{ (x + 1) * Map.TILESIZE, (y + 1) * Map.TILESIZE, 0, -Map.TILESIZE });
 
 			}
 			// Add the vertical ones
 			for (int x = 0; x < map.width; x++)
 			{
-				if (map.getTileAt(x, y).isOpaque() && !map.getTileAt(x, y + 1).isOpaque()) this.segments.add(new float[]
+				if (map.getTileAt(x, y).isOpaque && !map.getTileAt(x, y + 1).isOpaque) this.segments.add(new float[]
 				{ (x + 1) * Map.TILESIZE, (y + 1) * Map.TILESIZE, -Map.TILESIZE, 0 });
-				else if (!map.getTileAt(x, y).isOpaque() && map.getTileAt(x, y + 1).isOpaque()) this.segments.add(new float[]
+				else if (!map.getTileAt(x, y).isOpaque && map.getTileAt(x, y + 1).isOpaque) this.segments.add(new float[]
 				{ x * Map.TILESIZE, (y + 1) * Map.TILESIZE, Map.TILESIZE, 0 });
 			}
 		}
@@ -73,9 +73,9 @@ public class LightManager implements GameObject
 		// Add the last vertical ones
 		for (int x = 0; x < map.width - 1; x++)
 		{
-			if (map.getTileAt(x, map.height - 1).isOpaque() && !map.getTileAt(x + 1, map.height - 1).isOpaque()) this.segments.add(new float[]
+			if (map.getTileAt(x, map.height - 1).isOpaque && !map.getTileAt(x + 1, map.height - 1).isOpaque) this.segments.add(new float[]
 			{ (x + 1) * Map.TILESIZE, (map.height - 1) * Map.TILESIZE, 0, Map.TILESIZE });
-			else if (!map.getTileAt(x, (map.height - 1)).isOpaque() && map.getTileAt(x + 1, (map.height - 1)).isOpaque()) this.segments.add(new float[]
+			else if (!map.getTileAt(x, (map.height - 1)).isOpaque && map.getTileAt(x + 1, (map.height - 1)).isOpaque) this.segments.add(new float[]
 			{ (x + 1) * Map.TILESIZE, ((map.height - 1) + 1) * Map.TILESIZE, 0, -Map.TILESIZE });
 
 		}

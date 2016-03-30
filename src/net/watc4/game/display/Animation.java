@@ -4,7 +4,6 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
 import net.watc4.game.GameObject;
-import net.watc4.game.Main;
 
 /** Used to display Sprites. Can contain several Sprites that will cycle over time. */
 public class Animation implements GameObject
@@ -42,7 +41,7 @@ public class Animation implements GameObject
 	/** Unregisters the Animation from the Animation Manager. Call when you stop using the Animation. */
 	public void dispose()
 	{
-		Main.getAnimationManager().unregisterAnimation(this);
+		AnimationManager.unregisterAnimation(this);
 	}
 
 	/** @return The current Image to display. */
@@ -64,7 +63,7 @@ public class Animation implements GameObject
 	/** Registers this Animation into the AnimationManager. */
 	public void register()
 	{
-		Main.getAnimationManager().registerAnimation(this);
+		AnimationManager.registerAnimation(this);
 	}
 
 	/** Do not use render(Graphics) on this <code>Animation</code>. Use getImage() and render with the Object using this <code>Animation</code>.
@@ -80,7 +79,7 @@ public class Animation implements GameObject
 	{
 		if (this.speed > 0)
 		{
-			this.tick++;
+			++this.tick;
 			if (this.tick >= this.speed) this.next();
 		}
 	}

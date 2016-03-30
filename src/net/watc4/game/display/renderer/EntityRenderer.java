@@ -13,7 +13,7 @@ public class EntityRenderer implements GameObject
 	/** The Animation used to draw. */
 	protected Animation animation;
 	/** The Entity to draw. */
-	protected Entity entity;
+	public final Entity entity;
 
 	/** Creates a Renderer with the default Unknown sprite.
 	 * 

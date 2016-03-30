@@ -2,8 +2,8 @@ package net.watc4.game.entity;
 
 import static net.watc4.game.GameUtils.ACCELERATION;
 import static net.watc4.game.GameUtils.MAX_SPEED;
+import net.watc4.game.Game;
 import net.watc4.game.GameUtils;
-import net.watc4.game.Main;
 import net.watc4.game.display.renderer.PattouRenderer;
 import net.watc4.game.map.Map;
 import net.watc4.game.states.GameState;
@@ -44,14 +44,14 @@ public class EntityPattou extends EntityPlayer
 	/** Checks for movement input and applies it. */
 	private void manageInput()
 	{
-		boolean jump = Main.isKeyPressed(GameUtils.PATTOU_JUMP);
+		boolean jump = Game.getGame().isKeyPressed(GameUtils.PATTOU_JUMP);
 		if (this.ySpeed >= 0 || this.onGround())
 		{
 			this.jumpTime = 0;
 			this.isJumping = false;
 		}
-		if (Main.isKeyPressed(GameUtils.PATTOU_LEFT)) this.xSpeed -= ACCELERATION;
-		if (Main.isKeyPressed(GameUtils.PATTOU_RIGHT)) this.xSpeed += ACCELERATION;
+		if (Game.getGame().isKeyPressed(GameUtils.PATTOU_LEFT)) this.xSpeed -= ACCELERATION;
+		if (Game.getGame().isKeyPressed(GameUtils.PATTOU_RIGHT)) this.xSpeed += ACCELERATION;
 		if (this.xSpeed > MAX_SPEED) this.xSpeed = MAX_SPEED;
 		if (this.xSpeed < -MAX_SPEED) this.xSpeed = -MAX_SPEED;
 

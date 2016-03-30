@@ -26,7 +26,7 @@ public class TileRegistry
 		new Tile(8, new Animation(Sprite.TILE_LADDER_TOP), false, false);
 		new Tile(9, new Animation(Sprite.TILE_LADDER_BASE), false, false);
 		new Tile(10, new Animation(Sprite.TILE_LADDER_BACK), false, false);
-		
+
 	}
 
 	/** @param id - A Tile identifier.

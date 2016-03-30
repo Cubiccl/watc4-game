@@ -7,12 +7,12 @@ public class Tile
 {
 	/** Its Identifier. Allows better memory usage. */
 	public final int id;
+	/** True if this Tile is opaque ; i.e. it stops the light. */
+	public final boolean isOpaque;
+	/** True if this Tile is solid ; i.e. it stops entities. */
+	public final boolean isSolid;
 	/** Its sprite. */
 	public final Animation sprite;
-
-	public final boolean solid;
-
-	public final boolean opaque;
 
 	/** Creates a new Tile.
 	 * 
@@ -22,20 +22,8 @@ public class Tile
 	{
 		this.id = id;
 		this.sprite = sprite;
-		this.solid = solid;
-		this.opaque = opaque;
+		this.isSolid = solid;
+		this.isOpaque = opaque;
 		TileRegistry.registerTile(this);
-	}
-
-	/** @return opaque attribute */
-	public boolean isOpaque()
-	{
-		return this.opaque;
-	}
-
-	/** @return solid attribute */
-	public boolean isSolid()
-	{
-		return this.solid;
 	}
 }

@@ -25,6 +25,14 @@ public class EntityManager implements GameObject
 		this.entities.add(entity);
 	}
 
+	@Override
+	public void render(Graphics g)
+	{
+		for (Entity entity : this.entities)
+			entity.render(g);
+
+	}
+
 	/** Removes a new Entity to track.
 	 * 
 	 * @param entity - The Entity to remove. */
@@ -34,20 +42,10 @@ public class EntityManager implements GameObject
 	}
 
 	@Override
-	public void render(Graphics g)
-	{
-		for (Entity entity : this.entities)
-			entity.render(g);
-
-	}
-
-	@Override
 	public void update()
 	{
 		for (Entity entity : this.entities)
 			entity.update();
 	}
-	
-	
 
 }
