@@ -198,10 +198,10 @@ public class LightManager implements GameObject
 					/ (Math.sqrt((vector.getPosition().getX() - lightPosition.getX()) * (vector.getPosition().getX() - lightPosition.getX())
 							+ (vector.getPosition().getY() - lightPosition.getY()) * (vector.getPosition().getY() - lightPosition.getY()))));
 			double angle = (vector.getPosition().getY() - lightPosition.getY() > 0) ? (float) Math.acos(cos) : (float) -Math.acos(cos);
-			Vector light = new Vector(lightPosition, new Point2D(Math.cos(angle), Math.sin(angle)));
-			endPoints.put(angle, light.intersect(vectorSet));
-			endPoints.put(angle + 0.00001, light.intersect(vectorSet));
-			endPoints.put(angle - 0.00001, light.intersect(vectorSet));
+			endPoints.put(angle - 0.00001, new Vector(lightPosition, new Point2D(Math.cos(angle - 0.00001), Math.sin(angle - 0.00001))).intersect(vectorSet));
+			endPoints.put(angle, new Vector(lightPosition, new Point2D(Math.cos(angle), Math.sin(angle))).intersect(vectorSet));
+			endPoints.put(angle + 0.00001, new Vector(lightPosition, new Point2D(Math.cos(angle + 0.00001), Math.sin(angle + 0.00001))).intersect(vectorSet));
+			
 		}
 		this.hasChanged = true;
 	}
@@ -211,7 +211,7 @@ public class LightManager implements GameObject
 	{
 		BufferedImage lightMap = new BufferedImage(this.width, this.height, BufferedImage.TYPE_INT_RGB);
 		this.shadows = new BufferedImage(this.width, this.height, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D lightMapG = (Graphics2D)lightMap.getGraphics();
+		Graphics2D lightMapG = (Graphics2D) lightMap.getGraphics();
 		Graphics shadowsG = this.shadows.getGraphics();
 
 		lightMapG.setColor(Color.WHITE);
@@ -234,7 +234,7 @@ public class LightManager implements GameObject
 		int[] triangleY = new int[stockTriangleY.size()];
 		triangleY = toIntArray(stockTriangleY);
 
-		lightMapG.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);		
+		lightMapG.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		lightMapG.fillPolygon(triangleX, triangleY, triangleX.length);
 
 		applyGrayscaleMaskToAlpha(this.shadows, lightMap);
