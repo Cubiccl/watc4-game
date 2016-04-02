@@ -1,26 +1,39 @@
 package net.watc4.game.display;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
+import com.sun.xml.internal.bind.v2.model.util.ArrayInfoUtil;
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
+
+import javafx.geometry.Point2D;
 import net.watc4.game.GameObject;
 import net.watc4.game.map.Map;
 import net.watc4.game.states.GameState;
+import net.watc4.game.utils.Vector;
 
 /** Calculates and displays shadows. */
 public class LightManager implements GameObject
 {
 	/** List of points to link */
-	private ArrayList<float[]> endPoints;
+	private TreeMap<Double, Point2D> endPoints;
 	/** True if the shadows have changed, thus the shadows Image should be updated. */
 	private boolean hasChanged;
 	/** Height, in pixel of the light manager */
 	private int height;
 	/** List of segments stopping light */
-	private ArrayList<float[]> segments;
+	private HashSet<Vector> vectorSet;
 	/** The shadows to draw. */
 	private BufferedImage shadows;
 	/** Width, in pixel of the light manager */
@@ -30,57 +43,53 @@ public class LightManager implements GameObject
 	{
 		this.width = map.width * Map.TILESIZE;
 		this.height = map.height * Map.TILESIZE;
-		this.segments = new ArrayList<>();
-		this.endPoints = new ArrayList<>();
-		// Add the border of the map
+		this.vectorSet = new HashSet<>((map.height * (2 * map.width + 1) + map.width) / 1, 3);
+		this.endPoints = new TreeMap<>();
+		// Add the externals borders of the map
 		for (int i = 0; i < map.width; i++)
 		{
-			this.segments.add(new float[]
-			{ 1 * i * Map.TILESIZE, 0, Map.TILESIZE, 0 });
-			this.segments.add(new float[]
-			{ (map.width * Map.TILESIZE) - (1 * i * Map.TILESIZE), map.height * Map.TILESIZE, -Map.TILESIZE, 0 });
+			this.vectorSet.add(new Vector(1 * i * Map.TILESIZE, 0, Map.TILESIZE, 0));
+			this.vectorSet.add(new Vector((map.width * Map.TILESIZE) - (1 * i * Map.TILESIZE), map.height * Map.TILESIZE, -Map.TILESIZE, 0));
 		}
 		for (int i = 0; i < map.height; i++)
 		{
-			this.segments.add(new float[]
-			{ 0, (map.height * Map.TILESIZE) - (1 * i * Map.TILESIZE), 0, -Map.TILESIZE });
-			this.segments.add(new float[]
-			{ map.width * Map.TILESIZE, 1 * i * Map.TILESIZE, 0, Map.TILESIZE });
+			this.vectorSet.add(new Vector(0, (map.height * Map.TILESIZE) - (1 * i * Map.TILESIZE), 0, -Map.TILESIZE));
+			this.vectorSet.add(new Vector(map.width * Map.TILESIZE, 1 * i * Map.TILESIZE, 0, Map.TILESIZE));
 		}
 
-		// Add borders
+		// Add vectors
 		for (int y = 0; y < map.height - 1; y++)
 		{
 			// Add the horizontal ones
 			for (int x = 0; x < map.width - 1; x++)
 			{
-				if (map.getTileAt(x, y).isOpaque && !map.getTileAt(x + 1, y).isOpaque) this.segments.add(new float[]
-				{ (x + 1) * Map.TILESIZE, y * Map.TILESIZE, 0, Map.TILESIZE });
-				else if (!map.getTileAt(x, y).isOpaque && map.getTileAt(x + 1, y).isOpaque) this.segments.add(new float[]
-				{ (x + 1) * Map.TILESIZE, (y + 1) * Map.TILESIZE, 0, -Map.TILESIZE });
+				if (map.getTileAt(x, y).isOpaque && !map.getTileAt(x + 1, y).isOpaque)
+					this.vectorSet.add(new Vector((x + 1) * Map.TILESIZE, y * Map.TILESIZE, 0, Map.TILESIZE));
+				else if (!map.getTileAt(x, y).isOpaque && map.getTileAt(x + 1, y).isOpaque)
+					this.vectorSet.add(new Vector((x + 1) * Map.TILESIZE, (y + 1) * Map.TILESIZE, 0, -Map.TILESIZE));
 
 			}
 			// Add the vertical ones
 			for (int x = 0; x < map.width; x++)
 			{
-				if (map.getTileAt(x, y).isOpaque && !map.getTileAt(x, y + 1).isOpaque) this.segments.add(new float[]
-				{ (x + 1) * Map.TILESIZE, (y + 1) * Map.TILESIZE, -Map.TILESIZE, 0 });
-				else if (!map.getTileAt(x, y).isOpaque && map.getTileAt(x, y + 1).isOpaque) this.segments.add(new float[]
-				{ x * Map.TILESIZE, (y + 1) * Map.TILESIZE, Map.TILESIZE, 0 });
+				if (map.getTileAt(x, y).isOpaque && !map.getTileAt(x, y + 1).isOpaque)
+					this.vectorSet.add(new Vector((x + 1) * Map.TILESIZE, (y + 1) * Map.TILESIZE, -Map.TILESIZE, 0));
+				else if (!map.getTileAt(x, y).isOpaque && map.getTileAt(x, y + 1).isOpaque)
+					this.vectorSet.add(new Vector(x * Map.TILESIZE, (y + 1) * Map.TILESIZE, Map.TILESIZE, 0));
 			}
 		}
 
-		// Add the last vertical ones
+		// Add the last horizontal ones
 		for (int x = 0; x < map.width - 1; x++)
 		{
-			if (map.getTileAt(x, map.height - 1).isOpaque && !map.getTileAt(x + 1, map.height - 1).isOpaque) this.segments.add(new float[]
-			{ (x + 1) * Map.TILESIZE, (map.height - 1) * Map.TILESIZE, 0, Map.TILESIZE });
-			else if (!map.getTileAt(x, (map.height - 1)).isOpaque && map.getTileAt(x + 1, (map.height - 1)).isOpaque) this.segments.add(new float[]
-			{ (x + 1) * Map.TILESIZE, ((map.height - 1) + 1) * Map.TILESIZE, 0, -Map.TILESIZE });
+			if (map.getTileAt(x, map.height - 1).isOpaque && !map.getTileAt(x + 1, map.height - 1).isOpaque)
+				this.vectorSet.add(new Vector((x + 1) * Map.TILESIZE, (map.height - 1) * Map.TILESIZE, 0, Map.TILESIZE));
+			else if (!map.getTileAt(x, (map.height - 1)).isOpaque && map.getTileAt(x + 1, (map.height - 1)).isOpaque)
+				this.vectorSet.add(new Vector((x + 1) * Map.TILESIZE, ((map.height - 1) + 1) * Map.TILESIZE, 0, -Map.TILESIZE));
 
 		}
 
-		cleanSegments();
+		cleanVectorSet();
 
 	}
 
@@ -106,49 +115,53 @@ public class LightManager implements GameObject
 	}
 
 	/** Merges adjacent segments into single ones. */
-	private void cleanSegments()
+	private void cleanVectorSet()
 	{
-		ArrayList<float[]> segFind = new ArrayList<>();
-		boolean changed = true;
-		while (changed)
+		boolean done = false;
+		boolean manyVectorFound = false;
+		while (!done)
 		{
-			int i = 0;
-			changed = false;
-			while (i < this.segments.size())
+			Iterator<Vector> it = vectorSet.iterator();
+			done = true;
+			while (it.hasNext())
 			{
-				int index = 0;
-				for (int j = 0; j < this.segments.size(); j++)
+				Vector targetVector = (Vector) it.next();
+				Vector vectorFound = null;
+				Iterator<Vector> jt = vectorSet.iterator();
+
+				while (jt.hasNext() && !manyVectorFound)
 				{
-					if (j != i) if (this.segments.get(i)[0] == this.segments.get(j)[0] + this.segments.get(j)[2]
-							&& this.segments.get(i)[1] == this.segments.get(j)[1] + this.segments.get(j)[3])
+					Vector arrowVector = (Vector) jt.next();
+					if (targetVector.getPosition().getX() == arrowVector.getPosition().getX() + arrowVector.getDirection().getX()
+							&& targetVector.getPosition().getY() == arrowVector.getPosition().getY() + arrowVector.getDirection().getY())
+						;
 					{
-						segFind.add(this.segments.get(j));
-						index = j;
+						if (vectorFound != null) manyVectorFound = true;
+						vectorFound = arrowVector;
 					}
 				}
-
-				if (segFind.size() == 1) if (this.segments.get(i)[2] * segFind.get(0)[3] - segFind.get(0)[2] * this.segments.get(i)[3] == 0)
+				if (vectorFound == null) manyVectorFound = true;
+				if (!manyVectorFound && targetVector.getDirection().getX() * vectorFound.getDirection().getY()
+						- targetVector.getDirection().getY() * vectorFound.getDirection().getX() == 0)
 				{
-					this.segments.get(index)[2] += this.segments.get(i)[2];
-					this.segments.get(index)[3] += this.segments.get(i)[3];
-					this.segments.remove(i);
-					changed = true;
+					vectorFound.setDirection(new Point2D(vectorFound.getDirection().getX() + targetVector.getDirection().getX(),
+							vectorFound.getDirection().getY() + targetVector.getDirection().getY()));
+					vectorSet.remove(targetVector);
+					done = false;
 
 				}
-				segFind.clear();
-				i++;
 			}
 		}
 	}
 
-	private int floatToInt(float f)
+	private int toInt(double f)
 	{
-		return (f - (float) ((int) f) < 0.5) ? (int) f : (int) f + 1;
+		return (f - (double) ((int) f) < 0.5) ? (int) f : (int) f + 1;
 	}
 
-	public ArrayList<float[]> getSegment()
+	public HashSet<Vector> getVectorSet()
 	{
-		return this.segments;
+		return this.vectorSet;
 	}
 
 	@Override
@@ -158,85 +171,38 @@ public class LightManager implements GameObject
 		g.drawImage(this.shadows, 0, 0, null);
 	}
 
+	private static int[] toIntArray(List<Integer> list)
+	{
+		int[] res = new int[list.size()];
+		for (int i = 0; i < res.length; i++)
+		{
+			res[i] = list.get(i);
+		}
+		return res;
+	}
+
 	@Override
 	public void update()
 	{
 		this.endPoints.clear();
-		double cos = 0;
-		float angle = 0;
-		float rp_x = GameState.getInstance().entityLumi.getX() + GameState.getInstance().entityLumi.getHitbox().getWidth() / 2;
-		float rp_y = GameState.getInstance().entityLumi.getY() + GameState.getInstance().entityLumi.getHitbox().getHeight() / 2;
 
-		// Get the angle
-		for (int i = 0; i < this.segments.size(); i++)
+		Point2D lightPosition = new Point2D(GameState.getInstance().entityLumi.getX() + GameState.getInstance().entityLumi.getHitbox().getWidth() / 2,
+				GameState.getInstance().entityLumi.getY() + GameState.getInstance().entityLumi.getHitbox().getHeight() / 2);
+
+		Iterator<Vector> it = vectorSet.iterator();
+		while (it.hasNext())
 		{
-			cos = ((this.segments.get(i)[0] - rp_x) / (Math.sqrt((double) ((this.segments.get(i)[0] - rp_x) * (this.segments.get(i)[0] - rp_x) + (this.segments
-					.get(i)[1] - rp_y) * (this.segments.get(i)[1] - rp_y)))));
-			angle = (this.segments.get(i)[1] - rp_y > 0) ? (float) Math.acos(cos) : (float) -Math.acos(cos);
-			this.endPoints.add(new float[]
-			{ angle, -1, -1 });
-			this.endPoints.add(new float[]
-			{ (float) (angle + 0.00001), -1, -1 });
-			this.endPoints.add(new float[]
-			{ (float) (angle - 0.00001), -1, -1 });
+			Vector vector = (Vector) it.next();
+
+			double cos = ((vector.getPosition().getX() - lightPosition.getX())
+					/ (Math.sqrt((vector.getPosition().getX() - lightPosition.getX()) * (vector.getPosition().getX() - lightPosition.getX())
+							+ (vector.getPosition().getY() - lightPosition.getY()) * (vector.getPosition().getY() - lightPosition.getY()))));
+			double angle = (vector.getPosition().getY() - lightPosition.getY() > 0) ? (float) Math.acos(cos) : (float) -Math.acos(cos);
+			Vector light = new Vector(lightPosition, new Point2D(Math.cos(angle), Math.sin(angle)));
+			endPoints.put(angle, light.intersect(vectorSet));
+			endPoints.put(angle + 0.00001, light.intersect(vectorSet));
+			endPoints.put(angle - 0.00001, light.intersect(vectorSet));
 		}
-
-		// Sort the angle
-		try
-		{
-			this.endPoints.sort(new Comparator<float[]>()
-			{
-				@Override
-				public int compare(float[] o1, float[] o2)
-				{
-					if (o1.length == 0) return 1;
-					if (o2.length == 0) return -1;
-					if (o1[0] < o2[0]) return -1;
-					if (o1[0] >= o2[0]) return 1;
-					return 0;
-				}
-			});
-		} catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-
-		// Get all the end points
-		float cartesianProd;
-		float ts, tr, tempTr;
-		float rd_x, rd_y;
-		float sp_x, sp_y, sd_x, sd_y;
-
-		for (int i = 0; i < this.endPoints.size(); i++)
-		{
-			rd_x = (float) Math.cos(this.endPoints.get(i)[0]);
-			rd_y = (float) Math.sin(this.endPoints.get(i)[0]);
-			tr = Float.MAX_VALUE;
-			for (int j = 0; j < segments.size(); j++)
-			{
-				sp_x = this.segments.get(j)[0];
-				sp_y = this.segments.get(j)[1];
-				sd_x = this.segments.get(j)[2];
-				sd_y = this.segments.get(j)[3];
-				cartesianProd = (float) ((sd_x * rd_y) - (sd_y * rd_x));
-
-				if (cartesianProd != 0)
-				{
-					ts = (rd_x * (sp_y - rp_y) + rd_y * (rp_x - sp_x)) / cartesianProd;
-					if (ts >= 0 && ts <= 1)
-					{
-						tempTr = (sp_x + sd_x * ts - rp_x) / rd_x;
-						if (tempTr > 0 && tempTr < tr)
-
-						tr = tempTr;
-
-					}
-				}
-			}
-			this.endPoints.get(i)[1] = rp_x + tr * rd_x;
-			this.endPoints.get(i)[2] = rp_y + tr * rd_y;
-		}
-
 		this.hasChanged = true;
 	}
 
@@ -245,10 +211,8 @@ public class LightManager implements GameObject
 	{
 		BufferedImage lightMap = new BufferedImage(this.width, this.height, BufferedImage.TYPE_INT_RGB);
 		this.shadows = new BufferedImage(this.width, this.height, BufferedImage.TYPE_INT_ARGB);
-		Graphics lightMapG = lightMap.getGraphics();
+		Graphics2D lightMapG = (Graphics2D)lightMap.getGraphics();
 		Graphics shadowsG = this.shadows.getGraphics();
-		int posX = floatToInt(GameState.getInstance().entityLumi.getX() + GameState.getInstance().entityLumi.getHitbox().getWidth() / 2);
-		int posY = floatToInt(GameState.getInstance().entityLumi.getY() + GameState.getInstance().entityLumi.getHitbox().getHeight() / 2);
 
 		lightMapG.setColor(Color.WHITE);
 		shadowsG.setColor(Color.BLACK);
@@ -256,14 +220,23 @@ public class LightManager implements GameObject
 		shadowsG.fillRect(0, 0, this.width, this.height);
 
 		lightMapG.setColor(Color.BLACK);
-		for (int i = 0; i < this.endPoints.size(); i++)
+
+		List<Integer> stockTriangleX = new ArrayList<Integer>();
+		List<Integer> stockTriangleY = new ArrayList<Integer>();
+
+		for (Entry<Double, Point2D> entry : endPoints.entrySet())
 		{
-			int[] baseTriangleX =
-			{ posX, floatToInt(this.endPoints.get(i % this.endPoints.size())[1]), floatToInt(this.endPoints.get((i + 1) % this.endPoints.size())[1]) };
-			int[] baseTriangleY =
-			{ posY, floatToInt(this.endPoints.get(i % this.endPoints.size())[2]), floatToInt(this.endPoints.get((i + 1) % this.endPoints.size())[2]) };
-			lightMapG.fillPolygon(baseTriangleX, baseTriangleY, 3);
+			stockTriangleX.add(toInt(entry.getValue().getX()));
+			stockTriangleY.add(toInt(entry.getValue().getY()));
 		}
+		int[] triangleX = new int[stockTriangleX.size()];
+		triangleX = toIntArray(stockTriangleX);
+		int[] triangleY = new int[stockTriangleY.size()];
+		triangleY = toIntArray(stockTriangleY);
+
+		lightMapG.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);		
+		lightMapG.fillPolygon(triangleX, triangleY, triangleX.length);
+
 		applyGrayscaleMaskToAlpha(this.shadows, lightMap);
 		this.hasChanged = false;
 	}
