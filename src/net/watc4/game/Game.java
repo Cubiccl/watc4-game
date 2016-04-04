@@ -6,9 +6,11 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 
 import net.watc4.game.display.AnimationManager;
+import net.watc4.game.display.TextRenderer;
 import net.watc4.game.display.Window;
 import net.watc4.game.map.TileRegistry;
-import net.watc4.game.states.GameState;
+import net.watc4.game.states.State;
+import net.watc4.game.states.menu.MainMenuState;
 import net.watc4.game.utils.InputManager;
 
 /** Main object. Contains a thread to run the game. */
@@ -34,7 +36,8 @@ public class Game implements Runnable
 	private InputManager inputManager;
 	/** True if the <code>Game</code> is running. */
 	private boolean isRunning;
-	private GameState state;
+	/** The current State of the Game. */
+	private State state;
 	/** A Thread used to update & render the <code>Game</code>. */
 	private Thread thread;
 	/** The <code>Window</code> to display the <code>Game</code>. */
@@ -47,6 +50,12 @@ public class Game implements Runnable
 		this.inputManager = new InputManager(window);
 		this.thread = new Thread(this);
 		this.thread.start();
+	}
+
+	/** @return The current State of the Game. */
+	public State getCurrentState()
+	{
+		return this.state;
 	}
 
 	/** @param key - The ID of the key pressed.
@@ -68,7 +77,8 @@ public class Game implements Runnable
 		// Render here
 		this.state.render(g);
 		g.setColor(Color.GRAY);
-		g.drawString("FPS=" + GameUtils.currentFPS + ", UPS=" + GameUtils.currentUPS, 0, g.getFont().getSize());
+		TextRenderer.setFontSize(15);
+		TextRenderer.drawString(g, "FPS=" + GameUtils.currentFPS + ", UPS=" + GameUtils.currentUPS, 0, 0);
 
 		bufferStrategy.show();
 		g.dispose();
@@ -83,7 +93,7 @@ public class Game implements Runnable
 		double framesTime = 0, updatesTime = 0;
 		final int targetFPS = 60, targetUPS = 60;
 		double timePerFrame = 1000000000 / targetFPS, timePerUpdate = 1000000000 / targetUPS;
-		this.state = GameState.getInstance();
+		this.state = new MainMenuState();
 
 		this.isRunning = true;
 		while (this.isRunning)
@@ -132,6 +142,14 @@ public class Game implements Runnable
 
 		// When not running, exit the game.
 		this.window.dispose();
+	}
+
+	/** Changes the current State of the Game.
+	 * 
+	 * @param state - The new State to apply. */
+	public void setCurrentState(State state)
+	{
+		this.state = state;
 	}
 
 	/** Exits the game. */

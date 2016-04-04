@@ -2,7 +2,6 @@ package net.watc4.game.states;
 
 import java.awt.Graphics;
 
-import net.watc4.game.GameObject;
 import net.watc4.game.entity.EntityLumi;
 import net.watc4.game.entity.EntityManager;
 import net.watc4.game.entity.EntityPattou;
@@ -10,7 +9,7 @@ import net.watc4.game.entity.EntityPlayer;
 import net.watc4.game.map.Map;
 
 /** Represents the main game engine. */
-public class GameState implements GameObject
+public class GameState extends State
 {
 	/** The instance of the Game State. */
 	private static GameState instance;

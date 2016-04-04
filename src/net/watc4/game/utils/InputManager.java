@@ -3,6 +3,7 @@ package net.watc4.game.utils;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import net.watc4.game.Game;
 import net.watc4.game.display.Window;
 
 /** Manages keyboard input. */
@@ -43,6 +44,7 @@ public class InputManager implements KeyListener
 	public void keyPressed(KeyEvent e)
 	{
 		this.pressedKeys[e.getKeyCode()] = true;
+		Game.getGame().getCurrentState().onKeyPressed(e.getKeyCode());
 	}
 
 	@Override
