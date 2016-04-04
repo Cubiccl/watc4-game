@@ -11,7 +11,7 @@ import net.watc4.game.states.GameState;
 /** Second player : must stay in the shadows and is affected by gravity. */
 public class EntityPattou extends EntityPlayer
 {
-	private static final float JUMP_SPEED = 10;
+	private static final float JUMP_SPEED = 6;
 
 	/** True if the character can jump. */
 	private boolean canJump;
