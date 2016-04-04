@@ -1,10 +1,12 @@
 package net.watc4.game.states.menu;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 import net.watc4.game.Game;
+import net.watc4.game.GameObject;
 import net.watc4.game.display.TextRenderer;
 import net.watc4.game.states.State;
 
@@ -12,6 +14,8 @@ import net.watc4.game.states.State;
 public abstract class MenuState extends State
 {
 
+	/** The background : drawn behind the menu. */
+	protected GameObject background;
 	/** Contains all the buttons of this Menu. */
 	private ArrayList<Button> buttons;
 	/** The id of the currently selected button. */
@@ -74,7 +78,10 @@ public abstract class MenuState extends State
 	@Override
 	public void render(Graphics g)
 	{
+		if (this.background != null) this.background.render(g);
+
 		TextRenderer.setFontSize(40);
+		g.setColor(Color.DARK_GRAY);
 		TextRenderer.drawStringCentered(g, this.title, Game.getGame().window.getWidth() / 2, Game.getGame().window.getHeight() / 4);
 		TextRenderer.setFontSize(30);
 

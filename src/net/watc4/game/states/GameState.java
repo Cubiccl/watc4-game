@@ -1,12 +1,15 @@
 package net.watc4.game.states;
 
 import java.awt.Graphics;
+import java.awt.event.KeyEvent;
 
+import net.watc4.game.Game;
 import net.watc4.game.entity.EntityLumi;
 import net.watc4.game.entity.EntityManager;
 import net.watc4.game.entity.EntityPattou;
 import net.watc4.game.entity.EntityPlayer;
 import net.watc4.game.map.Map;
+import net.watc4.game.states.menu.PauseMenuState;
 
 /** Represents the main game engine. */
 public class GameState extends State
@@ -48,6 +51,13 @@ public class GameState extends State
 	public Map getMap()
 	{
 		return this.map;
+	}
+
+	@Override
+	public void onKeyPressed(int keyID)
+	{
+		super.onKeyPressed(keyID);
+		if (keyID == KeyEvent.VK_ESCAPE) Game.getGame().setCurrentState(new PauseMenuState(this));
 	}
 
 	@Override
