@@ -74,7 +74,10 @@ public abstract class MenuState extends State
 	@Override
 	public void render(Graphics g)
 	{
+		TextRenderer.setFontSize(40);
+		TextRenderer.drawStringCentered(g, this.title, Game.getGame().window.getWidth() / 2, Game.getGame().window.getHeight() / 4);
 		TextRenderer.setFontSize(30);
+
 		for (Button button : this.buttons)
 			button.render(g);
 	}
