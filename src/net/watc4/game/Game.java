@@ -11,6 +11,7 @@ import net.watc4.game.display.Window;
 import net.watc4.game.map.TileRegistry;
 import net.watc4.game.states.State;
 import net.watc4.game.states.menu.MainMenuState;
+import net.watc4.game.utils.GameSettings;
 import net.watc4.game.utils.InputManager;
 
 /** Main object. Contains a thread to run the game. */
@@ -76,9 +77,14 @@ public class Game implements Runnable
 		g.clearRect(0, 0, this.window.canvas.getWidth(), this.window.canvas.getHeight());
 		// Render here
 		this.state.render(g);
-		g.setColor(Color.GRAY);
-		TextRenderer.setFontSize(15);
-		TextRenderer.drawString(g, "FPS=" + GameUtils.currentFPS + ", UPS=" + GameUtils.currentUPS, 0, 0);
+
+		if (GameSettings.debugMode)
+		{
+			g.setColor(Color.DARK_GRAY);
+			TextRenderer.setFontSize(15);
+			TextRenderer.drawString(g, "Debug mode (F1)", 0, 0);
+			TextRenderer.drawString(g, "FPS=" + GameUtils.currentFPS + ", UPS=" + GameUtils.currentUPS, 0, TextRenderer.getFontHeight());
+		}
 
 		bufferStrategy.show();
 		g.dispose();

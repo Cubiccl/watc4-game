@@ -7,6 +7,9 @@ import net.watc4.game.states.GameState;
 /** Entity controller by the user */
 public class EntityPlayer extends Entity
 {
+	/** The maximum health of the players. */
+	public static final int MAX_HEALTH = 20;
+
 	/** The health points of this Player. */
 	protected int health;
 
@@ -18,7 +21,13 @@ public class EntityPlayer extends Entity
 	public EntityPlayer(float xPos, float yPos, GameState game)
 	{
 		super(xPos, yPos, game);
-		this.health = 20;
+		this.health = MAX_HEALTH;
+	}
+
+	/** @return The health points of this Player. */
+	public int getHealth()
+	{
+		return this.health;
 	}
 
 	@Override

@@ -1,14 +1,18 @@
 package net.watc4.game.states;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 
 import net.watc4.game.Game;
+import net.watc4.game.display.TextRenderer;
 import net.watc4.game.entity.EntityLumi;
 import net.watc4.game.entity.EntityManager;
 import net.watc4.game.entity.EntityPattou;
+import net.watc4.game.entity.EntityPlayer;
 import net.watc4.game.map.Map;
 import net.watc4.game.states.menu.PauseMenuState;
+import net.watc4.game.utils.GameSettings;
 
 /** Represents the main game engine. */
 public class GameState extends State
@@ -64,6 +68,21 @@ public class GameState extends State
 	{
 		this.map.render(g);
 		this.entityManager.render(g);
+
+		if (GameSettings.debugMode)
+		{
+			g.setColor(Color.DARK_GRAY);
+			TextRenderer.setFontSize(15);
+			int size = TextRenderer.getFontHeight();
+			int y = 2;
+			TextRenderer.drawString(g, "Lumi: " + this.entityLumi.getX() + ", " + this.entityLumi.getY(), 0, y * size);
+			++y;
+			TextRenderer.drawString(g, "Pattou: " + this.entityPattou.getX() + ", " + this.entityPattou.getY(), 0, y * size);
+			++y;
+			TextRenderer.drawString(g, "Lumi HP: " + this.entityLumi.getHealth() + "/" + EntityPlayer.MAX_HEALTH, 0, y * size);
+			++y;
+			TextRenderer.drawString(g, "Pattou HP: " + this.entityPattou.getHealth() + "/" + EntityPlayer.MAX_HEALTH, 0, y * size);
+		}
 	}
 
 	@Override
