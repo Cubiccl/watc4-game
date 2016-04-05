@@ -7,6 +7,9 @@ import net.watc4.game.states.GameState;
 /** Entity controller by the user */
 public class EntityPlayer extends Entity
 {
+	/** The health points of this Player. */
+	protected int health;
+
 	/** Creates a new EntityPlayer
 	 * 
 	 * @param xPos - Its x position.
@@ -15,6 +18,7 @@ public class EntityPlayer extends Entity
 	public EntityPlayer(float xPos, float yPos, GameState game)
 	{
 		super(xPos, yPos, game);
+		this.health = 20;
 	}
 
 	@Override

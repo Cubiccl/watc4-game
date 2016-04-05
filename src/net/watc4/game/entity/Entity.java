@@ -138,7 +138,7 @@ public abstract class Entity implements GameObject
 		this.ySpeed = 0;
 		this.xPos = x;
 		this.yPos = y;
-
+		this.hitbox.setPosition(this.xPos, this.yPos);
 	}
 
 	/** Changes this Entity's renderer.

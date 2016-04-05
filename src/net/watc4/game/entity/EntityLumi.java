@@ -17,9 +17,18 @@ public class EntityLumi extends EntityPlayer
 		this.setRenderer(new LumiRenderer(this));
 	}
 
+	/** @param x - The X Coordinate.
+	 * @param y - The Y Coordinate.
+	 * @return True if the given coordinates are in the light emitted by Lumi. */
+	public boolean isInLight(float x, float y)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 	public void kill()
 	{
-		this.setPosition(GameState.getInstance().getMap().lumiSpawnX, GameState.getInstance().getMap().lumiSpawnY);
+		this.setPosition(this.game.getMap().lumiSpawnX, this.game.getMap().lumiSpawnY);
 	}
 
 	/** Checks for movement input and applies it. */
@@ -39,12 +48,19 @@ public class EntityLumi extends EntityPlayer
 	}
 
 	@Override
+	public void setPosition(int x, int y)
+	{
+		super.setPosition(x, y);
+		this.game.getMap().lightManager.update();
+	}
+
+	@Override
 	public void update()
 	{
 		super.update();
 		this.manageInput();
 
-		if (this.ySpeed != 0 || this.xSpeed != 0) GameState.getInstance().getMap().lightManager.update();
+		if (this.ySpeed != 0 || this.xSpeed != 0) this.game.getMap().lightManager.update();
 	}
 
 }

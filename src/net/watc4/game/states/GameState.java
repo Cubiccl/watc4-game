@@ -7,7 +7,6 @@ import net.watc4.game.Game;
 import net.watc4.game.entity.EntityLumi;
 import net.watc4.game.entity.EntityManager;
 import net.watc4.game.entity.EntityPattou;
-import net.watc4.game.entity.EntityPlayer;
 import net.watc4.game.map.Map;
 import net.watc4.game.states.menu.PauseMenuState;
 
@@ -29,11 +28,11 @@ public class GameState extends State
 	}
 
 	/** The Light Player. */
-	public final EntityPlayer entityLumi;
+	public final EntityLumi entityLumi;
 	/** Manages Entities in this Game. */
 	public final EntityManager entityManager;
 	/** The Shadow Player. */
-	public final EntityPlayer entityPattou;
+	public final EntityPattou entityPattou;
 	/** The world they evolve into. */
 	private Map map;
 
