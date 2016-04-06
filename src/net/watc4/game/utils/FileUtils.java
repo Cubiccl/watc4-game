@@ -48,4 +48,11 @@ public class FileUtils
 		return list.toArray(new String[0]);
 
 	}
+	
+	
+	/** Convert a double into an int */
+	public static int toInt(double f)
+	{
+		return (f - (double) ((int) f) < 0.5) ? (int) f : (int) f + 1;
+	}
 }

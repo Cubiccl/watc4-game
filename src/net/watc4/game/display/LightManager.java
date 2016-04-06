@@ -16,6 +16,7 @@ import javafx.geometry.Point2D;
 import net.watc4.game.GameObject;
 import net.watc4.game.map.Map;
 import net.watc4.game.states.GameState;
+import net.watc4.game.utils.FileUtils;
 import net.watc4.game.utils.Vector;
 
 /** Calculates and displays shadows. */
@@ -28,7 +29,7 @@ public class LightManager implements GameObject
 	/** Height, in pixel of the light manager */
 	private int height;
 	/** List of segments stopping light */
-	private HashSet<Vector> vectorSet;
+	private HashSet<Vector> wallSet;
 	/** The shadows to draw. */
 	private BufferedImage shadows;
 	/** Width, in pixel of the light manager */
@@ -38,54 +39,8 @@ public class LightManager implements GameObject
 	{
 		this.width = map.width * Map.TILESIZE;
 		this.height = map.height * Map.TILESIZE;
-		this.vectorSet = new HashSet<>((map.height * (2 * map.width + 1) + map.width) / 1, 3);
+		this.wallSet = map.getWallSet();
 		this.endPoints = new TreeMap<>();
-		// Add the externals borders of the map
-		for (int i = 0; i < map.width; i++)
-		{
-			this.vectorSet.add(new Vector(1 * i * Map.TILESIZE, 0, Map.TILESIZE, 0));
-			this.vectorSet.add(new Vector((map.width * Map.TILESIZE) - (1 * i * Map.TILESIZE), map.height * Map.TILESIZE, -Map.TILESIZE, 0));
-		}
-		for (int i = 0; i < map.height; i++)
-		{
-			this.vectorSet.add(new Vector(0, (map.height * Map.TILESIZE) - (1 * i * Map.TILESIZE), 0, -Map.TILESIZE));
-			this.vectorSet.add(new Vector(map.width * Map.TILESIZE, 1 * i * Map.TILESIZE, 0, Map.TILESIZE));
-		}
-
-		// Add vectors
-		for (int y = 0; y < map.height - 1; y++)
-		{
-			// Add the horizontal ones
-			for (int x = 0; x < map.width - 1; x++)
-			{
-				if (map.getTileAt(x, y).isOpaque && !map.getTileAt(x + 1, y).isOpaque)
-					this.vectorSet.add(new Vector((x + 1) * Map.TILESIZE, y * Map.TILESIZE, 0, Map.TILESIZE));
-				else if (!map.getTileAt(x, y).isOpaque && map.getTileAt(x + 1, y).isOpaque)
-					this.vectorSet.add(new Vector((x + 1) * Map.TILESIZE, (y + 1) * Map.TILESIZE, 0, -Map.TILESIZE));
-
-			}
-			// Add the vertical ones
-			for (int x = 0; x < map.width; x++)
-			{
-				if (map.getTileAt(x, y).isOpaque && !map.getTileAt(x, y + 1).isOpaque)
-					this.vectorSet.add(new Vector((x + 1) * Map.TILESIZE, (y + 1) * Map.TILESIZE, -Map.TILESIZE, 0));
-				else if (!map.getTileAt(x, y).isOpaque && map.getTileAt(x, y + 1).isOpaque)
-					this.vectorSet.add(new Vector(x * Map.TILESIZE, (y + 1) * Map.TILESIZE, Map.TILESIZE, 0));
-			}
-		}
-
-		// Add the last horizontal ones
-		for (int x = 0; x < map.width - 1; x++)
-		{
-			if (map.getTileAt(x, map.height - 1).isOpaque && !map.getTileAt(x + 1, map.height - 1).isOpaque)
-				this.vectorSet.add(new Vector((x + 1) * Map.TILESIZE, (map.height - 1) * Map.TILESIZE, 0, Map.TILESIZE));
-			else if (!map.getTileAt(x, (map.height - 1)).isOpaque && map.getTileAt(x + 1, (map.height - 1)).isOpaque)
-				this.vectorSet.add(new Vector((x + 1) * Map.TILESIZE, ((map.height - 1) + 1) * Map.TILESIZE, 0, -Map.TILESIZE));
-
-		}
-
-		cleanVectorSet();
-
 	}
 
 	/** Applies a mask onto an image.
@@ -109,54 +64,9 @@ public class LightManager implements GameObject
 		image.setRGB(0, 0, width, height, imagePixels, 0, width);
 	}
 
-	/** Merges adjacent segments into single ones. */
-	private void cleanVectorSet()
-	{
-		boolean done = false;
-		boolean manyVectorFound = false;
-		while (!done)
-		{
-			Iterator<Vector> it = vectorSet.iterator();
-			done = true;
-			while (it.hasNext())
-			{
-				Vector targetVector = (Vector) it.next();
-				Vector vectorFound = null;
-				Iterator<Vector> jt = vectorSet.iterator();
-
-				while (jt.hasNext() && !manyVectorFound)
-				{
-					Vector arrowVector = (Vector) jt.next();
-					if (targetVector.getPosition().getX() == arrowVector.getPosition().getX() + arrowVector.getDirection().getX()
-							&& targetVector.getPosition().getY() == arrowVector.getPosition().getY() + arrowVector.getDirection().getY())
-						;
-					{
-						if (vectorFound != null) manyVectorFound = true;
-						vectorFound = arrowVector;
-					}
-				}
-				if (vectorFound == null) manyVectorFound = true;
-				if (!manyVectorFound && targetVector.getDirection().getX() * vectorFound.getDirection().getY()
-						- targetVector.getDirection().getY() * vectorFound.getDirection().getX() == 0)
-				{
-					vectorFound.setDirection(new Point2D(vectorFound.getDirection().getX() + targetVector.getDirection().getX(),
-							vectorFound.getDirection().getY() + targetVector.getDirection().getY()));
-					vectorSet.remove(targetVector);
-					done = false;
-
-				}
-			}
-		}
-	}
-
-	private int toInt(double f)
-	{
-		return (f - (double) ((int) f) < 0.5) ? (int) f : (int) f + 1;
-	}
-
 	public HashSet<Vector> getVectorSet()
 	{
-		return this.vectorSet;
+		return this.wallSet;
 	}
 
 	@Override
@@ -184,7 +94,7 @@ public class LightManager implements GameObject
 		Point2D lightPosition = new Point2D(GameState.getInstance().entityLumi.getX() + GameState.getInstance().entityLumi.getHitbox().getWidth() / 2,
 				GameState.getInstance().entityLumi.getY() + GameState.getInstance().entityLumi.getHitbox().getHeight() / 2);
 
-		Iterator<Vector> it = vectorSet.iterator();
+		Iterator<Vector> it = wallSet.iterator();
 		while (it.hasNext())
 		{
 			Vector vector = (Vector) it.next();
@@ -193,9 +103,9 @@ public class LightManager implements GameObject
 					/ (Math.sqrt((vector.getPosition().getX() - lightPosition.getX()) * (vector.getPosition().getX() - lightPosition.getX())
 							+ (vector.getPosition().getY() - lightPosition.getY()) * (vector.getPosition().getY() - lightPosition.getY()))));
 			double angle = (vector.getPosition().getY() - lightPosition.getY() > 0) ? (float) Math.acos(cos) : (float) -Math.acos(cos);
-			endPoints.put(angle - 0.00001, new Vector(lightPosition, new Point2D(Math.cos(angle - 0.00001), Math.sin(angle - 0.00001))).intersect(vectorSet));
-			endPoints.put(angle, new Vector(lightPosition, new Point2D(Math.cos(angle), Math.sin(angle))).intersect(vectorSet));
-			endPoints.put(angle + 0.00001, new Vector(lightPosition, new Point2D(Math.cos(angle + 0.00001), Math.sin(angle + 0.00001))).intersect(vectorSet));
+			endPoints.put(angle - 0.00001, new Vector(lightPosition, new Point2D(Math.cos(angle - 0.00001), Math.sin(angle - 0.00001))).intersect(wallSet));
+			endPoints.put(angle, new Vector(lightPosition, new Point2D(Math.cos(angle), Math.sin(angle))).intersect(wallSet));
+			endPoints.put(angle + 0.00001, new Vector(lightPosition, new Point2D(Math.cos(angle + 0.00001), Math.sin(angle + 0.00001))).intersect(wallSet));
 			
 		}
 		this.hasChanged = true;
@@ -221,8 +131,8 @@ public class LightManager implements GameObject
 
 		for (Entry<Double, Point2D> entry : endPoints.entrySet())
 		{
-			stockTriangleX.add(toInt(entry.getValue().getX()));
-			stockTriangleY.add(toInt(entry.getValue().getY()));
+			stockTriangleX.add(FileUtils.toInt(entry.getValue().getX()));
+			stockTriangleY.add(FileUtils.toInt(entry.getValue().getY()));
 		}
 		int[] triangleX = new int[stockTriangleX.size()];
 		triangleX = toIntArray(stockTriangleX);
