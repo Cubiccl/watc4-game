@@ -7,7 +7,6 @@ import java.awt.event.KeyEvent;
 import net.watc4.game.Game;
 import net.watc4.game.display.Camera;
 import net.watc4.game.display.TextRenderer;
-import net.watc4.game.entity.EntityBattery;
 import net.watc4.game.entity.EntityLumi;
 import net.watc4.game.entity.EntityManager;
 import net.watc4.game.entity.EntityPattou;
@@ -28,7 +27,7 @@ public class GameState extends State
 		if (instance == null)
 		{
 			instance = new GameState();
-			instance.getMap().lightManager.update();
+			instance.map.lightManager.update();
 		}
 		return instance;
 	}
@@ -36,11 +35,11 @@ public class GameState extends State
 	/** The Camera determining which part of the Map to render. */
 	private Camera camera;
 	/** The Light Player. */
-	public final EntityLumi entityLumi;
+	public EntityLumi entityLumi;
 	/** Manages Entities in this Game. */
-	public final EntityManager entityManager;
+	public EntityManager entityManager;
 	/** The Shadow Player. */
-	public final EntityPattou entityPattou;
+	public EntityPattou entityPattou;
 	/** The world they evolve into. */
 	private Map map;
 
@@ -53,7 +52,6 @@ public class GameState extends State
 
 		this.entityLumi = new EntityLumi(this.map.lumiSpawnX, this.map.lumiSpawnY, this);
 		this.entityPattou = new EntityPattou(this.map.pattouSpawnX, this.map.pattouSpawnY, this);
-		new EntityBattery(2 * Map.TILESIZE, 3 * Map.TILESIZE, this, 5, 5);
 	}
 
 	/** @return The <code>Map</code>. */
@@ -75,7 +73,6 @@ public class GameState extends State
 		this.camera.centerOn(this.entityLumi, this.entityPattou, this.map);
 		g.translate(-this.camera.getXOffset(), -this.camera.getYOffset());
 		this.map.render(g);
-		//this.entityManager.render(g);
 		this.entityPattou.render(g);
 		g.translate(this.camera.getXOffset(), this.camera.getYOffset());
 
@@ -93,6 +90,18 @@ public class GameState extends State
 			++y;
 			TextRenderer.drawString(g, "Pattou HP: " + this.entityPattou.getHealth() + "/" + EntityPlayer.MAX_HEALTH, 0, y * size);
 		}
+	}
+
+	/** Resets the Game & Map as they were created. */
+	public void reset()
+	{
+		this.entityManager = new EntityManager();
+		this.camera = new Camera();
+		this.map = new Map("res/maps/map2.txt");
+
+		this.entityLumi = new EntityLumi(this.map.lumiSpawnX, this.map.lumiSpawnY, this);
+		this.entityPattou = new EntityPattou(this.map.pattouSpawnX, this.map.pattouSpawnY, this);
+		this.map.lightManager.update();
 	}
 
 	@Override
