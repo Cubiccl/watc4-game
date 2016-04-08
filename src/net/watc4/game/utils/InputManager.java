@@ -43,6 +43,7 @@ public class InputManager implements KeyListener
 	@Override
 	public void keyPressed(KeyEvent e)
 	{
+		
 		this.pressedKeys[e.getKeyCode()] = true;
 		Game.getGame().getCurrentState().onKeyPressed(e.getKeyCode());
 	}

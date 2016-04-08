@@ -3,7 +3,6 @@ package net.watc4.game.entity;
 import java.awt.Graphics;
 
 import net.watc4.game.GameObject;
-import net.watc4.game.GameUtils;
 import net.watc4.game.display.renderer.EntityRenderer;
 import net.watc4.game.map.Map;
 import net.watc4.game.states.GameState;
@@ -13,8 +12,9 @@ public abstract class Entity implements GameObject
 {
 	public static final float DEFAULT_SIZE = 32;
 	
-	private final float GRAVITY = 0.7f;
-
+	private static final float GRAVITY = 0.4f;
+	/** The direction that the entity is facing 1:Rigth, -1:Left */
+	protected int direction;
 	/** Reference to the GameState. */
 	public final GameState game;
 	/** True if this Entity is affected by Gravity. False if it flies. */
@@ -59,7 +59,6 @@ public abstract class Entity implements GameObject
 						|| (entity.yPos <= this.yPos + this.height && this.yPos + this.height <= entity.yPos + entity.height));
 
 	}
-
 	/** test if a point is contained by the hitbox
 	 * 
 	 * @param x coordinate of the point
@@ -69,6 +68,10 @@ public abstract class Entity implements GameObject
 	{
 		return (this.xPos <= x && x <= this.xPos + this.width) && (this.yPos <= y && y <= this.yPos + this.height);
 
+	}
+
+	public int getDirection(){
+		return this.direction;
 	}
 
 	public float getHeight()
@@ -150,34 +153,6 @@ public abstract class Entity implements GameObject
 		this.renderer.setAnimation(null);
 		this.renderer = renderer;
 	}
-
-	/** Tests if the Entity collides with a Tile and applies the collision. */
-	private void testForCollisions()
-	{
-		float newX = this.xPos + this.xSpeed;
-		float newY = this.yPos + this.ySpeed;
-
-		int[] collision = GameState.getInstance().getMap().detectCollision(this, newX, this.yPos);
-		if (collision != null)
-		{
-			if (this.xSpeed > 0) this.xPos = collision[0] * Map.TILESIZE - this.width;
-			else if (this.xSpeed < 0) this.xPos = (collision[0] + 1) * Map.TILESIZE;
-			this.xSpeed = 0;
-		} else this.xPos = newX;
-
-		collision = GameState.getInstance().getMap().detectCollision(this, this.xPos, newY);
-		if (collision != null)
-		{
-			if (this.ySpeed > 0)
-			{
-				this.yPos = collision[1] * Map.TILESIZE - this.height;
-			} else if (this.ySpeed < 0) this.yPos = (collision[1] + 1) * Map.TILESIZE;
-			this.ySpeed = 0;
-		} else
-		{
-			this.yPos = newY;
-		}
-	}
 	
 	@Override
 	public void update()
@@ -185,7 +160,7 @@ public abstract class Entity implements GameObject
 		//this.testForCollisions();
 		
 		if (hasGravity){
-			ySpeed += this.GRAVITY;
+			ySpeed += GRAVITY;
 		}
 		
 		if (!placeFree(xSpeed, 0)){

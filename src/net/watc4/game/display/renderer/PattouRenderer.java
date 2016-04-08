@@ -13,46 +13,56 @@ public class PattouRenderer extends EntityRenderer
 	/** Different animations to use. */
 	private Animation idleRight, idleLeft, walkingRight, walkingLeft;
 	/** True if last movement was towards left. */
-	private boolean wasLeft;
 
 	public PattouRenderer(EntityPattou entity)
 	{
 		super(entity);
-		this.idleRight = new Animation(30, Sprite.PATTOU_IDLE_RIGHT1, Sprite.PATTOU_IDLE_RIGHT2);
-		this.idleLeft = new Animation(30, Sprite.PATTOU_IDLE_LEFT1, Sprite.PATTOU_IDLE_LEFT2);
-		this.walkingRight = new Animation(10, Sprite.PATTOU_MOVING_RIGHT1, Sprite.PATTOU_MOVING_RIGHT2, Sprite.PATTOU_MOVING_RIGHT3,
-				Sprite.PATTOU_MOVING_RIGHT4, Sprite.PATTOU_MOVING_RIGHT5, Sprite.PATTOU_MOVING_RIGHT6);
-		this.walkingLeft = new Animation(10, Sprite.PATTOU_MOVING_LEFT1, Sprite.PATTOU_MOVING_LEFT2, Sprite.PATTOU_MOVING_LEFT3, Sprite.PATTOU_MOVING_LEFT4,
-				Sprite.PATTOU_MOVING_LEFT5, Sprite.PATTOU_MOVING_LEFT6);
-
-		this.setAnimation(this.idleRight);
+		this.idleRight = new Animation(35, Sprite.PATTOU_IDLE_RIGHT1, Sprite.PATTOU_IDLE_RIGHT2);
+		this.idleLeft = new Animation(35, Sprite.PATTOU_IDLE_LEFT1, Sprite.PATTOU_IDLE_LEFT2);
+		this.walkingRight = new Animation(10, Sprite.PATTOU_MOVING_RIGHT1, Sprite.PATTOU_MOVING_RIGHT2, Sprite.PATTOU_MOVING_RIGHT3, Sprite.PATTOU_MOVING_RIGHT4, Sprite.PATTOU_MOVING_RIGHT5, Sprite.PATTOU_MOVING_RIGHT6);
+		this.walkingLeft = new Animation(10, Sprite.PATTOU_MOVING_LEFT1, Sprite.PATTOU_MOVING_LEFT2, Sprite.PATTOU_MOVING_LEFT3, Sprite.PATTOU_MOVING_LEFT4, Sprite.PATTOU_MOVING_LEFT5, Sprite.PATTOU_MOVING_LEFT6);
 	}
 
 	@Override
 	public void render(Graphics g)
 	{
-		boolean isRight = this.entity.getXSpeed() > 0;
-		boolean isJumping = this.entity.getYSpeed() < 0;
-		boolean isFalling = this.entity.getYSpeed() > 0;
 		BufferedImage image = this.animation.getImage();
-
-		if (true)
+		final int JUMP_ANIMATION_SPEED = 7;
+		if (!this.entity.placeFree(0,1))
 		{
-			if (isRight) image = this.walkingRight.getImage();
+			if (this.entity.getXSpeed() > 0) image = this.walkingRight.getImage();
 			else if (this.entity.getXSpeed() < 0) image = this.walkingLeft.getImage();
-			else if (this.wasLeft) image = this.idleLeft.getImage();
-		} else if (isJumping)
+			else if (this.entity.getDirection() > 0) image = this.idleRight.getImage();
+			else image = this.idleLeft.getImage();
+		} else
 		{
-			if (isRight || !this.wasLeft) image = Sprite.PATTOU_JUMPING_RIGHT.getImage();
-			else image = Sprite.PATTOU_JUMPING_LEFT.getImage();
-		} else if (isFalling)
-		{
-			if (isRight || !this.wasLeft) image = Sprite.PATTOU_FALLING_RIGHT.getImage();
-			else image = Sprite.PATTOU_FALLING_LEFT.getImage();
+			if (this.entity.getDirection() > 0) 
+				if(((EntityPattou)this.entity).getJumpingTime() / JUMP_ANIMATION_SPEED == 0)
+					image = Sprite.PATTOU_JUMPING_RIGHT1.getImage();
+				else if(((EntityPattou)this.entity).getJumpingTime() / JUMP_ANIMATION_SPEED == 1)
+					image = Sprite.PATTOU_JUMPING_RIGHT2.getImage();
+					else if(((EntityPattou)this.entity).getJumpingTime() / JUMP_ANIMATION_SPEED == 2)
+						image = Sprite.PATTOU_JUMPING_RIGHT3.getImage();
+						else if(((EntityPattou)this.entity).getJumpingTime() / JUMP_ANIMATION_SPEED == 3)
+							image = Sprite.PATTOU_JUMPING_RIGHT4.getImage();
+							else if(((EntityPattou)this.entity).getJumpingTime() / JUMP_ANIMATION_SPEED == 4)
+								image = Sprite.PATTOU_JUMPING_RIGHT5.getImage();
+								else image = Sprite.PATTOU_JUMPING_RIGHT6.getImage();
+			else
+				if(((EntityPattou)this.entity).getJumpingTime() / JUMP_ANIMATION_SPEED == 0)
+					image = Sprite.PATTOU_JUMPING_LEFT1.getImage();
+				else if(((EntityPattou)this.entity).getJumpingTime() / JUMP_ANIMATION_SPEED == 1)
+					image = Sprite.PATTOU_JUMPING_LEFT2.getImage();
+					else if(((EntityPattou)this.entity).getJumpingTime() / JUMP_ANIMATION_SPEED == 2)
+						image = Sprite.PATTOU_JUMPING_LEFT3.getImage();
+						else if(((EntityPattou)this.entity).getJumpingTime() / JUMP_ANIMATION_SPEED == 3)
+							image = Sprite.PATTOU_JUMPING_LEFT4.getImage();
+							else if(((EntityPattou)this.entity).getJumpingTime() / JUMP_ANIMATION_SPEED == 4)
+								image = Sprite.PATTOU_JUMPING_LEFT5.getImage();
+								else image = Sprite.PATTOU_JUMPING_LEFT6.getImage();
+					
 		}
 
-		g.drawImage(image, (int) this.entity.getX() - 5, (int) this.entity.getY(), null);
-
-		this.wasLeft = (this.wasLeft && !isRight) || this.entity.getXSpeed() < 0;
+		g.drawImage(image, (int) this.entity.getX() - 6, (int) this.entity.getY(), null);
 	}
 }
