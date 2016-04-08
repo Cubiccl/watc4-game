@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 
 import net.watc4.game.Game;
+import net.watc4.game.display.Camera;
 import net.watc4.game.display.TextRenderer;
 import net.watc4.game.entity.EntityLumi;
 import net.watc4.game.entity.EntityManager;
@@ -31,6 +32,8 @@ public class GameState extends State
 		return instance;
 	}
 
+	/** The Camera determining which part of the Map to render. */
+	private Camera camera;
 	/** The Light Player. */
 	public final EntityLumi entityLumi;
 	/** Manages Entities in this Game. */
@@ -44,6 +47,7 @@ public class GameState extends State
 	public GameState()
 	{
 		this.entityManager = new EntityManager();
+		this.camera = new Camera();
 		this.map = new Map("res/maps/map2.txt");
 
 		this.entityLumi = new EntityLumi(this.map.lumiSpawnX, this.map.lumiSpawnY, this);
@@ -66,8 +70,11 @@ public class GameState extends State
 	@Override
 	public void render(Graphics g)
 	{
+		this.camera.centerOn(this.entityLumi, this.entityPattou, this.map);
+		g.translate(-this.camera.getXOffset(), -this.camera.getYOffset());
 		this.map.render(g);
 		this.entityManager.render(g);
+		g.translate(this.camera.getXOffset(), this.camera.getYOffset());
 
 		if (GameSettings.debugMode)
 		{
