@@ -5,36 +5,52 @@ import java.util.Iterator;
 
 import javafx.geometry.Point2D;
 
+/** Represents a Segment. */
 public class Vector
 {
+	/** Its direction. */
 	Point2D direction;
+	/** Its position. */
 	Point2D position;
 
+	/** Creates a new Vector.
+	 * 
+	 * @param posX - Its x position.
+	 * @param posY - Its y position.
+	 * @param dirX - Its x direction (width).
+	 * @param dirY - Its y direction (height). */
+	public Vector(double posX, double posY, double dirX, double dirY)
+	{
+		this(new Point2D(posX, posY), new Point2D(dirX, dirY));
+	}
+
+	/** Creates a new Vector.
+	 * 
+	 * @param pos - Its position.
+	 * @param dir - Its direction. */
 	public Vector(Point2D pos, Point2D dir)
 	{
 		this.position = pos;
 		this.direction = dir;
 	}
 
-	public Vector(double posX, double posY, double dirX, double dirY)
-	{
-		position = new Point2D(posX, posY);
-		direction = new Point2D(dirX, dirY);
-	}
-
+	/** @return This Vector's direction. */
 	public Point2D getDirection()
 	{
-		return direction;
+		return this.direction;
 	}
 
+	/** @return This Vector's position. */
 	public Point2D getPosition()
 	{
-		return position;
+		return this.position;
 	}
 
-	public Point2D intersect(HashSet<Vector> vectors)
+	/** @param segments - The segments to check.
+	 * @return The position at which this Vector intersects one of the input segments, if it does. null if it doesn't. */
+	public Point2D intersect(HashSet<Vector> segments)
 	{
-		Iterator<Vector> it = vectors.iterator();
+		Iterator<Vector> it = segments.iterator();
 		double tr = Double.MAX_VALUE;
 		while (it.hasNext())
 		{
@@ -42,8 +58,9 @@ public class Vector
 			double cartesianProd = (vector.direction.getX() * this.direction.getY()) - (vector.direction.getY() * this.direction.getX());
 			if (cartesianProd != 0)
 			{
-				double ts = (this.direction.getX() * (vector.position.getY() - this.position.getY())
-						+ this.direction.getY() * (this.position.getX() - vector.position.getX())) / cartesianProd;
+				double ts = (this.direction.getX() * (vector.position.getY() - this.position.getY()) + this.direction.getY()
+						* (this.position.getX() - vector.position.getX()))
+						/ cartesianProd;
 				if (ts >= 0 && ts <= 1)
 				{
 					double tempTr = (vector.position.getX() + vector.direction.getX() * ts - this.position.getX()) / this.direction.getX();
@@ -55,11 +72,17 @@ public class Vector
 		return null;
 	}
 
+	/** Changes this Vector's direction.
+	 * 
+	 * @param p - The new direction to apply. */
 	public void setDirection(Point2D p)
 	{
 		this.direction = p;
 	}
 
+	/** Changes this Vector's position.
+	 * 
+	 * @param p - The new position to apply. */
 	public void setPosition(Point2D p)
 	{
 		this.position = p;
