@@ -9,13 +9,8 @@ import net.watc4.game.states.GameState;
 /** First Player : can fly and spreads light. */
 public class EntityLumi extends EntityPlayer
 {
-<<<<<<< HEAD
 	private final int MOVE_SPEED = 5;
 	
-=======
-	private final int MOVE_SPEED = 8;
-
->>>>>>> origin/master
 	public EntityLumi(float xPos, float yPos, GameState game)
 	{
 		super(xPos, yPos, game);
