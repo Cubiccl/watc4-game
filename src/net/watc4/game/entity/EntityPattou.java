@@ -12,6 +12,8 @@ import net.watc4.game.states.GameState;
 public class EntityPattou extends EntityPlayer
 {
 	private static final float JUMP_SPEED = 6;
+	
+	private static final float MOVE_SPEED = 3;
 
 	/** True if the character can jump. */
 	private boolean canJump;
@@ -25,7 +27,8 @@ public class EntityPattou extends EntityPlayer
 		super(xPos, yPos, game);
 		this.jumpTime = 1;
 		this.setRenderer(new PattouRenderer(this));
-		this.hitbox.setSize(20, 31);
+		this.width = 20;
+		this.height = 32;
 	}
 
 	/** Kill Pattou and lumi - reset Pattou Spawn and lumi Spawn - reset Hitbox at Pattou Spawn and Lumi Spawn */
@@ -40,7 +43,16 @@ public class EntityPattou extends EntityPlayer
 
 	/** Checks for movement input and applies it. */
 	private void manageInput()
-	{
+	{ 
+		int move = 0;
+		boolean jump = Game.getGame().isKeyPressed(GameUtils.PATTOU_JUMP);
+		if (Game.getGame().isKeyPressed(GameUtils.PATTOU_LEFT)) move--;
+		if (Game.getGame().isKeyPressed(GameUtils.PATTOU_RIGHT)) move++;
+		xSpeed = move * MOVE_SPEED;
+		
+		if (Game.getGame().isKeyPressed(GameUtils.PATTOU_JUMP)) ySpeed = -JUMP_SPEED;
+		
+		/*
 		boolean jump = Game.getGame().isKeyPressed(GameUtils.PATTOU_JUMP);
 		if (this.ySpeed >= 0 || this.onGround())
 		{
@@ -66,18 +78,17 @@ public class EntityPattou extends EntityPlayer
 			++this.jumpTime;
 		}
 
-		if (jump) this.canJump = false;
-	}
+		if (jump) this.canJump = false;*/
+	} 
 
 	@Override
 	public void update()
 	{
-		super.update();
 		this.manageInput();
-		this.onGround = this.onGround();
-
-		if (GameState.getInstance().entityLumi.isInLight(this.getX() + this.getHitbox().getWidth() / 2, this.getY() + this.getHitbox().getHeight() / 2)) --this.health;
+		
+		if (GameState.getInstance().entityLumi.isInLight(this.getX() + this.width / 2, this.getY() + this.height / 2)) --this.health;
 		if (this.health < 0) this.kill();
+		super.update();
 	}
 
 }

@@ -91,8 +91,8 @@ public class LightManager implements GameObject
 	{
 		this.endPoints.clear();
 
-		Point2D lightPosition = new Point2D(GameState.getInstance().entityLumi.getX() + GameState.getInstance().entityLumi.getHitbox().getWidth() / 2,
-				GameState.getInstance().entityLumi.getY() + GameState.getInstance().entityLumi.getHitbox().getHeight() / 2);
+		Point2D lightPosition = new Point2D(GameState.getInstance().entityLumi.getX() + GameState.getInstance().entityLumi.getWidth() / 2,
+				GameState.getInstance().entityLumi.getY() + GameState.getInstance().entityLumi.getHeight() / 2);
 
 		Iterator<Vector> it = wallSet.iterator();
 		while (it.hasNext())

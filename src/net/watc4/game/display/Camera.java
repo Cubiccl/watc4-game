@@ -37,8 +37,8 @@ public class Camera
 	 * @param map - The Map they evolve in. */
 	public void centerOn(Entity entity1, Entity entity2, Map map)
 	{
-		int middleX = (int) ((entity1.getX() + entity1.getHitbox().getWidth() / 2 + entity2.getX() + entity2.getHitbox().getWidth() / 2) / 2);
-		int middleY = (int) ((entity1.getY() + entity1.getHitbox().getHeight() / 2 + entity2.getY()) / 2 + entity2.getHitbox().getHeight() / 2);
+		int middleX = (int) ((entity1.getX() + entity1.getWidth() / 2 + entity2.getX() + entity2.getWidth() / 2) / 2);
+		int middleY = (int) ((entity1.getY() + entity1.getHeight() / 2 + entity2.getY()) / 2 + entity2.getHeight() / 2);
 		int maxX = this.maxXOffset(map), maxY = this.maxYOffset(map);
 
 		this.xOffset = middleX - this.width / 2;

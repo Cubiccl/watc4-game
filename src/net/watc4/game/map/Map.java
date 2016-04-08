@@ -163,8 +163,8 @@ public class Map implements GameObject
 	public int[] detectCollision(Entity entity, float xPosition, float yPosition)
 	{
 		int tileXStart = (int) (xPosition / TILESIZE), tileYStart = (int) (yPosition / TILESIZE);
-		int tileXEnd = (int) ((xPosition + entity.getHitbox().getWidth() - 1) / TILESIZE + 1);
-		int tileYEnd = (int) ((yPosition + entity.getHitbox().getHeight() - 1) / TILESIZE + 1);
+		int tileXEnd = (int) ((xPosition + entity.getWidth() - 1) / TILESIZE + 1);
+		int tileYEnd = (int) ((yPosition + entity.getHeight() - 1) / TILESIZE + 1);
 		for (int x = tileXStart; x < tileXEnd; ++x)
 		{
 			for (int y = tileYStart; y < tileYEnd; ++y)

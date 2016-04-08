@@ -14,7 +14,7 @@ public final class GameUtils
 	 * <li>MAX_SPEED: The maximum speed an Entity can reach by itself.</li>
 	 * <li>MAX_SPEED: The real maximum speed of an Entity (can be reached by gravity or interactions with environment).</li>
 	 * </ul> */
-	public static final float ACCELERATION = 2, DECELERATION = 1, GRAVITY = 0.8f, MAX_SPEED = 5, REAL_MAX_SPEED = 10;
+	public static final float ACCELERATION = 2, DECELERATION = 1, MAX_SPEED = 5, REAL_MAX_SPEED = 40;
 
 	/** The current Frames Per Second. */
 	public static int currentFPS = 60;

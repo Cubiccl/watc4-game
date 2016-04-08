@@ -36,7 +36,7 @@ public class PattouRenderer extends EntityRenderer
 		boolean isFalling = this.entity.getYSpeed() > 0;
 		BufferedImage image = this.animation.getImage();
 
-		if (this.entity.onGround())
+		if (true)
 		{
 			if (isRight) image = this.walkingRight.getImage();
 			else if (this.entity.getXSpeed() < 0) image = this.walkingLeft.getImage();

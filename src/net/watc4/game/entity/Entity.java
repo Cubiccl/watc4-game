@@ -1,7 +1,5 @@
 package net.watc4.game.entity;
 
-import static net.watc4.game.GameUtils.DECELERATION;
-
 import java.awt.Graphics;
 
 import net.watc4.game.GameObject;
@@ -9,22 +7,22 @@ import net.watc4.game.GameUtils;
 import net.watc4.game.display.renderer.EntityRenderer;
 import net.watc4.game.map.Map;
 import net.watc4.game.states.GameState;
-import net.watc4.game.utils.Hitbox;
 
 /** Represents a moving object in the world. i.e. A monster, a moving block, etc. */
 public abstract class Entity implements GameObject
 {
 	public static final float DEFAULT_SIZE = 32;
+	
+	private final float GRAVITY = 0.7f;
 
 	/** Reference to the GameState. */
 	public final GameState game;
 	/** True if this Entity is affected by Gravity. False if it flies. */
 	protected boolean hasGravity;
-	protected Hitbox hitbox;
-	/** True if the Entity is standing on the Ground. */
-	protected boolean onGround;
 	/** Renders the Entity onto the screen. */
 	private EntityRenderer renderer;
+	/** The width/height of the entity. */
+	protected int width, height;
 	/** Its x and y positions. Topleft of the Entity. */
 	private float xPos, yPos;
 	/** Its x and y speed. */
@@ -45,49 +43,42 @@ public abstract class Entity implements GameObject
 		this.game = game;
 		this.game.entityManager.registerEntity(this);
 		this.renderer = new EntityRenderer(this);
-		this.hitbox = new Hitbox(DEFAULT_SIZE, DEFAULT_SIZE, this.xPos, this.yPos);
+		this.width = (int) DEFAULT_SIZE;
+		this.height = (int) DEFAULT_SIZE;
 	}
 
-	/** Applies current speed and modifies it according to the game physics. */
-	private void applySpeed()
+	/** test if a hitbox put in argument collides with the hitbox
+	 * 
+	 * @param hitbox we want to test
+	 * @return true if there's a colliding, false if not */
+	public boolean collidesWith(Entity entity)
 	{
-		this.testForCollisions();
-		this.hitbox.setPosition(this.xPos, this.yPos);
+		return ((entity.xPos <= this.xPos && this.xPos <= entity.xPos + entity.width)
+				|| (entity.xPos <= this.xPos + this.width && this.xPos + this.width <= entity.xPos + entity.width))
+				&& ((entity.yPos <= this.yPos && this.yPos <= entity.yPos + entity.height)
+						|| (entity.yPos <= this.yPos + this.height && this.yPos + this.height <= entity.yPos + entity.height));
 
-		if (this.xSpeed > 0)
-		{
-			this.xSpeed -= DECELERATION;
-			if (this.xSpeed < 0) this.xSpeed = 0;
-		}
-		if (this.xSpeed < 0)
-		{
-			this.xSpeed += DECELERATION;
-			if (this.xSpeed > 0) this.xSpeed = 0;
-		}
-
-		if (this.hasGravity)
-		{
-			this.ySpeed += GameUtils.GRAVITY;
-			if (this.ySpeed > GameUtils.REAL_MAX_SPEED) this.ySpeed = GameUtils.REAL_MAX_SPEED;
-		} else
-		{
-			if (this.ySpeed > 0)
-			{
-				this.ySpeed -= DECELERATION;
-				if (this.ySpeed < 0) this.ySpeed = 0;
-			}
-			if (this.ySpeed < 0)
-			{
-				this.ySpeed += DECELERATION;
-				if (this.ySpeed > 0) this.ySpeed = 0;
-			}
-		}
 	}
 
-	/** @return The Hitbox of this Entity. */
-	public Hitbox getHitbox()
+	/** test if a point is contained by the hitbox
+	 * 
+	 * @param x coordinate of the point
+	 * @param y coordinate of the point
+	 * @return true if the point is contained, false if not */
+	public boolean contains(int x, int y)
 	{
-		return this.hitbox;
+		return (this.xPos <= x && x <= this.xPos + this.width) && (this.yPos <= y && y <= this.yPos + this.height);
+
+	}
+
+	public float getHeight()
+	{
+		return this.height;
+	}
+
+	public float getWidth()
+	{
+		return this.width;
 	}
 
 	/** @return The X position of this Entity. */
@@ -120,10 +111,21 @@ public abstract class Entity implements GameObject
 		this.game.entityManager.unregisterEntity(this);
 	}
 
-	/** @return true if the entity is on the ground, false if not */
-	public boolean onGround()
-	{
-		return this.onGround;
+	/**
+	 * @param dx - delta x 
+	 * @param dy - delta y
+	 * @return true if the entity doesn't collide with a solid tile at {@linkplain Entity#xPos xPos} + dx, {@linkplain Entity#yPos yPos} + dy
+	 */
+	public boolean placeFree (float dx, float dy){
+		int tileXStart = (int) ((xPos + dx) / Map.TILESIZE), tileYStart = (int) ((yPos+ dy) / Map.TILESIZE);
+		int tileXEnd = (int) ((xPos + dx + width - 1) / Map.TILESIZE + 1);
+		int tileYEnd = (int) ((yPos + dy+ height - 1) / Map.TILESIZE + 1);
+		for (int x = tileXStart; x < tileXEnd; ++x)
+		{
+			for (int y = tileYStart; y < tileYEnd; ++y)
+				if (game.getMap().getTileAt(x, y).isSolid) return false;
+		}
+		return true;
 	}
 
 	@Override
@@ -138,7 +140,6 @@ public abstract class Entity implements GameObject
 		this.ySpeed = 0;
 		this.xPos = x;
 		this.yPos = y;
-		this.hitbox.setPosition(this.xPos, this.yPos);
 	}
 
 	/** Changes this Entity's renderer.
@@ -159,7 +160,7 @@ public abstract class Entity implements GameObject
 		int[] collision = GameState.getInstance().getMap().detectCollision(this, newX, this.yPos);
 		if (collision != null)
 		{
-			if (this.xSpeed > 0) this.xPos = collision[0] * Map.TILESIZE - this.getHitbox().getWidth();
+			if (this.xSpeed > 0) this.xPos = collision[0] * Map.TILESIZE - this.width;
 			else if (this.xSpeed < 0) this.xPos = (collision[0] + 1) * Map.TILESIZE;
 			this.xSpeed = 0;
 		} else this.xPos = newX;
@@ -169,21 +170,36 @@ public abstract class Entity implements GameObject
 		{
 			if (this.ySpeed > 0)
 			{
-				this.yPos = collision[1] * Map.TILESIZE - this.getHitbox().getHeight();
-				this.onGround = true;
+				this.yPos = collision[1] * Map.TILESIZE - this.height;
 			} else if (this.ySpeed < 0) this.yPos = (collision[1] + 1) * Map.TILESIZE;
 			this.ySpeed = 0;
 		} else
 		{
 			this.yPos = newY;
-			if (this.ySpeed > GameUtils.GRAVITY) this.onGround = false;
 		}
 	}
-
+	
 	@Override
 	public void update()
 	{
-		this.applySpeed();
+		//this.testForCollisions();
+		
+		if (hasGravity){
+			ySpeed += this.GRAVITY;
+		}
+		
+		if (!placeFree(xSpeed, 0)){
+			while(placeFree(Math.signum(xSpeed), 0))
+				xPos += Math.signum(xSpeed);
+			xSpeed = 0;
+		}
+		
+		if (!placeFree(0, ySpeed)){
+			while(placeFree(0, Math.signum(ySpeed)))
+				yPos += Math.signum(ySpeed);
+			ySpeed = 0;
+		}
+		xPos += xSpeed;
+		yPos += ySpeed;
 	}
-
 }

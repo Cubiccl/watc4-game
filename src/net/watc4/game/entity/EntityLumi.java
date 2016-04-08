@@ -1,7 +1,5 @@
 package net.watc4.game.entity;
 
-import static net.watc4.game.GameUtils.ACCELERATION;
-import static net.watc4.game.GameUtils.MAX_SPEED;
 import net.watc4.game.Game;
 import net.watc4.game.GameUtils;
 import net.watc4.game.display.renderer.LumiRenderer;
@@ -10,6 +8,8 @@ import net.watc4.game.states.GameState;
 /** First Player : can fly and spreads light. */
 public class EntityLumi extends EntityPlayer
 {
+	private final int MOVE_SPEED = 8;
+	
 	public EntityLumi(float xPos, float yPos, GameState game)
 	{
 		super(xPos, yPos, game);
@@ -38,13 +38,19 @@ public class EntityLumi extends EntityPlayer
 		boolean down = Game.getGame().isKeyPressed(GameUtils.LUMI_DOWN);
 		boolean left = Game.getGame().isKeyPressed(GameUtils.LUMI_LEFT);
 		boolean right = Game.getGame().isKeyPressed(GameUtils.LUMI_RIGHT);
+		float hMove = 0;
+		float vMove = 0;
+		
+		if (up) vMove--;
+		if (down) vMove++;
+		if (left) hMove--;
+		if (right) hMove ++;
+		
 		boolean doubleInput = (up && right) || (up && left) || (down && right) || (down && left);
 		float multiplier = 1;
 		if (doubleInput) multiplier = 0.7f;
-		if (up && this.ySpeed > -MAX_SPEED) this.ySpeed -= ACCELERATION * multiplier;
-		if (down && this.ySpeed < MAX_SPEED) this.ySpeed += ACCELERATION * multiplier;
-		if (left && this.xSpeed > -MAX_SPEED) this.xSpeed -= ACCELERATION * multiplier;
-		if (right && this.xSpeed < MAX_SPEED) this.xSpeed += ACCELERATION * multiplier;
+		this.ySpeed = vMove * MOVE_SPEED * multiplier;
+		this.xSpeed = hMove * MOVE_SPEED * multiplier;
 	}
 
 	@Override
