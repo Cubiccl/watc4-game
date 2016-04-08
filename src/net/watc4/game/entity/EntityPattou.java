@@ -86,7 +86,7 @@ public class EntityPattou extends EntityPlayer
 	{
 		this.manageInput();
 		
-		if (GameState.getInstance().entityLumi.isInLight(this.getX() + this.width / 2, this.getY() + this.height / 2)) --this.health;
+		if (GameState.getInstance().entityLumi.isInLight(this)) --this.health;
 		if (this.health < 0) this.kill();
 		super.update();
 	}

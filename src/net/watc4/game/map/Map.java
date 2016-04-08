@@ -3,13 +3,14 @@ package net.watc4.game.map;
 import java.awt.Graphics;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.TreeMap;
 
 import javafx.geometry.Point2D;
 import net.watc4.game.GameObject;
 import net.watc4.game.display.LightManager;
 import net.watc4.game.entity.Entity;
+import net.watc4.game.states.GameState;
 import net.watc4.game.utils.FileUtils;
+import net.watc4.game.utils.GameSettings;
 import net.watc4.game.utils.Vector;
 
 /** Represents the world the player evolves in. */
@@ -65,9 +66,9 @@ public class Map implements GameObject
 			}
 
 		}
-		createWalls();
+		this.createWalls();
 		
-		lightManager = new LightManager(this);
+		this.lightManager = new LightManager(this);
 	}
 
 	private void createWalls()
@@ -122,13 +123,13 @@ public class Map implements GameObject
 		boolean manyVectorFound = false;
 		while (!done)
 		{
-			Iterator<Vector> it = wallSet.iterator();
+			Iterator<Vector> it = this.wallSet.iterator();
 			done = true;
 			while (it.hasNext())
 			{
 				Vector targetVector = (Vector) it.next();
 				Vector vectorFound = null;
-				Iterator<Vector> jt = wallSet.iterator();
+				Iterator<Vector> jt = this.wallSet.iterator();
 
 				while (jt.hasNext() && !manyVectorFound)
 				{
@@ -147,7 +148,7 @@ public class Map implements GameObject
 				{
 					vectorFound.setDirection(new Point2D(vectorFound.getDirection().getX() + targetVector.getDirection().getX(),
 							vectorFound.getDirection().getY() + targetVector.getDirection().getY()));
-					wallSet.remove(targetVector);
+					this.wallSet.remove(targetVector);
 					done = false;
 
 				}
@@ -197,6 +198,7 @@ public class Map implements GameObject
 				g.drawImage(this.getTileAt(i, j).sprite.getImage(), i * TILESIZE, j * TILESIZE, null);
 			}
 		}
+		GameState.getInstance().entityManager.render(g);
 		this.lightManager.render(g);
 	}
 

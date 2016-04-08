@@ -7,6 +7,7 @@ import java.awt.event.KeyEvent;
 import net.watc4.game.Game;
 import net.watc4.game.display.Camera;
 import net.watc4.game.display.TextRenderer;
+import net.watc4.game.entity.EntityBattery;
 import net.watc4.game.entity.EntityLumi;
 import net.watc4.game.entity.EntityManager;
 import net.watc4.game.entity.EntityPattou;
@@ -52,6 +53,7 @@ public class GameState extends State
 
 		this.entityLumi = new EntityLumi(this.map.lumiSpawnX, this.map.lumiSpawnY, this);
 		this.entityPattou = new EntityPattou(this.map.pattouSpawnX, this.map.pattouSpawnY, this);
+		new EntityBattery(2 * Map.TILESIZE, 3 * Map.TILESIZE, this, 5, 5);
 	}
 
 	/** @return The <code>Map</code>. */
@@ -73,7 +75,8 @@ public class GameState extends State
 		this.camera.centerOn(this.entityLumi, this.entityPattou, this.map);
 		g.translate(-this.camera.getXOffset(), -this.camera.getYOffset());
 		this.map.render(g);
-		this.entityManager.render(g);
+		//this.entityManager.render(g);
+		this.entityPattou.render(g);
 		g.translate(this.camera.getXOffset(), this.camera.getYOffset());
 
 		if (GameSettings.debugMode)

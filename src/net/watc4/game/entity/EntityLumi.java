@@ -3,13 +3,14 @@ package net.watc4.game.entity;
 import net.watc4.game.Game;
 import net.watc4.game.GameUtils;
 import net.watc4.game.display.renderer.LumiRenderer;
+import net.watc4.game.map.Map;
 import net.watc4.game.states.GameState;
 
 /** First Player : can fly and spreads light. */
 public class EntityLumi extends EntityPlayer
 {
 	private final int MOVE_SPEED = 8;
-	
+
 	public EntityLumi(float xPos, float yPos, GameState game)
 	{
 		super(xPos, yPos, game);
@@ -17,13 +18,44 @@ public class EntityLumi extends EntityPlayer
 		this.setRenderer(new LumiRenderer(this));
 	}
 
+	/** @param entity - The Entity to test.
+	 * @return True if the input Entity is in the light of Lumi. */
+	public boolean isInLight(Entity entity)
+	{
+		return this.isInLight(entity.getX() + entity.getWidth() / 2, entity.getY() + entity.getHeight() / 2);
+	}
+
 	/** @param x - The X Coordinate.
 	 * @param y - The Y Coordinate.
 	 * @return True if the given coordinates are in the light emitted by Lumi. */
-	public boolean isInLight(float x, float y)
+	public boolean isInLight(float x0, float y0)
 	{
-		// TODO Auto-generated method stub
-		return false;
+		int dx = (int) Math.abs(this.getX() - x0);
+		int dy = (int) Math.abs(this.getY() - y0);
+		int x = (int) x0;
+		int y = (int) y0;
+		int n = 1 + dx + dy;
+		int x_inc = (this.getX() > x0) ? 1 : -1;
+		int y_inc = (this.getY() > y0) ? 1 : -1;
+		int error = dx - dy;
+		dx *= 2;
+		dy *= 2;
+
+		for (; n > 0; --n)
+		{
+			if (this.game.getMap().getTileAt(x / Map.TILESIZE, y / Map.TILESIZE).isOpaque) return false;
+
+			if (error > 0)
+			{
+				x += x_inc;
+				error -= dy;
+			} else
+			{
+				y += y_inc;
+				error += dx;
+			}
+		}
+		return true;
 	}
 
 	public void kill()
@@ -40,12 +72,12 @@ public class EntityLumi extends EntityPlayer
 		boolean right = Game.getGame().isKeyPressed(GameUtils.LUMI_RIGHT);
 		float hMove = 0;
 		float vMove = 0;
-		
+
 		if (up) vMove--;
 		if (down) vMove++;
 		if (left) hMove--;
-		if (right) hMove ++;
-		
+		if (right) hMove++;
+
 		boolean doubleInput = (up && right) || (up && left) || (down && right) || (down && left);
 		float multiplier = 1;
 		if (doubleInput) multiplier = 0.7f;
