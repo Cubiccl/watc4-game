@@ -44,6 +44,7 @@ public class GameOverState extends State
 		g.setColor(new Color(0, 0, 0, 200));
 		g.fillRect(0, 0, x * 2, y * 2);
 		g.setColor(Color.RED);
+		TextRenderer.setFontSize(30);
 		TextRenderer.drawStringCentered(g, "Game Over", x, y - 30);
 		TextRenderer.drawStringCentered(g, "Press Space to retry", x, y);
 		TextRenderer.drawStringCentered(g, "Press Escape to exit", x, y + 30);

@@ -16,6 +16,7 @@ public abstract class State implements GameObject
 	public void onKeyPressed(int keyID)
 	{
 		if (keyID == KeyEvent.VK_F1) GameSettings.debugMode = !GameSettings.debugMode;
+		if (keyID == KeyEvent.VK_F2) GameSettings.godMode = !GameSettings.godMode;
 	}
 
 }

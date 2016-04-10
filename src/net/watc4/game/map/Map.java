@@ -10,7 +10,6 @@ import net.watc4.game.display.LightManager;
 import net.watc4.game.entity.Entity;
 import net.watc4.game.states.GameState;
 import net.watc4.game.utils.FileUtils;
-import net.watc4.game.utils.GameSettings;
 import net.watc4.game.utils.Vector;
 
 /** Represents the world the player evolves in. */

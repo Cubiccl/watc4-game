@@ -89,6 +89,12 @@ public class GameState extends State
 			TextRenderer.drawString(g, "Lumi HP: " + this.entityLumi.getHealth() + "/" + EntityPlayer.MAX_HEALTH, 0, y * size);
 			++y;
 			TextRenderer.drawString(g, "Pattou HP: " + this.entityPattou.getHealth() + "/" + EntityPlayer.MAX_HEALTH, 0, y * size);
+
+			if (GameSettings.godMode)
+			{
+				++y;
+				TextRenderer.drawString(g, "God mode ON", 0, y * size);
+			}
 		}
 	}
 

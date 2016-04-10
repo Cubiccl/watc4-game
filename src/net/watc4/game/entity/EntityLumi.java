@@ -10,7 +10,7 @@ import net.watc4.game.states.GameState;
 public class EntityLumi extends EntityPlayer
 {
 	private final int MOVE_SPEED = 5;
-	
+
 	public EntityLumi(float xPos, float yPos, GameState game)
 	{
 		super(xPos, yPos, game);
@@ -30,8 +30,8 @@ public class EntityLumi extends EntityPlayer
 	 * @return True if the given coordinates are in the light emitted by Lumi. */
 	public boolean isInLight(float x0, float y0)
 	{
-		int dx = (int) Math.abs(this.getX() - x0);
-		int dy = (int) Math.abs(this.getY() - y0);
+		int dx = (int) Math.abs(this.getX() + this.getWidth() / 2 - x0);
+		int dy = (int) Math.abs(this.getY() + this.getHeight() / 2 - y0);
 		int x = (int) x0;
 		int y = (int) y0;
 		int n = 1 + dx + dy;
