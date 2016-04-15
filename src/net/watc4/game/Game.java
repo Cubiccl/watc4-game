@@ -9,7 +9,9 @@ import net.watc4.game.display.AnimationManager;
 import net.watc4.game.display.TextRenderer;
 import net.watc4.game.display.Window;
 import net.watc4.game.map.TileRegistry;
+import net.watc4.game.states.GameState;
 import net.watc4.game.states.State;
+import net.watc4.game.states.cutscene.CutsceneState;
 import net.watc4.game.states.menu.MainMenuState;
 import net.watc4.game.utils.GameSettings;
 import net.watc4.game.utils.GameUtils;
@@ -100,7 +102,7 @@ public class Game implements Runnable
 		double framesTime = 0, updatesTime = 0;
 		final int targetFPS = 60, targetUPS = 60;
 		double timePerFrame = 1000000000 / targetFPS, timePerUpdate = 1000000000 / targetUPS;
-		this.state = new MainMenuState();
+		this.state = new CutsceneState(GameState.getInstance());
 
 		this.isRunning = true;
 		while (this.isRunning)
