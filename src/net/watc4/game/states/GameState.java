@@ -54,6 +54,17 @@ public class GameState extends State
 		this.entityPattou = new EntityPattou(this.map.pattouSpawnX, this.map.pattouSpawnY, this);
 	}
 
+	/** Draws a Red overlay. It becomes more opaque the more damage the player takes.
+	 * 
+	 * @param g - The Graphics required to draw. */
+	private void drawDamage(Graphics g)
+	{
+		int life = this.entityPattou.getHealth() * 255 / EntityPlayer.MAX_HEALTH;
+		if (life >= 255 || life < 0) return;
+		g.setColor(new Color(200, 50, 50, 255 - life));
+		g.fillRect(0, 0, Game.getGame().window.canvas.getWidth(), Game.getGame().window.canvas.getHeight());
+	}
+
 	/** @return The <code>Map</code>. */
 	public Map getMap()
 	{
@@ -75,6 +86,7 @@ public class GameState extends State
 		this.map.render(g);
 		this.entityPattou.render(g);
 		g.translate(this.camera.getXOffset(), this.camera.getYOffset());
+		this.drawDamage(g);
 
 		if (GameSettings.debugMode)
 		{

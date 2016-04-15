@@ -73,6 +73,11 @@ public class EntityPattou extends EntityPlayer
 		this.manageInput();
 
 		if (!GameSettings.godMode && GameState.getInstance().entityLumi.isInLight(this)) --this.health;
+		else
+		{
+			++this.health;
+			if (this.health > MAX_HEALTH) this.health = MAX_HEALTH;
+		}
 		if (this.health < 0) this.kill();
 		super.update();
 	}
