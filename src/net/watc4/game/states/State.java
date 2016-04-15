@@ -2,11 +2,12 @@ package net.watc4.game.states;
 
 import java.awt.event.KeyEvent;
 
-import net.watc4.game.GameObject;
 import net.watc4.game.utils.GameSettings;
+import net.watc4.game.utils.IRender;
+import net.watc4.game.utils.IUpdate;
 
 /** Represents a state of the Game, i.e. what is currently happening. */
-public abstract class State implements GameObject
+public abstract class State implements IRender, IUpdate
 {
 
 	/** Called when a key is pressed.

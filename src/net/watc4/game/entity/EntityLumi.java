@@ -1,10 +1,10 @@
 package net.watc4.game.entity;
 
 import net.watc4.game.Game;
-import net.watc4.game.GameUtils;
 import net.watc4.game.display.renderer.LumiRenderer;
 import net.watc4.game.map.Map;
 import net.watc4.game.states.GameState;
+import net.watc4.game.utils.GameUtils;
 
 /** First Player : can fly and spreads light. */
 public class EntityLumi extends EntityPlayer

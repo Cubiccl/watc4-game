@@ -2,13 +2,13 @@ package net.watc4.game.display.renderer;
 
 import java.awt.Graphics;
 
-import net.watc4.game.GameObject;
 import net.watc4.game.display.Animation;
 import net.watc4.game.display.Sprite;
 import net.watc4.game.entity.Entity;
+import net.watc4.game.utils.IRender;
 
 /** Draws an Entity depending on its state. */
-public class EntityRenderer implements GameObject
+public class EntityRenderer implements IRender
 {
 	/** The Animation used to draw. */
 	protected Animation animation;
@@ -48,11 +48,5 @@ public class EntityRenderer implements GameObject
 		this.animation = animation;
 		if (this.animation != null) this.animation.register();
 	}
-
-	/** EntityRenderers don't update. */
-	@Override
-	@Deprecated
-	public void update()
-	{}
 
 }

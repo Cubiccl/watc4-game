@@ -1,12 +1,11 @@
 package net.watc4.game.display;
 
-import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
-import net.watc4.game.GameObject;
+import net.watc4.game.utils.IUpdate;
 
 /** Used to display Sprites. Can contain several Sprites that will cycle over time. */
-public class Animation implements GameObject
+public class Animation implements IUpdate
 {
 	/** Index of the current Sprite to display. */
 	private int currentSprite;
@@ -65,14 +64,6 @@ public class Animation implements GameObject
 	{
 		AnimationManager.registerAnimation(this);
 	}
-
-	/** Do not use render(Graphics) on this <code>Animation</code>. Use getImage() and render with the Object using this <code>Animation</code>.
-	 * 
-	 * @see Animation#getImage() */
-	@Override
-	@Deprecated
-	public void render(Graphics g)
-	{}
 
 	@Override
 	public void update()

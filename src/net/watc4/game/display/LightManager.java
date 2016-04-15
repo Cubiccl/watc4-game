@@ -13,14 +13,15 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import javafx.geometry.Point2D;
-import net.watc4.game.GameObject;
 import net.watc4.game.map.Map;
 import net.watc4.game.states.GameState;
 import net.watc4.game.utils.FileUtils;
+import net.watc4.game.utils.IRender;
+import net.watc4.game.utils.IUpdate;
 import net.watc4.game.utils.Vector;
 
 /** Calculates and displays shadows. */
-public class LightManager implements GameObject
+public class LightManager implements IRender, IUpdate
 {
 	/** List of points to link */
 	private TreeMap<Double, Point2D> endPoints;

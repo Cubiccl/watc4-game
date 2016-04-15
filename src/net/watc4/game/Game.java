@@ -12,6 +12,7 @@ import net.watc4.game.map.TileRegistry;
 import net.watc4.game.states.State;
 import net.watc4.game.states.menu.MainMenuState;
 import net.watc4.game.utils.GameSettings;
+import net.watc4.game.utils.GameUtils;
 import net.watc4.game.utils.InputManager;
 
 /** Main object. Contains a thread to run the game. */

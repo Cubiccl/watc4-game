@@ -1,4 +1,4 @@
-package net.watc4.game;
+package net.watc4.game.utils;
 
 import java.awt.event.KeyEvent;
 

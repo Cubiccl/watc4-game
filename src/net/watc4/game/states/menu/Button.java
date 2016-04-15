@@ -3,11 +3,11 @@ package net.watc4.game.states.menu;
 import java.awt.Color;
 import java.awt.Graphics;
 
-import net.watc4.game.GameObject;
 import net.watc4.game.display.TextRenderer;
+import net.watc4.game.utils.IRender;
 
 /** Represents a choice in a MenuState. */
-public class Button implements GameObject
+public class Button implements IRender
 {
 
 	/** The Identifier of this button. Used to determine which button was selected. */
@@ -49,9 +49,5 @@ public class Button implements GameObject
 		else g.setColor(Color.BLUE);
 		TextRenderer.drawStringCentered(g, this.text, this.xPosition, this.yPosition);
 	}
-
-	@Override
-	public void update()
-	{}
 
 }

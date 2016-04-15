@@ -6,16 +6,16 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 import net.watc4.game.Game;
-import net.watc4.game.GameObject;
 import net.watc4.game.display.TextRenderer;
 import net.watc4.game.states.State;
+import net.watc4.game.utils.IRender;
 
 /** A State with different buttons to select. */
 public abstract class MenuState extends State
 {
 
 	/** The background : drawn behind the menu. */
-	protected GameObject background;
+	protected IRender background;
 	/** Contains all the buttons of this Menu. */
 	private ArrayList<Button> buttons;
 	/** The id of the currently selected button. */

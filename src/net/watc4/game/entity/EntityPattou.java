@@ -1,11 +1,11 @@
 package net.watc4.game.entity;
 
 import net.watc4.game.Game;
-import net.watc4.game.GameUtils;
 import net.watc4.game.display.renderer.PattouRenderer;
 import net.watc4.game.states.GameOverState;
 import net.watc4.game.states.GameState;
 import net.watc4.game.utils.GameSettings;
+import net.watc4.game.utils.GameUtils;
 
 /** Second player : must stay in the shadows and is affected by gravity. */
 public class EntityPattou extends EntityPlayer

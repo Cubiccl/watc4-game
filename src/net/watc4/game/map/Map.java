@@ -5,15 +5,16 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import javafx.geometry.Point2D;
-import net.watc4.game.GameObject;
 import net.watc4.game.display.LightManager;
 import net.watc4.game.entity.Entity;
 import net.watc4.game.states.GameState;
 import net.watc4.game.utils.FileUtils;
+import net.watc4.game.utils.IRender;
+import net.watc4.game.utils.IUpdate;
 import net.watc4.game.utils.Vector;
 
 /** Represents the world the player evolves in. */
-public class Map implements GameObject
+public class Map implements IRender, IUpdate
 {
 	/** Constant: size a each Tile */
 	public static final int TILESIZE = 32;
@@ -66,7 +67,7 @@ public class Map implements GameObject
 
 		}
 		this.createWalls();
-		
+
 		this.lightManager = new LightManager(this);
 	}
 
@@ -91,32 +92,32 @@ public class Map implements GameObject
 			// Add the horizontal ones
 			for (int x = 0; x < this.width - 1; x++)
 			{
-				if (this.getTileAt(x, y).isOpaque && !this.getTileAt(x + 1, y).isOpaque)
-					this.wallSet.add(new Vector((x + 1) * Map.TILESIZE, y * Map.TILESIZE, 0, Map.TILESIZE));
-				else if (!this.getTileAt(x, y).isOpaque && this.getTileAt(x + 1, y).isOpaque)
-					this.wallSet.add(new Vector((x + 1) * Map.TILESIZE, (y + 1) * Map.TILESIZE, 0, -Map.TILESIZE));
+				if (this.getTileAt(x, y).isOpaque && !this.getTileAt(x + 1, y).isOpaque) this.wallSet.add(new Vector((x + 1) * Map.TILESIZE, y * Map.TILESIZE,
+						0, Map.TILESIZE));
+				else if (!this.getTileAt(x, y).isOpaque && this.getTileAt(x + 1, y).isOpaque) this.wallSet.add(new Vector((x + 1) * Map.TILESIZE, (y + 1)
+						* Map.TILESIZE, 0, -Map.TILESIZE));
 
 			}
 			// Add the vertical ones
 			for (int x = 0; x < this.width; x++)
 			{
-				if (this.getTileAt(x, y).isOpaque && !this.getTileAt(x, y + 1).isOpaque)
-					this.wallSet.add(new Vector((x + 1) * Map.TILESIZE, (y + 1) * Map.TILESIZE, -Map.TILESIZE, 0));
-				else if (!this.getTileAt(x, y).isOpaque && this.getTileAt(x, y + 1).isOpaque)
-					this.wallSet.add(new Vector(x * Map.TILESIZE, (y + 1) * Map.TILESIZE, Map.TILESIZE, 0));
+				if (this.getTileAt(x, y).isOpaque && !this.getTileAt(x, y + 1).isOpaque) this.wallSet.add(new Vector((x + 1) * Map.TILESIZE, (y + 1)
+						* Map.TILESIZE, -Map.TILESIZE, 0));
+				else if (!this.getTileAt(x, y).isOpaque && this.getTileAt(x, y + 1).isOpaque) this.wallSet.add(new Vector(x * Map.TILESIZE, (y + 1)
+						* Map.TILESIZE, Map.TILESIZE, 0));
 			}
 		}
 
 		// Add the last horizontal ones
 		for (int x = 0; x < this.width - 1; x++)
 		{
-			if (this.getTileAt(x, this.height - 1).isOpaque && !this.getTileAt(x + 1, this.height - 1).isOpaque)
-				this.wallSet.add(new Vector((x + 1) * Map.TILESIZE, (this.height - 1) * Map.TILESIZE, 0, Map.TILESIZE));
-			else if (!this.getTileAt(x, (this.height - 1)).isOpaque && this.getTileAt(x + 1, (this.height - 1)).isOpaque)
-				this.wallSet.add(new Vector((x + 1) * Map.TILESIZE, ((this.height - 1) + 1) * Map.TILESIZE, 0, -Map.TILESIZE));
+			if (this.getTileAt(x, this.height - 1).isOpaque && !this.getTileAt(x + 1, this.height - 1).isOpaque) this.wallSet.add(new Vector((x + 1)
+					* Map.TILESIZE, (this.height - 1) * Map.TILESIZE, 0, Map.TILESIZE));
+			else if (!this.getTileAt(x, (this.height - 1)).isOpaque && this.getTileAt(x + 1, (this.height - 1)).isOpaque) this.wallSet.add(new Vector((x + 1)
+					* Map.TILESIZE, ((this.height - 1) + 1) * Map.TILESIZE, 0, -Map.TILESIZE));
 
 		}
-		
+
 		// Merges adjacent segments into single ones
 		boolean done = false;
 		boolean manyVectorFound = false;
@@ -135,18 +136,19 @@ public class Map implements GameObject
 					Vector arrowVector = (Vector) jt.next();
 					if (targetVector.getPosition().getX() == arrowVector.getPosition().getX() + arrowVector.getDirection().getX()
 							&& targetVector.getPosition().getY() == arrowVector.getPosition().getY() + arrowVector.getDirection().getY())
-						;
+					;
 					{
 						if (vectorFound != null) manyVectorFound = true;
 						vectorFound = arrowVector;
 					}
 				}
 				if (vectorFound == null) manyVectorFound = true;
-				if (!manyVectorFound && targetVector.getDirection().getX() * vectorFound.getDirection().getY()
-						- targetVector.getDirection().getY() * vectorFound.getDirection().getX() == 0)
+				if (!manyVectorFound
+						&& targetVector.getDirection().getX() * vectorFound.getDirection().getY() - targetVector.getDirection().getY()
+								* vectorFound.getDirection().getX() == 0)
 				{
-					vectorFound.setDirection(new Point2D(vectorFound.getDirection().getX() + targetVector.getDirection().getX(),
-							vectorFound.getDirection().getY() + targetVector.getDirection().getY()));
+					vectorFound.setDirection(new Point2D(vectorFound.getDirection().getX() + targetVector.getDirection().getX(), vectorFound.getDirection()
+							.getY() + targetVector.getDirection().getY()));
 					this.wallSet.remove(targetVector);
 					done = false;
 
@@ -155,7 +157,7 @@ public class Map implements GameObject
 		}
 
 	}
-		
+
 	/** @param entity - The Entity to test.
 	 * @param xPosition - Its x position.
 	 * @param yPosition - Its y position.
@@ -182,8 +184,9 @@ public class Map implements GameObject
 		if (x < 0 || y < 0 || x >= this.tiles.length || y >= this.tiles[x].length) return TileRegistry.getTileFromId(2);
 		return TileRegistry.getTileFromId(this.tiles[x][y]);
 	}
-	
-	public HashSet<Vector> getWallSet(){
+
+	public HashSet<Vector> getWallSet()
+	{
 		return this.wallSet;
 	}
 

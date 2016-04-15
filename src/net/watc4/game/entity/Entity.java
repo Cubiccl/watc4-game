@@ -2,16 +2,17 @@ package net.watc4.game.entity;
 
 import java.awt.Graphics;
 
-import net.watc4.game.GameObject;
 import net.watc4.game.display.renderer.EntityRenderer;
 import net.watc4.game.map.Map;
 import net.watc4.game.states.GameState;
+import net.watc4.game.utils.IRender;
+import net.watc4.game.utils.IUpdate;
 
 /** Represents a moving object in the world. i.e. A monster, a moving block, etc. */
-public abstract class Entity implements GameObject
+public abstract class Entity implements IRender, IUpdate
 {
 	public static final float DEFAULT_SIZE = 32;
-	
+
 	private static final float GRAVITY = 0.4f;
 	/** The direction that the entity is facing 1:Rigth, -1:Left */
 	protected int direction;
@@ -53,12 +54,13 @@ public abstract class Entity implements GameObject
 	 * @return true if there's a colliding, false if not */
 	public boolean collidesWith(Entity entity)
 	{
-		return ((entity.xPos <= this.xPos && this.xPos <= entity.xPos + entity.width)
-				|| (entity.xPos <= this.xPos + this.width && this.xPos + this.width <= entity.xPos + entity.width))
-				&& ((entity.yPos <= this.yPos && this.yPos <= entity.yPos + entity.height)
-						|| (entity.yPos <= this.yPos + this.height && this.yPos + this.height <= entity.yPos + entity.height));
+		return ((entity.xPos <= this.xPos && this.xPos <= entity.xPos + entity.width) || (entity.xPos <= this.xPos + this.width && this.xPos + this.width <= entity.xPos
+				+ entity.width))
+				&& ((entity.yPos <= this.yPos && this.yPos <= entity.yPos + entity.height) || (entity.yPos <= this.yPos + this.height && this.yPos
+						+ this.height <= entity.yPos + entity.height));
 
 	}
+
 	/** test if a point is contained by the hitbox
 	 * 
 	 * @param x coordinate of the point
@@ -70,7 +72,8 @@ public abstract class Entity implements GameObject
 
 	}
 
-	public int getDirection(){
+	public int getDirection()
+	{
 		return this.direction;
 	}
 
@@ -114,15 +117,14 @@ public abstract class Entity implements GameObject
 		this.game.entityManager.unregisterEntity(this);
 	}
 
-	/**
-	 * @param dx - delta x 
+	/** @param dx - delta x
 	 * @param dy - delta y
-	 * @return true if the entity doesn't collide with a solid tile at {@linkplain Entity#xPos xPos} + dx, {@linkplain Entity#yPos yPos} + dy
-	 */
-	public boolean placeFree (float dx, float dy){
-		int tileXStart = (int) ((xPos + dx) / Map.TILESIZE), tileYStart = (int) ((yPos+ dy) / Map.TILESIZE);
+	 * @return true if the entity doesn't collide with a solid tile at {@linkplain Entity#xPos xPos} + dx, {@linkplain Entity#yPos yPos} + dy */
+	public boolean placeFree(float dx, float dy)
+	{
+		int tileXStart = (int) ((xPos + dx) / Map.TILESIZE), tileYStart = (int) ((yPos + dy) / Map.TILESIZE);
 		int tileXEnd = (int) ((xPos + dx + width - 1) / Map.TILESIZE + 1);
-		int tileYEnd = (int) ((yPos + dy+ height - 1) / Map.TILESIZE + 1);
+		int tileYEnd = (int) ((yPos + dy + height - 1) / Map.TILESIZE + 1);
 		for (int x = tileXStart; x < tileXEnd; ++x)
 		{
 			for (int y = tileYStart; y < tileYEnd; ++y)
@@ -153,24 +155,27 @@ public abstract class Entity implements GameObject
 		this.renderer.setAnimation(null);
 		this.renderer = renderer;
 	}
-	
+
 	@Override
 	public void update()
 	{
-		//this.testForCollisions();
-		
-		if (hasGravity){
+		// this.testForCollisions();
+
+		if (hasGravity)
+		{
 			ySpeed += GRAVITY;
 		}
-		
-		if (!placeFree(xSpeed, 0)){
-			while(placeFree(Math.signum(xSpeed), 0))
+
+		if (!placeFree(xSpeed, 0))
+		{
+			while (placeFree(Math.signum(xSpeed), 0))
 				xPos += Math.signum(xSpeed);
 			xSpeed = 0;
 		}
-		
-		if (!placeFree(0, ySpeed)){
-			while(placeFree(0, Math.signum(ySpeed)))
+
+		if (!placeFree(0, ySpeed))
+		{
+			while (placeFree(0, Math.signum(ySpeed)))
 				yPos += Math.signum(ySpeed);
 			ySpeed = 0;
 		}

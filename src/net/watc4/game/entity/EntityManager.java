@@ -3,10 +3,11 @@ package net.watc4.game.entity;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
-import net.watc4.game.GameObject;
+import net.watc4.game.utils.IRender;
+import net.watc4.game.utils.IUpdate;
 
 /** Manages all Entities of the Game. */
-public class EntityManager implements GameObject
+public class EntityManager implements IRender, IUpdate
 {
 
 	/** List of all Entities. */

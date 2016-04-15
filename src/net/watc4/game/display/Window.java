@@ -4,7 +4,7 @@ import java.awt.Canvas;
 
 import javax.swing.JFrame;
 
-import net.watc4.game.GameUtils;
+import net.watc4.game.utils.GameUtils;
 
 @SuppressWarnings("serial")
 public class Window extends JFrame
