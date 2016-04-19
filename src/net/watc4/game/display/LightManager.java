@@ -3,7 +3,9 @@ package net.watc4.game.display;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Polygon;
 import java.awt.RenderingHints;
+import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -16,6 +18,7 @@ import javafx.geometry.Point2D;
 import net.watc4.game.map.Map;
 import net.watc4.game.states.GameState;
 import net.watc4.game.utils.FileUtils;
+import net.watc4.game.utils.GameSettings;
 import net.watc4.game.utils.IRender;
 import net.watc4.game.utils.IUpdate;
 import net.watc4.game.utils.Vector;
@@ -23,16 +26,26 @@ import net.watc4.game.utils.Vector;
 /** Calculates and displays shadows. */
 public class LightManager implements IRender, IUpdate
 {
+	private static int[] toIntArray(List<Integer> list)
+	{
+		int[] res = new int[list.size()];
+		for (int i = 0; i < res.length; i++)
+		{
+			res[i] = list.get(i);
+		}
+		return res;
+	}
 	/** List of points to link */
 	private TreeMap<Double, Point2D> endPoints;
 	/** True if the shadows have changed, thus the shadows Image should be updated. */
 	private boolean hasChanged;
 	/** Height, in pixel of the light manager */
 	private int height;
-	/** List of segments stopping light */
-	private HashSet<Vector> wallSet;
 	/** The shadows to draw. */
 	private BufferedImage shadows;
+	/** List of segments stopping light */
+	private HashSet<Vector> wallSet;
+
 	/** Width, in pixel of the light manager */
 	private int width;
 
@@ -42,27 +55,6 @@ public class LightManager implements IRender, IUpdate
 		this.height = map.height * Map.TILESIZE;
 		this.wallSet = map.getWallSet();
 		this.endPoints = new TreeMap<>();
-	}
-
-	/** Applies a mask onto an image.
-	 * 
-	 * @param image - The Image to modify.
-	 * @param mask - The mask to apply. */
-	private void applyGrayscaleMaskToAlpha(BufferedImage image, BufferedImage mask)
-	{
-		int width = image.getWidth();
-		int height = image.getHeight();
-
-		int[] imagePixels = image.getRGB(0, 0, width, height, null, 0, width);
-		int[] maskPixels = mask.getRGB(0, 0, width, height, null, 0, width);
-
-		for (int i = 0; i < imagePixels.length; i++)
-		{
-			int color = imagePixels[i] & 0x00ffffff; // Mask preexisting alpha
-			int alpha = maskPixels[i] << 24; // Shift blue to alpha
-			imagePixels[i] = color | alpha;
-		}
-		image.setRGB(0, 0, width, height, imagePixels, 0, width);
 	}
 
 	public HashSet<Vector> getVectorSet()
@@ -75,16 +67,6 @@ public class LightManager implements IRender, IUpdate
 	{
 		if (this.hasChanged) this.updateShadows();
 		g.drawImage(this.shadows, 0, 0, null);
-	}
-
-	private static int[] toIntArray(List<Integer> list)
-	{
-		int[] res = new int[list.size()];
-		for (int i = 0; i < res.length; i++)
-		{
-			res[i] = list.get(i);
-		}
-		return res;
 	}
 
 	@Override
@@ -115,21 +97,14 @@ public class LightManager implements IRender, IUpdate
 	/** Updates the shadows to draw. */
 	private void updateShadows()
 	{
-		BufferedImage lightMap = new BufferedImage(this.width, this.height, BufferedImage.TYPE_INT_RGB);
 		this.shadows = new BufferedImage(this.width, this.height, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D lightMapG = (Graphics2D) lightMap.getGraphics();
-		Graphics shadowsG = this.shadows.getGraphics();
-
-		lightMapG.setColor(Color.WHITE);
-		shadowsG.setColor(Color.BLACK);
-		lightMapG.fillRect(0, 0, this.width, this.height);
-		shadowsG.fillRect(0, 0, this.width, this.height);
-
-		lightMapG.setColor(Color.BLACK);
-
+		Graphics2D shadowsG =(Graphics2D) this.shadows.getGraphics();
+		//shadowsG.clearRect(0, 0, shadows.getWidth(), shadows.getHeight());
+		shadowsG.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		
+		
 		List<Integer> stockTriangleX = new ArrayList<Integer>();
 		List<Integer> stockTriangleY = new ArrayList<Integer>();
-
 		for (Entry<Double, Point2D> entry : endPoints.entrySet())
 		{
 			stockTriangleX.add(FileUtils.toInt(entry.getValue().getX()));
@@ -139,11 +114,19 @@ public class LightManager implements IRender, IUpdate
 		triangleX = toIntArray(stockTriangleX);
 		int[] triangleY = new int[stockTriangleY.size()];
 		triangleY = toIntArray(stockTriangleY);
-
-		lightMapG.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		lightMapG.fillPolygon(triangleX, triangleY, triangleX.length);
-
-		applyGrayscaleMaskToAlpha(this.shadows, lightMap);
+		
+		Area hole = new Area(new Polygon(triangleX, triangleY, triangleX.length));
+		Area polygon = new Area(new Polygon(new int[]{0,shadows.getWidth(),shadows.getWidth(),0},new int[]{0,0,shadows.getHeight(), shadows.getHeight()}, 4));
+		polygon.subtract(hole);
+		
+		if (!GameSettings.lightMode){
+			shadowsG.setColor(Color.BLACK);
+			shadowsG.fill(polygon);
+		}else
+		{
+			shadowsG.setColor(Color.RED);
+			shadowsG.draw(hole);
+		}
 		this.hasChanged = false;
 	}
 }
