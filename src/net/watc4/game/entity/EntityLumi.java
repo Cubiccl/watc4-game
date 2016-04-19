@@ -95,10 +95,11 @@ public class EntityLumi extends EntityPlayer
 	@Override
 	public void update()
 	{
+		boolean wasMoving = this.ySpeed != 0 || this.xSpeed != 0;
 		super.update();
 		this.manageInput();
 
-		if (this.ySpeed != 0 || this.xSpeed != 0) this.game.getMap().lightManager.update();
+		if (wasMoving || this.ySpeed != 0 || this.xSpeed != 0) this.game.getMap().lightManager.update();
 	}
 
 }
