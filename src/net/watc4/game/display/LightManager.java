@@ -7,14 +7,19 @@ import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
+
+import javax.imageio.ImageIO;
+
 import java.util.TreeMap;
 
 import javafx.geometry.Point2D;
+import net.watc4.game.entity.EntityLumi;
 import net.watc4.game.map.Map;
 import net.watc4.game.states.GameState;
 import net.watc4.game.utils.FileUtils;
@@ -41,6 +46,8 @@ public class LightManager implements IRender, IUpdate
 	private boolean hasChanged;
 	/** Height, in pixel of the light manager */
 	private int height;
+	/** The field of view of Lumi */
+	private BufferedImage lumiLight;
 	/** The shadows to draw. */
 	private BufferedImage shadows;
 	/** List of segments stopping light */
@@ -55,6 +62,14 @@ public class LightManager implements IRender, IUpdate
 		this.height = map.height * Map.TILESIZE;
 		this.wallSet = map.getWallSet();
 		this.endPoints = new TreeMap<>();
+		try
+		{
+			this.lumiLight = ImageIO.read(new File("res/textures/lumiLight.png"));
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		
 	}
 
 	public HashSet<Vector> getVectorSet()
@@ -97,6 +112,7 @@ public class LightManager implements IRender, IUpdate
 	/** Updates the shadows to draw. */
 	private void updateShadows()
 	{
+		EntityLumi lumi = GameState.getInstance().entityLumi;
 		this.shadows = new BufferedImage(this.width, this.height, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D shadowsG =(Graphics2D) this.shadows.getGraphics();
 		//shadowsG.clearRect(0, 0, shadows.getWidth(), shadows.getHeight());
@@ -117,15 +133,17 @@ public class LightManager implements IRender, IUpdate
 		
 		Area hole = new Area(new Polygon(triangleX, triangleY, triangleX.length));
 		Area polygon = new Area(new Polygon(new int[]{0,shadows.getWidth(),shadows.getWidth(),0},new int[]{0,0,shadows.getHeight(), shadows.getHeight()}, 4));
+		Area view = new Area(new Polygon(new int[]{FileUtils.toInt(lumi.getX() + (lumi.getWidth() - lumiLight.getWidth())/ 2),FileUtils.toInt(lumi.getX() + (lumi.getWidth() - lumiLight.getWidth())/ 2 + lumiLight.getWidth()),FileUtils.toInt(lumi.getX() + (lumi.getWidth() - lumiLight.getWidth())/ 2 + lumiLight.getWidth()),FileUtils.toInt(lumi.getX() + (lumi.getWidth() - lumiLight.getWidth())/ 2)},new int[]{FileUtils.toInt(lumi.getY() + (lumi.getHeight() - lumiLight.getHeight())/ 2), FileUtils.toInt(lumi.getY() + (lumi.getHeight() - lumiLight.getHeight())/ 2),FileUtils.toInt(lumi.getY() + (lumi.getHeight() - lumiLight.getHeight())/ 2 + lumiLight.getHeight()), FileUtils.toInt(lumi.getY() + (lumi.getHeight() - lumiLight.getHeight())/ 2 + lumiLight.getHeight())}, 4));
+	    hole.intersect(view);
 		polygon.subtract(hole);
-		
-		if (!GameSettings.lightMode){
+		if (!GameSettings.lightMode){			
 			shadowsG.setColor(Color.BLACK);
 			shadowsG.fill(polygon);
+			shadowsG.drawImage(lumiLight,FileUtils.toInt(lumi.getX() + (lumi.getWidth() - lumiLight.getWidth())/ 2),FileUtils.toInt(lumi.getY() + (lumi.getHeight() - lumiLight.getHeight())/ 2) ,null);
 		}else
 		{
 			shadowsG.setColor(Color.RED);
-			shadowsG.draw(hole);
+			shadowsG.draw(polygon);
 		}
 		this.hasChanged = false;
 	}
