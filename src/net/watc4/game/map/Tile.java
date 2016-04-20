@@ -18,7 +18,7 @@ public class Tile
 	 * 
 	 * @param id - Its identifier.
 	 * @param sprite - Its Sprite. */
-	Tile(int id, Animation sprite, boolean solid, boolean opaque)
+	public Tile(int id, Animation sprite, boolean solid, boolean opaque)
 	{
 		this.id = id;
 		this.sprite = sprite;
@@ -26,4 +26,5 @@ public class Tile
 		this.isOpaque = opaque;
 		TileRegistry.registerTile(this);
 	}
+
 }

@@ -4,6 +4,10 @@ import java.util.HashMap;
 
 import net.watc4.game.display.Animation;
 import net.watc4.game.display.Sprite;
+import net.watc4.game.map.tiles.TileAir;
+import net.watc4.game.map.tiles.TileGround;
+import net.watc4.game.map.tiles.TileLadder;
+import net.watc4.game.utils.GameUtils;
 
 /** Registers all Tiles. */
 public class TileRegistry
@@ -11,21 +15,23 @@ public class TileRegistry
 	/** List of all Tiles. */
 	private static HashMap<Integer, Tile> tiles;
 
+	public static Tile DEFAULT, AIR, LADDER_TOP;
+
 	/** Creates all Tiles in the Game. */
 	public static void createTiles()
 	{
 		tiles = new HashMap<Integer, Tile>();
-		new Tile(0, new Animation(Sprite.TILE_DEFAULT), false, false);
-		new Tile(1, new Animation(Sprite.TILE_GROUND), true, true);
-		new Tile(2, new Animation(Sprite.TILE_WALL), false, false);
-		new Tile(3, new Animation(Sprite.TILE_GLASS), true, false);
-		new Tile(4, new Animation(Sprite.TILE_MIRROR_TOP), true, false);
-		new Tile(5, new Animation(Sprite.TILE_MIRROR_RIGHT), true, false);
-		new Tile(6, new Animation(Sprite.TILE_MIRROR_BACK), true, false);
-		new Tile(7, new Animation(Sprite.TILE_MIRROR_LEFT), true, false);
-		new Tile(8, new Animation(Sprite.TILE_LADDER_TOP), false, false);
-		new Tile(9, new Animation(Sprite.TILE_LADDER_BASE), false, false);
-		new Tile(10, new Animation(Sprite.TILE_LADDER_BACK), false, false);
+		DEFAULT = new TileGround(0, new Animation(Sprite.TILE_DEFAULT)); // Black
+		new TileGround(1, new Animation(Sprite.TILE_GROUND)); // Ground
+		AIR = new TileAir(2, new Animation(Sprite.TILE_WALL)); // BG Wall
+		new Tile(3, new Animation(Sprite.TILE_GLASS), true, false); // Glass
+		new TileMirror(4, new Animation(Sprite.TILE_MIRROR_TOP), GameUtils.UP); // Mirror Top
+		new TileMirror(5, new Animation(Sprite.TILE_MIRROR_RIGHT), GameUtils.RIGHT); // Mirror Right
+		new TileMirror(6, new Animation(Sprite.TILE_MIRROR_BACK), GameUtils.DOWN); // Mirror Bottom
+		new TileMirror(7, new Animation(Sprite.TILE_MIRROR_LEFT), GameUtils.LEFT); // Mirror Left
+		LADDER_TOP = new TileLadder(8, new Animation(Sprite.TILE_LADDER_TOP)); // Top Ladder
+		new TileLadder(9, new Animation(Sprite.TILE_LADDER_BASE)); // Ladder
+		new TileLadder(10, new Animation(Sprite.TILE_LADDER_BACK)); // Bottom Ladder
 
 	}
 

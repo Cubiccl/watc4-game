@@ -22,8 +22,6 @@ public class CutsceneState extends State
 	{
 		this.gameState = gameState;
 		this.events = new Stack<CutsceneEvent>();
-		this.addEvent(new TextEvent(this, "Press Space to continue", true));
-		this.addEvent(new TextEvent(this, "This is a Cutscene"));
 	}
 
 	/** Adds an Event at the end of this Cutscene.

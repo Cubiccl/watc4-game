@@ -4,7 +4,11 @@ import java.awt.Graphics;
 
 import net.watc4.game.display.renderer.EntityRenderer;
 import net.watc4.game.map.Map;
+import net.watc4.game.map.Tile;
+import net.watc4.game.map.TileRegistry;
+import net.watc4.game.map.tiles.TileLadder;
 import net.watc4.game.states.GameState;
+import net.watc4.game.utils.GameUtils;
 import net.watc4.game.utils.IRender;
 import net.watc4.game.utils.IUpdate;
 
@@ -20,6 +24,8 @@ public abstract class Entity implements IRender, IUpdate
 	public final GameState game;
 	/** True if this Entity is affected by Gravity. False if it flies. */
 	protected boolean hasGravity;
+	/** True if this Entity is standing on a Ladder. */
+	protected boolean onLadder;
 	/** Renders the Entity onto the screen. */
 	private EntityRenderer renderer;
 	/** The width/height of the entity. */
@@ -58,7 +64,6 @@ public abstract class Entity implements IRender, IUpdate
 				+ entity.width))
 				&& ((entity.yPos <= this.yPos && this.yPos <= entity.yPos + entity.height) || (entity.yPos <= this.yPos + this.height && this.yPos
 						+ this.height <= entity.yPos + entity.height));
-
 	}
 
 	/** test if a point is contained by the hitbox
@@ -69,7 +74,26 @@ public abstract class Entity implements IRender, IUpdate
 	public boolean contains(int x, int y)
 	{
 		return (this.xPos <= x && x <= this.xPos + this.width) && (this.yPos <= y && y <= this.yPos + this.height);
+	}
 
+	/** @param direction - The Direction to look at.
+	 * @return The Tile adjacent to the occupied, in the given direction. Defaults to the Occupied Tile.
+	 * @see GameUtils#UP */
+	public Tile getAdjacentTile(int direction)
+	{
+		int x = (int) this.getCenter()[0] / Map.TILESIZE, y = (int) this.getCenter()[1] / Map.TILESIZE;
+		if (direction == GameUtils.UP) --y;
+		if (direction == GameUtils.DOWN) ++y;
+		if (direction == GameUtils.LEFT) --x;
+		if (direction == GameUtils.RIGHT) ++x;
+		return this.game.getMap().getTileAt(x, y);
+	}
+
+	/** @return The coordinates of the Center of this Entity. */
+	public float[] getCenter()
+	{
+		return new float[]
+		{ this.getX() + this.getWidth() / 2, this.getY() + this.getHeight() / 2 };
 	}
 
 	public int getDirection()
@@ -80,6 +104,12 @@ public abstract class Entity implements IRender, IUpdate
 	public float getHeight()
 	{
 		return this.height;
+	}
+
+	/** @return The Tile this Entity is currently occuping. */
+	public Tile getOccupiedTile()
+	{
+		return this.getAdjacentTile(-1);
 	}
 
 	public float getWidth()
@@ -111,6 +141,12 @@ public abstract class Entity implements IRender, IUpdate
 		return this.ySpeed;
 	}
 
+	/** @return True if this Entity is standing on a Ladder. */
+	public boolean isOnLadder()
+	{
+		return this.onLadder;
+	}
+
 	/** Destroys this Entity. */
 	public void kill()
 	{
@@ -128,7 +164,12 @@ public abstract class Entity implements IRender, IUpdate
 		for (int x = tileXStart; x < tileXEnd; ++x)
 		{
 			for (int y = tileYStart; y < tileYEnd; ++y)
+			{
 				if (game.getMap().getTileAt(x, y).isSolid) return false;
+			}
+			// Test if on top of ladder
+			if (dy > 0 && !this.onLadder && game.getMap().getTileAt(x, tileYEnd - 1) == TileRegistry.LADDER_TOP
+					&& (yPos + dy + height - 1) % Map.TILESIZE < Map.TILESIZE / 6) return false;
 		}
 		return true;
 	}
@@ -159,9 +200,12 @@ public abstract class Entity implements IRender, IUpdate
 	@Override
 	public void update()
 	{
-		// this.testForCollisions();
+		if (this.isOnLadder() && !(this.getOccupiedTile() instanceof TileLadder))
+		{
+			if (!(this.getAdjacentTile(GameUtils.DOWN) == TileRegistry.LADDER_TOP && this.getCenter()[1] % Map.TILESIZE > Map.TILESIZE / 2)) this.onLadder = false;
+		}
 
-		if (hasGravity)
+		if (hasGravity && !this.onLadder)
 		{
 			ySpeed += GRAVITY;
 		}

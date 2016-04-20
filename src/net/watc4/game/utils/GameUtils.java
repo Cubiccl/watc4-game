@@ -41,6 +41,16 @@ public final class GameUtils
 	 * <li>RIGHT : L</li>
 	 * <li>JUMP : Space bar</li>
 	 * </ul> */
-	public static final int PATTOU_LEFT = KeyEvent.VK_J, PATTOU_RIGHT = KeyEvent.VK_L, PATTOU_JUMP = KeyEvent.VK_SPACE;
+	public static final int PATTOU_UP = KeyEvent.VK_I, PATTOU_DOWN = KeyEvent.VK_K, PATTOU_LEFT = KeyEvent.VK_J, PATTOU_RIGHT = KeyEvent.VK_L,
+			PATTOU_JUMP = KeyEvent.VK_SPACE;
+
+	/** Directions:
+	 * <ul>
+	 * <li>UP = 0</li>
+	 * <li>DOWN = 1</li>
+	 * <li>LEFT = 2</li>
+	 * <li>RIGHT = 3</li>
+	 * </ul> */
+	public static final int UP = 0, DOWN = 1, LEFT = 2, RIGHT = 3;
 
 }

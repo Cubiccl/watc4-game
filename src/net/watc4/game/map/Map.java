@@ -181,7 +181,7 @@ public class Map implements IRender, IUpdate
 	 * @return The Tile at the given coordinates. */
 	public Tile getTileAt(int x, int y)
 	{
-		if (x < 0 || y < 0 || x >= this.tiles.length || y >= this.tiles[x].length) return TileRegistry.getTileFromId(2);
+		if (x < 0 || y < 0 || x >= this.tiles.length || y >= this.tiles[x].length) return TileRegistry.DEFAULT;
 		return TileRegistry.getTileFromId(this.tiles[x][y]);
 	}
 
@@ -197,7 +197,7 @@ public class Map implements IRender, IUpdate
 		{
 			for (int j = 0; j < this.tiles[i].length; j++)
 			{
-				g.drawImage(this.getTileAt(i, j).sprite.getImage(), i * TILESIZE, j * TILESIZE, null);
+				if (this.getTileAt(i, j).sprite != null) g.drawImage(this.getTileAt(i, j).sprite.getImage(), i * TILESIZE, j * TILESIZE, null);
 			}
 		}
 		GameState.getInstance().entityManager.render(g);

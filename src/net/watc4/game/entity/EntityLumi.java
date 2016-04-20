@@ -22,7 +22,7 @@ public class EntityLumi extends EntityPlayer
 	 * @return True if the input Entity is in the light of Lumi. */
 	public boolean isInLight(Entity entity)
 	{
-		return this.isInLight(entity.getX() + entity.getWidth() / 2, entity.getY() + entity.getHeight() / 2);
+		return this.isInLight(entity.getCenter()[0], entity.getCenter()[1]);
 	}
 
 	/** @param x - The X Coordinate.

@@ -2,6 +2,8 @@ package net.watc4.game.entity;
 
 import net.watc4.game.Game;
 import net.watc4.game.display.renderer.PattouRenderer;
+import net.watc4.game.map.TileRegistry;
+import net.watc4.game.map.tiles.TileLadder;
 import net.watc4.game.states.GameOverState;
 import net.watc4.game.states.GameState;
 import net.watc4.game.utils.GameSettings;
@@ -10,9 +12,9 @@ import net.watc4.game.utils.GameUtils;
 /** Second player : must stay in the shadows and is affected by gravity. */
 public class EntityPattou extends EntityPlayer
 {
-	private static final float JUMP_SPEED = 8;
+	private static final float JUMP_SPEED = 8, LADDER_JUMP_SPEED = 6;
 
-	private static final float MOVE_SPEED = 3;
+	private static final float MOVE_SPEED = 3, LADDER_SPEED = 1.7f;
 
 	/** True if Pattou can jump */
 	private boolean canJump;
@@ -49,6 +51,23 @@ public class EntityPattou extends EntityPlayer
 		boolean jumpPressed = Game.getGame().isKeyPressed(GameUtils.PATTOU_JUMP);
 		if (Game.getGame().isKeyPressed(GameUtils.PATTOU_LEFT)) move--;
 		if (Game.getGame().isKeyPressed(GameUtils.PATTOU_RIGHT)) move++;
+		if ((Game.getGame().isKeyPressed(GameUtils.PATTOU_UP) || Game.getGame().isKeyPressed(GameUtils.PATTOU_DOWN))
+				&& this.getOccupiedTile() instanceof TileLadder) this.onLadder = true;
+		if (Game.getGame().isKeyPressed(GameUtils.PATTOU_DOWN) && this.getAdjacentTile(GameUtils.DOWN) == TileRegistry.LADDER_TOP)
+		{
+			this.onLadder = true;
+			if (!this.placeFree(0, 1)) this.onLadder = false;
+			if (this.isOnLadder()) this.canJump = true;
+		}
+		if (this.isOnLadder())
+		{
+			if (Game.getGame().isKeyPressed(GameUtils.PATTOU_UP)) this.ySpeed = -LADDER_SPEED;
+			else if (Game.getGame().isKeyPressed(GameUtils.PATTOU_DOWN))
+			{
+				this.ySpeed = LADDER_SPEED;
+				if (!this.placeFree(0, this.ySpeed)) this.onLadder = false;
+			} else this.ySpeed = 0;
+		}
 		this.xSpeed = move * MOVE_SPEED;
 		if (move != 0) this.direction = move;
 		if (!placeFree(0, 1))
@@ -61,7 +80,15 @@ public class EntityPattou extends EntityPlayer
 			}
 			if (!jumpPressed) canJump = true;
 		} else this.jumpingTime++;
-		if (!jumpPressed)
+
+		if (this.isOnLadder() && jumpPressed)
+		{
+			this.canJump = false;
+			this.ySpeed = -LADDER_JUMP_SPEED;
+			this.onLadder = false;
+		}
+
+		if (!jumpPressed && !this.isOnLadder())
 		{
 			this.ySpeed = Math.max(ySpeed, -JUMP_SPEED / 4);
 		}
