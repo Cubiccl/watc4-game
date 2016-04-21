@@ -12,6 +12,7 @@ import net.watc4.game.map.Tile;
 import net.watc4.game.map.TileRegistry;
 import net.watc4.game.map.tiles.TileLadder;
 import net.watc4.game.states.GameState;
+import net.watc4.game.utils.FileUtils;
 import net.watc4.game.utils.GameSettings;
 import net.watc4.game.utils.GameUtils;
 import net.watc4.game.utils.IRender;
@@ -241,6 +242,8 @@ public abstract class Entity implements IRender, IUpdate
 		{
 			g.setColor(Color.BLUE);
 			g.drawRect((int) this.getX(), (int) this.getY(), (int) this.getWidth(), (int) this.getHeight());
+			g.drawLine(FileUtils.toInt(this.getX() + this.getWidth()/2), FileUtils.toInt(this.getY()), FileUtils.toInt(this.getX() + this.getWidth()/2), FileUtils.toInt(this.getY() + this.getHeight()));
+			g.drawLine(FileUtils.toInt(this.getX()), FileUtils.toInt(this.getY() + this.getHeight()/2), FileUtils.toInt(this.getX() + this.getWidth()), FileUtils.toInt(this.getY() + this.getHeight()/2));		
 		}
 	}
 
