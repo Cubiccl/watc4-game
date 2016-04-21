@@ -21,7 +21,7 @@ public class EntityBattery extends Entity
 		this.maxPower = maxPower;
 		this.buffer = buffer;
 		this.hasGravity = false;
-		this.isSolid = true;
+		this.isSolid = false;
 	}
 
 	/** @return The power of this Battery. */

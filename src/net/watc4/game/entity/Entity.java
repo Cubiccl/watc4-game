@@ -29,6 +29,8 @@ public abstract class Entity implements IRender, IUpdate
 	public final GameState game;
 	/** True if this Entity is affected by Gravity. False if it flies. */
 	protected boolean hasGravity;
+	/** True if this Entity moved last update. */
+	public boolean hasMoved;
 	/** True if this Entity is solid, as if it were a Solid Tile. */
 	protected boolean isSolid;
 	/** True if this Entity is standing on a Ladder. */
@@ -250,6 +252,7 @@ public abstract class Entity implements IRender, IUpdate
 		this.ySpeed = 0;
 		this.xPos = x;
 		this.yPos = y;
+		this.hasMoved = true;
 	}
 
 	/** Changes this Entity's renderer.
@@ -284,6 +287,8 @@ public abstract class Entity implements IRender, IUpdate
 	@Override
 	public void update()
 	{
+		float xPrev = this.xPos, yPrev = this.yPos;
+
 		if (this.isOnLadder() && !(this.getOccupiedTile() instanceof TileLadder))
 		{
 			if (!(this.getAdjacentTile(GameUtils.DOWN) == TileRegistry.LADDER_TOP && this.getCenter()[1] % Map.TILESIZE > Map.TILESIZE / 2)) this.onLadder = false;
@@ -309,5 +314,7 @@ public abstract class Entity implements IRender, IUpdate
 		}
 		xPos += xSpeed;
 		yPos += ySpeed;
+
+		if (xPrev != this.xPos || yPrev != this.yPos) this.hasMoved = true;
 	}
 }
