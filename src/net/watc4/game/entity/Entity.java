@@ -2,8 +2,11 @@ package net.watc4.game.entity;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Rectangle;
+import java.util.HashSet;
 
 import net.watc4.game.display.renderer.EntityRenderer;
+import net.watc4.game.map.Chunk;
 import net.watc4.game.map.Map;
 import net.watc4.game.map.Tile;
 import net.watc4.game.map.TileRegistry;
@@ -81,7 +84,7 @@ public abstract class Entity implements IRender, IUpdate
 	public boolean collidesWith(Entity entity, float dx, float dy)
 	{
 		float x = entity.xPos + dx, y = entity.yPos + dy;
-		return x < this.getX() + this.width && x + entity.width > this.getX() && y < this.getY() + this.height && entity.height + y > this.getY();
+		return this.hitbox().intersects(new Rectangle((int) x, (int) y, (int) entity.getWidth(), (int) entity.getHeight()));
 	}
 
 	/** test if a point is contained by the hitbox
@@ -91,7 +94,7 @@ public abstract class Entity implements IRender, IUpdate
 	 * @return true if the point is contained, false if not */
 	public boolean contains(int x, int y)
 	{
-		return (this.xPos <= x && x <= this.xPos + this.width) && (this.yPos <= y && y <= this.yPos + this.height);
+		return this.hitbox().contains(x, y);
 	}
 
 	/** @param entity - Another Entity.
@@ -119,6 +122,21 @@ public abstract class Entity implements IRender, IUpdate
 	{
 		return new float[]
 		{ this.getX() + this.getWidth() / 2, this.getY() + this.getHeight() / 2 };
+	}
+
+	/** @return The Chunk(s) that contain this Entity. */
+	public Chunk[] getChunks()
+	{
+		HashSet<Chunk> containers = new HashSet<Chunk>();
+		Chunk current = this.game.getMap().getChunk(this.getX(), this.getY());
+		containers.add(current);
+		current = this.game.getMap().getChunk(this.getX() + this.getWidth(), this.getY());
+		containers.add(current);
+		current = this.game.getMap().getChunk(this.getX(), this.getY() + this.getHeight());
+		containers.add(current);
+		current = this.game.getMap().getChunk(this.getX() + this.getWidth(), this.getY() + this.getHeight());
+		containers.add(current);
+		return containers.toArray(new Chunk[containers.size()]);
 	}
 
 	public int getDirection()
@@ -164,6 +182,12 @@ public abstract class Entity implements IRender, IUpdate
 	public float getYSpeed()
 	{
 		return this.ySpeed;
+	}
+
+	/** @return This Entity's Hitbox. */
+	private Rectangle hitbox()
+	{
+		return new Rectangle((int) this.getX(), (int) this.getY(), (int) this.getWidth(), (int) this.getHeight());
 	}
 
 	/** @return True if this Entity is standing on a Ladder. */
@@ -235,6 +259,26 @@ public abstract class Entity implements IRender, IUpdate
 	{
 		this.renderer.setAnimation(null);
 		this.renderer = renderer;
+	}
+
+	/** @return True if this Entity should render (i.e. it belongs to a rendered Chunk) */
+	public boolean shouldRender()
+	{
+		Chunk[] chunks = this.getChunks();
+		for (Chunk chunk : chunks)
+			if (chunk.shouldRender()) return true;
+
+		return false;
+	}
+
+	/** @return True if this Entity should update (i.e. it belongs to a updated Chunk) */
+	public boolean shouldUpdate()
+	{
+		Chunk[] chunks = this.getChunks();
+		for (Chunk chunk : chunks)
+			if (chunk.shouldUpdate()) return true;
+
+		return false;
 	}
 
 	@Override

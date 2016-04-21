@@ -2,7 +2,10 @@ package net.watc4.game.map;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 
+import net.watc4.game.display.Camera;
+import net.watc4.game.states.GameState;
 import net.watc4.game.utils.GameSettings;
 import net.watc4.game.utils.IRender;
 
@@ -69,5 +72,19 @@ public class Chunk implements IRender
 	public void setTileAt(int x, int y, int tile)
 	{
 		if (x >= 0 && x < this.size && y >= 0 && y < this.size) this.tiles[x][y] = tile;
+	}
+
+	/** @return True if this Chunk should Render onto the Screen. */
+	public boolean shouldRender()
+	{
+		Camera camera = GameState.getInstance().camera;
+		return new Rectangle(this.xPos * ACTUAL_SIZE, this.yPos * ACTUAL_SIZE, ACTUAL_SIZE, ACTUAL_SIZE).intersects(new Rectangle(camera.getXOffset(), camera
+				.getYOffset(), camera.width, camera.height));
+	}
+
+	/** @return True if this Chunk should Update. For now it always does, it may not in bigger maps. */
+	public boolean shouldUpdate()
+	{
+		return true;
 	}
 }

@@ -187,8 +187,16 @@ public class Map implements IRender, IUpdate
 		return null;
 	}
 
-	/** @param x - The X Coordinate
-	 * @param y - The Y Coordinate
+	/** @param x - The X Coordinate (in pixels)
+	 * @param y - The Y Coordinate (in pixels)
+	 * @return The Chunk containing the given coordinates. */
+	public Chunk getChunk(float x, float y)
+	{
+		return this.getChunk((int) x / Map.TILESIZE, (int) y / Map.TILESIZE);
+	}
+
+	/** @param x - The X Coordinate (in tiles)
+	 * @param y - The Y Coordinate (in tiles)
 	 * @return The Chunk containing the given coordinates. */
 	public Chunk getChunk(int x, int y)
 	{
@@ -217,8 +225,8 @@ public class Map implements IRender, IUpdate
 	{
 		for (int x = 0; x < this.chunks.length; ++x)
 			for (int y = 0; y < this.chunks.length; ++y)
-				this.chunks[x][y].render(g);
-		
+				if (this.chunks[x][y].shouldRender()) this.chunks[x][y].render(g);
+
 		GameState.getInstance().entityManager.render(g);
 		this.lightManager.render(g);
 

@@ -34,7 +34,7 @@ public class GameState extends State
 	}
 
 	/** The Camera determining which part of the Map to render. */
-	private Camera camera;
+	public final Camera camera;
 	/** The Light Player. */
 	public EntityLumi entityLumi;
 	/** Manages Entities in this Game. */
@@ -120,7 +120,6 @@ public class GameState extends State
 	public void reset()
 	{
 		this.entityManager = new EntityManager();
-		this.camera = new Camera();
 		this.map = new Map("res/maps/map2.txt");
 
 		this.entityLumi = new EntityLumi(this.map.lumiSpawnX, this.map.lumiSpawnY, this);

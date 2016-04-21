@@ -64,8 +64,7 @@ public class EntityManager implements IRender, IUpdate
 	public void render(Graphics g)
 	{
 		for (Entity entity : this.entities)
-			entity.render(g);
-
+			if (entity.shouldRender()) entity.render(g);
 	}
 
 	/** Removes a new Entity to track.
@@ -95,7 +94,7 @@ public class EntityManager implements IRender, IUpdate
 		}
 
 		for (Entity entity : this.entities)
-			entity.update();
+			if (entity.shouldUpdate()) entity.update();
 
 	}
 
