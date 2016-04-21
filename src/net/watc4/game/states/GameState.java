@@ -104,11 +104,14 @@ public class GameState extends State
 			++y;
 			TextRenderer.drawString(g, "Pattou HP: " + this.entityPattou.getHealth() + "/" + EntityPlayer.MAX_HEALTH, 0, y * size);
 			++y;
-			if (GameSettings.godMode) TextRenderer.drawString(g, "God mode(F2) ON", 0, y * size);
-			else TextRenderer.drawString(g, "God mode(F2) OFF", 0, y * size);
+			if (GameSettings.godMode) TextRenderer.drawString(g, "God mode (F2) ON", 0, y * size);
+			else TextRenderer.drawString(g, "God mode (F2) OFF", 0, y * size);
 			++y;
-			if (GameSettings.lightMode) TextRenderer.drawString(g, "Light mode(F3) ON", 0, y * size);
-			else TextRenderer.drawString(g, "Light mode(F3) OFF", 0, y * size);
+			if (GameSettings.lightMode) TextRenderer.drawString(g, "Light mode (F3) ON", 0, y * size);
+			else TextRenderer.drawString(g, "Light mode (F3) OFF", 0, y * size);
+			++y;
+			if (GameSettings.drawHitboxes) TextRenderer.drawString(g, "Hitbox mode (F4) ON", 0, y * size);
+			else TextRenderer.drawString(g, "Hitbox mode (F4) OFF", 0, y * size);
 
 		}
 	}

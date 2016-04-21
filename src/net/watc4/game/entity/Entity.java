@@ -1,5 +1,6 @@
 package net.watc4.game.entity;
 
+import java.awt.Color;
 import java.awt.Graphics;
 
 import net.watc4.game.display.renderer.EntityRenderer;
@@ -8,6 +9,7 @@ import net.watc4.game.map.Tile;
 import net.watc4.game.map.TileRegistry;
 import net.watc4.game.map.tiles.TileLadder;
 import net.watc4.game.states.GameState;
+import net.watc4.game.utils.GameSettings;
 import net.watc4.game.utils.GameUtils;
 import net.watc4.game.utils.IRender;
 import net.watc4.game.utils.IUpdate;
@@ -211,6 +213,11 @@ public abstract class Entity implements IRender, IUpdate
 	public void render(Graphics g)
 	{
 		this.renderer.render(g);
+		if (GameSettings.drawHitboxes)
+		{
+			g.setColor(Color.BLUE);
+			g.drawRect((int) this.getX(), (int) this.getY(), (int) this.getWidth(), (int) this.getHeight());
+		}
 	}
 
 	public void setPosition(int x, int y)

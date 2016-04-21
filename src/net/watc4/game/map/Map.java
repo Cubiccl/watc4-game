@@ -18,6 +18,8 @@ public class Map implements IRender, IUpdate
 {
 	/** Constant: size a each Tile */
 	public static final int TILESIZE = 32;
+	/** List of Areas of this Map. Used to limit Entity collision detections. */
+	public final Chunk[][] chunks;
 	/** Height of the map in tiles. */
 	public final int height;
 	/** The LightManager */
@@ -26,8 +28,6 @@ public class Map implements IRender, IUpdate
 	public final int lumiSpawnX, lumiSpawnY;
 	/** Pattou's spawn point. */
 	public final int pattouSpawnX, pattouSpawnY;
-	/** List of Tiles. */
-	private int[][] tiles;
 	/** List of segments stopping light */
 	private HashSet<Vector> wallSet;
 	/** Height of the map in tiles. */
@@ -41,6 +41,7 @@ public class Map implements IRender, IUpdate
 	 * @param pattouSpawnY - Pattou's spawn, y coordinate. */
 	public Map(String url)
 	{
+		// Creating basic data
 		String[] mapText = FileUtils.readFileAsStringArray(url);
 		int info[] = new int[6]; // width, height, lumiSpawnX, lumiSpawnY, pattouSpawnX and pattouSpawnY
 		for (int i = 0; i < info.length; i++)
@@ -54,23 +55,33 @@ public class Map implements IRender, IUpdate
 		this.pattouSpawnX = info[4] * Map.TILESIZE;
 		this.pattouSpawnY = info[5] * Map.TILESIZE;
 
-		this.tiles = new int[this.width][this.height];
-		String[] values; // Tiles values temporarily stored per line from the map file
-		for (int i = 0; i < info[1]; i++)
-		{
-			values = mapText[i + 7].split("\t");
+		// Creating Chunks
+		int xChunks = this.width / Chunk.SIZE, yChunks = this.height / Chunk.SIZE;
+		if (this.width % Chunk.SIZE != 0) ++xChunks;
+		if (this.height % Chunk.SIZE != 0) ++yChunks;
+		this.chunks = new Chunk[xChunks][yChunks];
+		for (int x = 0; x < this.chunks.length; x++)
+			for (int y = 0; y < this.chunks.length; y++)
+				this.chunks[x][y] = new Chunk(x, y);
 
-			for (int j = 0; j < info[0]; j++)
+		String[] values; // Tiles values temporarily stored per line from the map file
+		for (int y = 0; y < info[1]; y++)
+		{
+			values = mapText[y + 7].split("\t");
+
+			for (int x = 0; x < info[0]; x++)
 			{
-				this.setTileAt(j, i, Integer.valueOf(values[j]));
+				this.setTileAt(x, y, Integer.valueOf(values[x]));
 			}
 
 		}
+
 		this.createWalls();
 
 		this.lightManager = new LightManager(this);
 	}
 
+	/** Creates the Walls. */
 	private void createWalls()
 	{
 		this.wallSet = new HashSet<>((this.height * (2 * this.width + 1) + this.width) / 1, 3);
@@ -176,13 +187,24 @@ public class Map implements IRender, IUpdate
 		return null;
 	}
 
+	/** @param x - The X Coordinate
+	 * @param y - The Y Coordinate
+	 * @return The Chunk containing the given coordinates. */
+	public Chunk getChunk(int x, int y)
+	{
+		int xChunk = x / Chunk.SIZE, yChunk = y / Chunk.SIZE;
+		if (xChunk >= 0 && xChunk < this.chunks.length && yChunk >= 0 && yChunk < this.chunks[xChunk].length) return this.chunks[xChunk][yChunk];
+		return null;
+	}
+
 	/** @param x - X position.
 	 * @param y - Y position.
 	 * @return The Tile at the given coordinates. */
 	public Tile getTileAt(int x, int y)
 	{
-		if (x < 0 || y < 0 || x >= this.tiles.length || y >= this.tiles[x].length) return TileRegistry.DEFAULT;
-		return TileRegistry.getTileFromId(this.tiles[x][y]);
+		Chunk chunk = this.getChunk(x, y);
+		if (chunk != null) return chunk.getTileAt(x % Chunk.SIZE, y % Chunk.SIZE);
+		return TileRegistry.DEFAULT;
 	}
 
 	public HashSet<Vector> getWallSet()
@@ -193,15 +215,13 @@ public class Map implements IRender, IUpdate
 	@Override
 	public void render(Graphics g)
 	{
-		for (int i = 0; i < this.tiles.length; i++)
-		{
-			for (int j = 0; j < this.tiles[i].length; j++)
-			{
-				if (this.getTileAt(i, j).sprite != null) g.drawImage(this.getTileAt(i, j).sprite.getImage(), i * TILESIZE, j * TILESIZE, null);
-			}
-		}
+		for (int x = 0; x < this.chunks.length; ++x)
+			for (int y = 0; y < this.chunks.length; ++y)
+				this.chunks[x][y].render(g);
+		
 		GameState.getInstance().entityManager.render(g);
 		this.lightManager.render(g);
+
 	}
 
 	/** Sets the Tile at x, y to the input Tile's id.
@@ -211,7 +231,8 @@ public class Map implements IRender, IUpdate
 	 * @param id - The ID of the Tile to set. */
 	public void setTileAt(int x, int y, int id)
 	{
-		this.tiles[x][y] = id;
+		Chunk chunk = this.getChunk(x, y);
+		if (chunk != null) chunk.setTileAt(x % Chunk.SIZE, y % Chunk.SIZE, id);
 	}
 
 	/** Sets the Tile at x, y to the input Tile.

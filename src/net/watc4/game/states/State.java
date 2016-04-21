@@ -19,6 +19,7 @@ public abstract class State implements IRender, IUpdate
 		if (keyID == KeyEvent.VK_F1) GameSettings.debugMode = !GameSettings.debugMode;
 		if (keyID == KeyEvent.VK_F2) GameSettings.godMode = !GameSettings.godMode;
 		if (keyID == KeyEvent.VK_F3) GameSettings.lightMode = !GameSettings.lightMode;
+		if (keyID == KeyEvent.VK_F4) GameSettings.drawHitboxes = !GameSettings.drawHitboxes;
 	}
 
 }
