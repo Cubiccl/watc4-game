@@ -49,7 +49,7 @@ public class GameState extends State
 	{
 		this.entityManager = new EntityManager();
 		this.camera = new Camera();
-		this.map = new Map("res/maps/map2.txt");
+		this.map = new Map("res/maps/map2.txt", this);
 		new EntityBattery(15 * Map.TILESIZE, 11 * Map.TILESIZE + Map.TILESIZE / 2f, this, 0, 0);
 
 		this.entityLumi = new EntityLumi(this.map.lumiSpawnX, this.map.lumiSpawnY, this);
@@ -120,7 +120,7 @@ public class GameState extends State
 	public void reset()
 	{
 		this.entityManager = new EntityManager();
-		this.map = new Map("res/maps/map2.txt");
+		this.map = new Map("res/maps/map2.txt", this);
 
 		this.entityLumi = new EntityLumi(this.map.lumiSpawnX, this.map.lumiSpawnY, this);
 		this.entityPattou = new EntityPattou(this.map.pattouSpawnX, this.map.pattouSpawnY, this);

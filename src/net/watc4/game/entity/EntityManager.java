@@ -74,6 +74,14 @@ public class EntityManager implements IRender, IUpdate
 		return colliding.toArray(new Entity[colliding.size()]);
 	}
 
+	/** Adds a Chunk to the Chunk Manager.
+	 * 
+	 * @param chunk - The new Chunk. */
+	public void registerChunk(Chunk chunk)
+	{
+		this.division.put(chunk, new HashSet<Entity>());
+	}
+
 	/** Adds a new Entity to track.
 	 * 
 	 * @param entity - The new Entity. */
@@ -97,10 +105,7 @@ public class EntityManager implements IRender, IUpdate
 	{
 		this.clearEntityChunks(entity);
 		for (Chunk chunk : entity.getChunks())
-		{
-			if (!this.division.containsKey(chunk)) this.division.put(chunk, new HashSet<Entity>());
 			this.division.get(chunk).add(entity);
-		}
 	}
 
 	/** Tests for and applies collisions between the given Entities.

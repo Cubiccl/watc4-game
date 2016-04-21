@@ -20,6 +20,8 @@ public class Map implements IRender, IUpdate
 	public static final int TILESIZE = 32;
 	/** List of Areas of this Map. Used to limit Entity collision detections. */
 	public final Chunk[][] chunks;
+	/** The instance of the GameState. */
+	public final GameState game;
 	/** Height of the map in tiles. */
 	public final int height;
 	/** The LightManager */
@@ -33,13 +35,9 @@ public class Map implements IRender, IUpdate
 	/** Height of the map in tiles. */
 	public final int width;
 
-	/** @param width - Its width, in Tiles.
-	 * @param height - Its height, in Tiles.
-	 * @param lumiSpawnX - Lumi's spawn, x coordinate.
-	 * @param lumiSpawnY - Lumi's spawn, y coordinate.
-	 * @param pattouSpawnX - Pattou's spawn, x coordinate.
-	 * @param pattouSpawnY - Pattou's spawn, y coordinate. */
-	public Map(String url)
+	/** @param game - The game instance.
+	 * @param url - The URL to the Map file. */
+	public Map(String url, GameState game)
 	{
 		// Creating basic data
 		String[] mapText = FileUtils.readFileAsStringArray(url);
@@ -54,6 +52,7 @@ public class Map implements IRender, IUpdate
 		this.lumiSpawnY = info[3] * Map.TILESIZE;
 		this.pattouSpawnX = info[4] * Map.TILESIZE;
 		this.pattouSpawnY = info[5] * Map.TILESIZE;
+		this.game = game;
 
 		// Creating Chunks
 		int xChunks = this.width / Chunk.SIZE, yChunks = this.height / Chunk.SIZE;
@@ -62,7 +61,10 @@ public class Map implements IRender, IUpdate
 		this.chunks = new Chunk[xChunks][yChunks];
 		for (int x = 0; x < this.chunks.length; x++)
 			for (int y = 0; y < this.chunks.length; y++)
+			{
 				this.chunks[x][y] = new Chunk(x, y);
+				this.game.entityManager.registerChunk(this.chunks[x][y]);
+			}
 
 		String[] values; // Tiles values temporarily stored per line from the map file
 		for (int y = 0; y < info[1]; y++)

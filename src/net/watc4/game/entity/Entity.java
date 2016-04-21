@@ -209,9 +209,7 @@ public abstract class Entity implements IRender, IUpdate
 	 * @param entity - The colliding entity.
 	 * @see Entity#angleTo(Entity) angleTo(Entity) for positionning */
 	public void onCollisionWith(Entity entity)
-	{
-		System.out.println(entity.getClass().getName());
-	}
+	{}
 
 	/** @param dx - delta x
 	 * @param dy - delta y
