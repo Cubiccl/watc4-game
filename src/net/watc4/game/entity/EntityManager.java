@@ -36,7 +36,6 @@ public class EntityManager implements IRender, IUpdate
 		Entity[] colliding = this.getCollisionsWith(entity, dx, dy);
 		for (Entity entity2 : colliding)
 			if (entity2.isSolid) return false;
-
 		return true;
 	}
 
@@ -70,7 +69,6 @@ public class EntityManager implements IRender, IUpdate
 		candidates.remove(entity);
 		for (Entity candidate : candidates)
 			if (candidate.collidesWith(entity, dx, dy)) colliding.add(candidate);
-
 		return colliding.toArray(new Entity[colliding.size()]);
 	}
 

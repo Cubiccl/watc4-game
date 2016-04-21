@@ -47,7 +47,8 @@ public class EntityBattery extends Entity
 	{
 		super.update();
 		if (this.power < this.maxPower + this.buffer && this.game.entityLumi.isInLight(this)) this.power += CHARGE_SPEED;
-		else this.power -= UNCHARGE_SPEED;
+		else if (this.power > 0) this.power -= UNCHARGE_SPEED;
+		else this.power = 0;
 		if (this.power > this.maxPower + this.buffer) this.power = this.maxPower + this.buffer;
 	}
 

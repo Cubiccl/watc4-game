@@ -50,7 +50,7 @@ public class GameState extends State
 		this.entityManager = new EntityManager();
 		this.camera = new Camera();
 		this.map = new Map("res/maps/map2.txt", this);
-		new EntityBattery(15 * Map.TILESIZE, 11 * Map.TILESIZE + Map.TILESIZE / 2f, this, 0, 0);
+		new EntityBattery(6 * Map.TILESIZE, 10 * Map.TILESIZE, this, 100, 500);
 
 		this.entityLumi = new EntityLumi(this.map.lumiSpawnX, this.map.lumiSpawnY, this);
 		this.entityPattou = new EntityPattou(this.map.pattouSpawnX, this.map.pattouSpawnY, this);

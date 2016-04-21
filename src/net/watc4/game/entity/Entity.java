@@ -226,11 +226,10 @@ public abstract class Entity implements IRender, IUpdate
 			{
 				if (this.game.getMap().getTileAt(x, y).isSolid) return false;
 			}
-			// Test if on top of ladder
-			if (dy > 0 && !this.onLadder && this.game.getMap().getTileAt(x, tileYEnd - 1) == TileRegistry.LADDER_TOP
-					&& (this.yPos + dy + this.height - 1) % Map.TILESIZE < Map.TILESIZE / 6) return false;
 		}
-
+		// Test if on top of ladder
+		if (dy > 0 && !this.onLadder && this.game.getMap().getTileAt((int)((this.xPos + dx) / Map.TILESIZE), tileYEnd - 1) == TileRegistry.LADDER_TOP
+				&& (this.yPos + dy + this.height - 1) % Map.TILESIZE < Map.TILESIZE / 6) return false;
 		return this.game.entityManager.canEntityMove(this, dx, dy);
 	}
 
