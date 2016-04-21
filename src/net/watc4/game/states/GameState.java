@@ -7,6 +7,7 @@ import java.awt.event.KeyEvent;
 import net.watc4.game.Game;
 import net.watc4.game.display.Camera;
 import net.watc4.game.display.TextRenderer;
+import net.watc4.game.entity.EntityBattery;
 import net.watc4.game.entity.EntityLumi;
 import net.watc4.game.entity.EntityManager;
 import net.watc4.game.entity.EntityPattou;
@@ -49,6 +50,7 @@ public class GameState extends State
 		this.entityManager = new EntityManager();
 		this.camera = new Camera();
 		this.map = new Map("res/maps/map2.txt");
+		new EntityBattery(15 * Map.TILESIZE, 11 * Map.TILESIZE + Map.TILESIZE / 2f, this, 0, 0);
 
 		this.entityLumi = new EntityLumi(this.map.lumiSpawnX, this.map.lumiSpawnY, this);
 		this.entityPattou = new EntityPattou(this.map.pattouSpawnX, this.map.pattouSpawnY, this);
@@ -102,18 +104,12 @@ public class GameState extends State
 			++y;
 			TextRenderer.drawString(g, "Pattou HP: " + this.entityPattou.getHealth() + "/" + EntityPlayer.MAX_HEALTH, 0, y * size);
 			++y;
-			if (GameSettings.godMode)
-				TextRenderer.drawString(g, "God mode(F2) ON", 0, y * size);
-			else
-				TextRenderer.drawString(g, "God mode(F2) OFF", 0, y * size);
+			if (GameSettings.godMode) TextRenderer.drawString(g, "God mode(F2) ON", 0, y * size);
+			else TextRenderer.drawString(g, "God mode(F2) OFF", 0, y * size);
 			++y;
-			if (GameSettings.lightMode)
-				TextRenderer.drawString(g, "Light mode(F3) ON", 0, y * size);
-			else
-				TextRenderer.drawString(g, "Light mode(F3) OFF", 0, y * size);
-			
-			
-				
+			if (GameSettings.lightMode) TextRenderer.drawString(g, "Light mode(F3) ON", 0, y * size);
+			else TextRenderer.drawString(g, "Light mode(F3) OFF", 0, y * size);
+
 		}
 	}
 
