@@ -10,7 +10,7 @@ import net.watc4.game.utils.GameUtils;
 public class EntityLumi extends EntityPlayer
 {
 	private final int MOVE_SPEED = 5;
-	public final int LIGHT_INTENSITY = 700;
+	public final int LIGHT_INTENSITY = 400;
 
 	public EntityLumi(float xPos, float yPos, GameState game)
 	{

@@ -19,6 +19,7 @@ import javax.imageio.ImageIO;
 import java.util.TreeMap;
 
 import javafx.geometry.Point2D;
+import javafx.scene.shape.Circle;
 import net.watc4.game.entity.EntityLumi;
 import net.watc4.game.map.Map;
 import net.watc4.game.states.GameState;
@@ -133,16 +134,20 @@ public class LightManager implements IRender, IUpdate
 		
 		Area hole = new Area(new Polygon(triangleX, triangleY, triangleX.length));
 		Area polygon = new Area(new Polygon(new int[]{0,shadows.getWidth(),shadows.getWidth(),0},new int[]{0,0,shadows.getHeight(), shadows.getHeight()}, 4));
-		Area view = new Area(new Polygon(new int[]{FileUtils.toInt(lumi.getX() + (lumi.getWidth() - lumiLight.getWidth())/ 2),FileUtils.toInt(lumi.getX() + (lumi.getWidth() - lumiLight.getWidth())/ 2 + lumiLight.getWidth()),FileUtils.toInt(lumi.getX() + (lumi.getWidth() - lumiLight.getWidth())/ 2 + lumiLight.getWidth()),FileUtils.toInt(lumi.getX() + (lumi.getWidth() - lumiLight.getWidth())/ 2)},new int[]{FileUtils.toInt(lumi.getY() + (lumi.getHeight() - lumiLight.getHeight())/ 2), FileUtils.toInt(lumi.getY() + (lumi.getHeight() - lumiLight.getHeight())/ 2),FileUtils.toInt(lumi.getY() + (lumi.getHeight() - lumiLight.getHeight())/ 2 + lumiLight.getHeight()), FileUtils.toInt(lumi.getY() + (lumi.getHeight() - lumiLight.getHeight())/ 2 + lumiLight.getHeight())}, 4));
-	    hole.intersect(view);
-		polygon.subtract(hole);
-		if (!GameSettings.lightMode){			
+		
+		if (!GameSettings.lightMode){	
+			Area view = new Area(new Polygon(new int[]{FileUtils.toInt(lumi.getX() + (lumi.getWidth() - lumiLight.getWidth())/ 2),FileUtils.toInt(lumi.getX() + (lumi.getWidth() - lumiLight.getWidth())/ 2 + lumiLight.getWidth()),FileUtils.toInt(lumi.getX() + (lumi.getWidth() - lumiLight.getWidth())/ 2 + lumiLight.getWidth()),FileUtils.toInt(lumi.getX() + (lumi.getWidth() - lumiLight.getWidth())/ 2)},new int[]{FileUtils.toInt(lumi.getY() + (lumi.getHeight() - lumiLight.getHeight())/ 2), FileUtils.toInt(lumi.getY() + (lumi.getHeight() - lumiLight.getHeight())/ 2),FileUtils.toInt(lumi.getY() + (lumi.getHeight() - lumiLight.getHeight())/ 2 + lumiLight.getHeight()), FileUtils.toInt(lumi.getY() + (lumi.getHeight() - lumiLight.getHeight())/ 2 + lumiLight.getHeight())}, 4));
+		    hole.intersect(view);
+			polygon.subtract(hole);
 			shadowsG.setColor(Color.BLACK);
 			shadowsG.fill(polygon);
 			shadowsG.drawImage(lumiLight,FileUtils.toInt(lumi.getX() + (lumi.getWidth() - lumiLight.getWidth())/ 2),FileUtils.toInt(lumi.getY() + (lumi.getHeight() - lumiLight.getHeight())/ 2) ,null);
 		}else
 		{
 			shadowsG.setColor(Color.RED);
+			Area view = new Area(new Polygon(new int[]{FileUtils.toInt(lumi.getX() + lumi.getWidth()/2 - lumi.LIGHT_INTENSITY ),FileUtils.toInt(lumi.getX() + lumi.getWidth()/2 + lumi.LIGHT_INTENSITY),FileUtils.toInt(lumi.getX() + lumi.getWidth()/2 + lumi.LIGHT_INTENSITY),FileUtils.toInt(lumi.getX() + lumi.getWidth()/2 - lumi.LIGHT_INTENSITY)},new int[]{FileUtils.toInt(lumi.getY() + lumi.getHeight()/2 - lumi.LIGHT_INTENSITY), FileUtils.toInt(lumi.getY() + lumi.getHeight()/2 - lumi.LIGHT_INTENSITY),FileUtils.toInt(lumi.getY() + lumi.getHeight()/2 + lumi.LIGHT_INTENSITY), FileUtils.toInt(lumi.getY() + lumi.getHeight()/2 + lumi.LIGHT_INTENSITY)}, 4));
+		    hole.intersect(view);
+			polygon.subtract(hole);
 			shadowsG.draw(polygon);
 		}
 		this.hasChanged = false;
