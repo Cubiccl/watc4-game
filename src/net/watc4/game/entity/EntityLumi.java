@@ -31,6 +31,8 @@ public class EntityLumi extends EntityPlayer
 	 * @return True if the given coordinates are in the light emitted by Lumi. */
 	public boolean isInLight(float x0, float y0)
 	{
+		if (Math.sqrt(Math.pow(this.getX() - x0, 2) + Math.pow(this.getY() - y0, 2)) > LIGHT_INTENSITY) return false;
+		
 		int dx = (int) Math.abs(this.getX() + this.getWidth() / 2 - x0);
 		int dy = (int) Math.abs(this.getY() + this.getHeight() / 2 - y0);
 		int x = (int) x0;
