@@ -15,6 +15,12 @@ public class TileRegistry
 	/** List of all Tiles. */
 	private static HashMap<Integer, Tile> tiles;
 
+	/** @return The list of all Tiles*/
+	public static HashMap<Integer, Tile> getTiles()
+	{
+		return tiles;
+	}
+
 	public static Tile DEFAULT, AIR, LADDER_TOP;
 
 	/** Creates all Tiles in the Game. */
