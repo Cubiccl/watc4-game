@@ -85,6 +85,7 @@ public class CreateMap extends JDialog
 						else
 						{
 							MapEditor.createTiles(wf, hf);
+							MapEditor.removeCharacters();
 							dispose();
 						}
 					}
