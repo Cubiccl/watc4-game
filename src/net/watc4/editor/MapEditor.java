@@ -11,14 +11,22 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Date;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
@@ -28,10 +36,15 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import net.watc4.game.display.AnimationManager;
 import net.watc4.game.display.Sprite;
 import net.watc4.game.map.TileRegistry;
+import net.watc4.game.utils.FileUtils;
+
+import org.eclipse.wb.swing.FocusTraversalOnArray;
 
 public class MapEditor extends JFrame
 {
@@ -43,21 +56,25 @@ public class MapEditor extends JFrame
 	private static GridBagConstraints gbc = new GridBagConstraints();
 	private static JPanel mapView = new JPanel();
 	private static JScrollPane scrollMap = new JScrollPane();
-	private final JMenuBar menuBar = new JMenuBar();
-	private final JMenuItem createMapMenu = new JMenuItem("Nouveau");
+	private final static JMenuBar menuBar = new JMenuBar();
+	private final static JMenuItem createMapMenu = new JMenuItem("Nouveau");
 	private static TileLabel[][] tilemap;
 	private static TileLabel[] tileChoice;
 	private static int selectedTile;
-	private final JPanel tilesMenu = new JPanel();
-	private final JLabel lblTiles = new JLabel("Tuiles :");
+	private final static JPanel tilesMenu = new JPanel();
+	private final static JLabel lblTiles = new JLabel("Tuiles :");
 	private final static JPanel tileRegistry = new JPanel();
-	private final JLabel lblTileSelected = new JLabel("Tuile s\u00E9lectionn\u00E9e :");
+	private final static JLabel lblTileSelected = new JLabel("Tuile s\u00E9lectionn\u00E9e :");
 	private final static JLabel selectedTileLabel = new JLabel();
 	private static JTextField fieldPattouX, fieldPattouY, fieldLumiX, fieldLumiY;
 	private static JRadioButton radioPattou, radioLumi;
 	private static JLabel focusPattou, focusLumi, lumiEyes, lblSelected;
 	private static int lblSelectedIndex = -1;
 	private static JButton btnRemovePattou, btnRemoveLumi;
+	private final static JFileChooser fc = new JFileChooser();
+	private static boolean exists = false;
+	private static String[] fileHeader = new String[]
+	{ "width = ", "height = ", "lumiSpawnX = ", "lumiSpawnY = ", "pattouSpawnX = ", "pattouSpawnY = ", "tiles =" };
 	{
 		lblSelected = new JLabel();
 		lblSelected.setBounds(11, 11, 10, 10);
@@ -119,7 +136,7 @@ public class MapEditor extends JFrame
 				addTileUpdater(i, j);
 			}
 		}
-
+		exists = false;
 		mapView.updateUI();
 	}
 
@@ -211,6 +228,97 @@ public class MapEditor extends JFrame
 		});
 	}
 
+	public static boolean openMapFile(File mapFile)
+	{
+		String[] lines = FileUtils.readFileAsStringArray(mapFile.getAbsolutePath());
+
+		for (int i = 0; i < fileHeader.length; i++)
+		{
+			if (!lines[i].startsWith(fileHeader[i]))
+			{
+				System.err.println("Fichier incompatible.");
+				return false;
+			}
+		}
+		int info[] = new int[6]; // width, height, lumiSpawnX, lumiSpawnY, pattouSpawnX and pattouSpawnY
+		for (int i = 0; i < info.length; i++)
+		{
+			info[i] = Integer.valueOf(lines[i].split(" = ")[1]);
+		}
+		String[] values;
+		int[][] ids = new int[info[0]][info[1]];
+		for (int y = 0; y < info[1]; y++)
+		{
+			values = lines[y + 7].split("\t");
+			for (int x = 0; x < info[0]; x++)
+			{
+				ids[x][y] = Integer.valueOf(values[x]);
+			}
+		}
+
+		tilemap = new TileLabel[info[0]][info[1]];
+		mapView.removeAll();
+		for (int i = 0; i < tilemap.length; i++)
+		{
+			for (int j = 0; j < tilemap[0].length; j++)
+			{
+				tilemap[i][j] = new TileLabel();
+				tilemap[i][j].setLayout(null);
+				tilemap[i][j].setPreferredSize(new Dimension(32, 32));
+				tilemap[i][j].setId(ids[i][j]);
+				tilemap[i][j].setIcon(new ImageIcon(TileRegistry.getTileFromId(tilemap[i][j].getId()).sprite.getImage()));
+				tilemap[i][j].setVisible(true);
+				gbc.gridx = i;
+				gbc.gridy = j;
+				mapView.add(tilemap[i][j], gbc);
+				addTileUpdater(i, j);
+			}
+		}
+		mapView.updateUI();
+
+		fieldLumiX.setText(String.valueOf(info[2]));
+		fieldLumiY.setText(String.valueOf(info[3]));
+		fieldPattouX.setText(String.valueOf(info[4]));
+		fieldPattouY.setText(String.valueOf(info[5]));
+		focusLumi.add(lumiEyes);
+		tilemap[info[2]][info[3]].add(focusLumi);
+		tilemap[info[2]][info[3]].updateUI();
+		tilemap[info[4]][info[5]].add(focusPattou);
+		tilemap[info[4]][info[5]].updateUI();
+
+		exists = true;
+		return true;
+	}
+
+	public static boolean createMapFile(File mapFile) throws IOException
+	{
+		String path = mapFile.getAbsolutePath();
+		if (!path.endsWith(".txt")) path += ".txt";
+		PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(path)));
+		int[] info = new int[]
+		{ tilemap.length, tilemap[0].length, Integer.valueOf(fieldLumiX.getText()), Integer.valueOf(fieldLumiY.getText()),
+				Integer.valueOf(fieldPattouX.getText()), Integer.valueOf(fieldPattouY.getText()) };
+		for (int i = 0; i < fileHeader.length - 1; i++)
+		{
+			pw.println(new String(fileHeader[i] + info[i]));
+		}
+		pw.println(fileHeader[6]);
+
+		for (int i = 0; i < tilemap[0].length; i++)
+		{
+
+			for (int j = 0; j < tilemap.length - 1; j++)
+			{
+				pw.print(tilemap[j][i].getId() + "\t");
+			}
+			pw.println(tilemap[i][tilemap[i].length - 1].getId());
+		}
+
+		exists = true;
+		pw.close();
+		return true;
+	}
+
 	/** Create the frame. */
 	public MapEditor()
 	{
@@ -221,6 +329,10 @@ public class MapEditor extends JFrame
 		AnimationManager.create();
 		TileRegistry.createTiles();
 		getTilesFromRegistry();
+
+		FileFilter txtOnly = new FileNameExtensionFilter("Fichier texte", "txt");
+		fc.addChoosableFileFilter(txtOnly);
+		fc.removeChoosableFileFilter(fc.getAcceptAllFileFilter());
 
 		setJMenuBar(menuBar);
 		createMapMenu.setToolTipText("Choisissez les dimensions de votre nouvelle carte");
@@ -238,6 +350,7 @@ public class MapEditor extends JFrame
 					CreateMap dialog = new CreateMap();
 					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 					dialog.setVisible(true);
+					MapEditor.this.setTitle("");
 				} catch (Exception e)
 				{
 					e.printStackTrace();
@@ -254,16 +367,114 @@ public class MapEditor extends JFrame
 		menuBar.add(mntmModifier);
 
 		JMenuItem mntmOuvrirUneCarte = new JMenuItem("Ouvrir");
+		mntmOuvrirUneCarte.addMouseListener(new MouseAdapter()
+		{
+			@Override
+			public void mouseClicked(MouseEvent arg0)
+			{
+				int returnVal = fc.showOpenDialog(MapEditor.this);
+				if (returnVal == JFileChooser.APPROVE_OPTION)
+				{
+					File mapFile = fc.getSelectedFile();
+					openMapFile(mapFile);
+					MapEditor.this.setTitle("");
+				}
+			}
+		});
 		mntmOuvrirUneCarte.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		mntmOuvrirUneCarte.setToolTipText("Ouvrez une carte déjà existante");
-		mntmOuvrirUneCarte.setMaximumSize(new Dimension(80, 32767));
+		mntmOuvrirUneCarte.setToolTipText("Ouvrez une carte d\u00E9j\u00E0 existante");
+		mntmOuvrirUneCarte.setMaximumSize(new Dimension(70, 32767));
 		menuBar.add(mntmOuvrirUneCarte);
 
 		JMenuItem mntmEnregistrer = new JMenuItem("Enregistrer");
+		mntmEnregistrer.addMouseListener(new MouseAdapter()
+		{
+			@Override
+			public void mouseClicked(MouseEvent e)
+			{
+				if (tilemap == null || fieldLumiX.getText().equals("") || fieldLumiY.getText().equals("") || fieldPattouX.getText().equals("")
+						|| fieldPattouY.getText().equals(""))
+				{
+					if (tilemap != null)
+					{
+						JOptionPane.showMessageDialog(null, "Veuillez placer Lumi et Pattou sur la carte.", null, JOptionPane.ERROR_MESSAGE);
+					}
+				} else if (!exists)
+				{
+					int returnVal = fc.showSaveDialog(MapEditor.this);
+					if (returnVal == JFileChooser.APPROVE_OPTION)
+					{
+						try
+						{
+							createMapFile(fc.getSelectedFile());
+							Date d = new Date();
+							MapEditor.this.setTitle("Enregistr\u00E9 \u00E0 " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds());
+						} catch (IOException e1)
+						{
+							e1.printStackTrace();
+						}
+					}
+				} else try
+				{
+					createMapFile(fc.getSelectedFile());
+					Date d = new Date();
+					MapEditor.this.setTitle("Enregistr\u00E9 \u00E0 " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds());
+				} catch (IOException e1)
+				{
+					e1.printStackTrace();
+				}
+
+			}
+		});
 		mntmEnregistrer.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		mntmEnregistrer.setMaximumSize(new Dimension(80, 32767));
+		mntmEnregistrer.setMaximumSize(new Dimension(90, 32767));
 		mntmEnregistrer.setToolTipText("Sauvegardez votre carte au format texte");
 		menuBar.add(mntmEnregistrer);
+
+		JMenuItem mntmEnregistrerSous = new JMenuItem("Enregistrer sous");
+		mntmEnregistrerSous.setMaximumSize(new Dimension(110, 32767));
+		mntmEnregistrerSous.addMouseListener(new MouseAdapter()
+		{
+			@Override
+			public void mouseClicked(MouseEvent e)
+			{
+				if (tilemap == null || fieldLumiX.getText().equals("") || fieldLumiY.getText().equals("") || fieldPattouX.getText().equals("")
+						|| fieldPattouY.getText().equals(""))
+				{
+					JOptionPane.showMessageDialog(null, "Veuillez placer Lumi et Pattou sur la carte.", null, JOptionPane.ERROR_MESSAGE);
+				} else
+				{
+					int returnVal = fc.showSaveDialog(MapEditor.this);
+					if (returnVal == JFileChooser.APPROVE_OPTION)
+					{
+						try
+						{
+							createMapFile(fc.getSelectedFile());
+							Date d = new Date();
+							MapEditor.this.setTitle("Enregistr\u00E9 \u00E0 " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds());
+						} catch (IOException e1)
+						{
+							e1.printStackTrace();
+						}
+					}
+				}
+			}
+		});
+		mntmEnregistrerSous.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		menuBar.add(mntmEnregistrerSous);
+
+		JMenuItem mntmQuitter = new JMenuItem("     Quitter");
+		mntmQuitter.setMaximumSize(new Dimension(80, 32767));
+		mntmQuitter.addMouseListener(new MouseAdapter()
+		{
+			@Override
+			public void mouseClicked(MouseEvent arg0)
+			{
+				System.exit(0);
+			}
+		});
+		mntmQuitter.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		menuBar.add(mntmQuitter);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
@@ -299,12 +510,12 @@ public class MapEditor extends JFrame
 		tilesMenu.add(selectedTileLabel);
 
 		JPanel entityMenu = new JPanel();
-		menu.add(entityMenu, "Entités");
+		menu.add(entityMenu, "Entit\u00E9s");
 		entityMenu.setLayout(null);
 		entityMenu.setPreferredSize(new Dimension(620, 90));
 		entityMenu.setMinimumSize(new Dimension(100, 10));
 
-		JLabel lblEntity = new JLabel("Entités :");
+		JLabel lblEntity = new JLabel("Entit\u00E9s :");
 		lblEntity.setBounds(18, 23, 46, 14);
 		entityMenu.add(lblEntity);
 
@@ -315,7 +526,7 @@ public class MapEditor extends JFrame
 		scrollEntityRegistry.setBounds(74, 15, 300, 50);
 		entityMenu.add(scrollEntityRegistry);
 
-		JLabel lblSelectedEntity = new JLabel("Entité sélectionnée :");
+		JLabel lblSelectedEntity = new JLabel("Entit\u00E9 s\u00E9lectionn\u00E9e :");
 		lblSelectedEntity.setBounds(430, 23, 116, 14);
 		entityMenu.add(lblSelectedEntity);
 
@@ -455,6 +666,10 @@ public class MapEditor extends JFrame
 		scrollMap.getHorizontalScrollBar().setUnitIncrement(6);
 		GridBagLayout gbl_panel = new GridBagLayout();
 		mapView.setLayout(gbl_panel);
+		contentPane.setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]
+		{ tilesMenu, lblTiles, scrollTileRegistry, tileRegistry, menu, mapView, lblTileSelected, selectedTileLabel, entityMenu, lblEntity,
+				scrollEntityRegistry, lblSelectedEntity, label_2, characterMenu, radioPattou, lblPattouX, fieldPattouX, lblPattouY, fieldPattouY, separator,
+				radioLumi, lblLumiX, fieldLumiX, lblLumiY, fieldLumiY, btnRemovePattou, btnRemoveLumi, scrollMap }));
 
 	}
 }
