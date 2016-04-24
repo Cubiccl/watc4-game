@@ -1,6 +1,7 @@
 package net.watc4.game;
 
 import java.awt.Color;
+import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
@@ -16,8 +17,7 @@ import net.watc4.game.utils.GameUtils;
 import net.watc4.game.utils.InputManager;
 
 /** Main object. Contains a thread to run the game. */
-public class Game implements Runnable
-{
+public class Game implements Runnable {
 	/** The instance of the Game. */
 	private static Game instance;
 
@@ -31,7 +31,17 @@ public class Game implements Runnable
 	{
 		AnimationManager.create();
 		TileRegistry.createTiles();
-		instance = new Game();
+
+		EventQueue.invokeLater(new Runnable()
+		{
+			public void run()
+			{
+				try
+				{
+					instance = new Game();
+				} catch (Exception e) {}
+			}
+		});
 	}
 
 	/** Manages keyboard inputs from the user. */
