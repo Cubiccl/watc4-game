@@ -48,6 +48,7 @@ import org.eclipse.wb.swing.FocusTraversalOnArray;
 
 public class MapEditor extends JFrame
 {
+	private static final long serialVersionUID = 1L;
 	private static final int MODE_TILES = 0;
 	private static final int MODE_ENTITY = 1;
 	private static final int MODE_CHARACTERS = 2;
@@ -389,6 +390,7 @@ public class MapEditor extends JFrame
 		JMenuItem mntmEnregistrer = new JMenuItem("Enregistrer");
 		mntmEnregistrer.addMouseListener(new MouseAdapter()
 		{
+			@SuppressWarnings("deprecation")
 			@Override
 			public void mouseClicked(MouseEvent e)
 			{
@@ -435,6 +437,7 @@ public class MapEditor extends JFrame
 		mntmEnregistrerSous.setMaximumSize(new Dimension(110, 32767));
 		mntmEnregistrerSous.addMouseListener(new MouseAdapter()
 		{
+			@SuppressWarnings("deprecation")
 			@Override
 			public void mouseClicked(MouseEvent e)
 			{

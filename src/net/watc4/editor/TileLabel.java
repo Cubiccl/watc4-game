@@ -6,6 +6,7 @@ import net.watc4.game.entity.Entity;
 
 public class TileLabel extends JLabel
 {
+	private static final long serialVersionUID = 1L;
 	private int id = 2;
 	private Entity en;
 

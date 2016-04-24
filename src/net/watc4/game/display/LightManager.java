@@ -19,7 +19,6 @@ import javax.imageio.ImageIO;
 import java.util.TreeMap;
 
 import javafx.geometry.Point2D;
-import javafx.scene.shape.Circle;
 import net.watc4.game.entity.EntityLumi;
 import net.watc4.game.map.Map;
 import net.watc4.game.states.GameState;
