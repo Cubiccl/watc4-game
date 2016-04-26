@@ -1,5 +1,6 @@
 package net.watc4.game.entity;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
@@ -27,22 +28,23 @@ public final class EntityRegistry
 	 * @param id - The ID of the Entity.
 	 * @param values - The data from the map file.
 	 * @return The spawned Entity. */
+	@SuppressWarnings("unchecked")
 	public static Entity createEntity(Map map, int id, String[] values)
 	{
 		Object[] arguments = new Object[values.length];
 		arguments[0] = map.game;
 		arguments[1] = Float.parseFloat(values[1]) * Map.TILESIZE;
 		arguments[2] = Float.parseFloat(values[2]) * Map.TILESIZE;
-		switch (id)
-		{
-			case 2: // Battery
-				arguments[3] = Integer.parseInt(values[3]);
-				arguments[4] = Integer.parseInt(values[4]);
-				break;
 
-			default:
-				break;
+		Constructor<Entity> constructor = (Constructor<Entity>) entities.get(Integer.parseInt(values[0])).getConstructors()[0];
+
+		for (int i = 3; i < arguments.length; i++)
+		{
+			if (constructor.getParameters()[i].getType().toString().equals("int")) arguments[i] = Integer.parseInt(values[i]);
+			else if (constructor.getParameters()[i].getType().toString().equals("float")) arguments[i] = Float.parseFloat(values[i]);
+			else arguments[i] = values[i];
 		}
+
 		return spawnEntity(map, id, arguments);
 	}
 
