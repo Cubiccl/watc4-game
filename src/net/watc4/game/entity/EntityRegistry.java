@@ -48,6 +48,12 @@ public final class EntityRegistry
 		return spawnEntity(map, id, arguments);
 	}
 
+	/** @return The list of Entity types, sorted by ID. (0 -> size-1) */
+	public static HashMap<Integer, Class<? extends Entity>> getEntities()
+	{
+		return entities;
+	}
+
 	/** Registers the target Entity.
 	 * 
 	 * @param id - The ID of the Entity.
