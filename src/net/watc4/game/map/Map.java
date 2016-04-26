@@ -7,6 +7,10 @@ import java.util.Iterator;
 import javafx.geometry.Point2D;
 import net.watc4.game.display.LightManager;
 import net.watc4.game.entity.Entity;
+import net.watc4.game.entity.EntityLumi;
+import net.watc4.game.entity.EntityManager;
+import net.watc4.game.entity.EntityPattou;
+import net.watc4.game.entity.EntityRegistry;
 import net.watc4.game.states.GameState;
 import net.watc4.game.utils.FileUtils;
 import net.watc4.game.utils.IRender;
@@ -18,8 +22,52 @@ public class Map implements IRender, IUpdate
 {
 	/** Constant: size a each Tile */
 	public static final int TILESIZE = 32;
+
+	/** Creates a Map from the target URL.
+	 * 
+	 * @param url - The URL to the file containing the Map data.
+	 * @param game - The game instance.
+	 * @return The built Map. */
+	public static Map createFrom(String url, GameState game)
+	{
+		// Creating basic data
+		String[] mapText = FileUtils.readFileAsStringArray(url);
+		int info[] = new int[6]; // width, height, lumiSpawnX, lumiSpawnY, pattouSpawnX and pattouSpawnY
+		for (int i = 0; i < info.length; i++)
+			info[i] = Integer.valueOf(mapText[i].split(" = ")[1]);
+
+		Map map = new Map(game, info[0], info[1], info[2] * Map.TILESIZE, info[3] * Map.TILESIZE, info[4] * Map.TILESIZE, info[5] * Map.TILESIZE);
+
+		String[] values; // Tiles values temporarily stored per line from the map file
+		for (int y = 0; y < info[1]; y++)
+		{
+			values = mapText[y + 7].split("\t");
+
+			for (int x = 0; x < info[0]; x++)
+				map.setTileAt(x, y, Integer.valueOf(values[x]));
+
+		}
+
+		int index = 7 + info[1] + 1;
+		while (index < mapText.length)
+		{
+			values = mapText[index].split(" ");
+			EntityRegistry.createEntity(map, Integer.parseInt(values[0]), values);
+			++index;
+		}
+
+		game.entityLumi = (EntityLumi) EntityRegistry.spawnEntity(map, 0, game, map.lumiSpawnX, map.lumiSpawnY);
+		game.entityPattou = (EntityPattou) EntityRegistry.spawnEntity(map, 1, game, map.pattouSpawnX, map.pattouSpawnY);
+
+		map.createWalls();
+
+		return map;
+	}
+
 	/** List of Areas of this Map. Used to limit Entity collision detections. */
 	public final Chunk[][] chunks;
+	/** Manages Entities in this Game. */
+	public EntityManager entityManager;
 	/** The instance of the GameState. */
 	public final GameState game;
 	/** Height of the map in tiles. */
@@ -36,23 +84,23 @@ public class Map implements IRender, IUpdate
 	public final int width;
 
 	/** @param game - The game instance.
-	 * @param url - The URL to the Map file. */
-	public Map(String url, GameState game)
+	 * @param pattouSpawnY
+	 * @param pattouSpawnX
+	 * @param lumiSpawnY
+	 * @param lumiSpawnX
+	 * @param height
+	 * @param width */
+	public Map(GameState game, int width, int height, int lumiSpawnX, int lumiSpawnY, int pattouSpawnX, int pattouSpawnY)
 	{
-		// Creating basic data
-		String[] mapText = FileUtils.readFileAsStringArray(url);
-		int info[] = new int[6]; // width, height, lumiSpawnX, lumiSpawnY, pattouSpawnX and pattouSpawnY
-		for (int i = 0; i < info.length; i++)
-		{
-			info[i] = Integer.valueOf(mapText[i].split(" = ")[1]);
-		}
-		this.width = info[0];
-		this.height = info[1];
-		this.lumiSpawnX = info[2] * Map.TILESIZE;
-		this.lumiSpawnY = info[3] * Map.TILESIZE;
-		this.pattouSpawnX = info[4] * Map.TILESIZE;
-		this.pattouSpawnY = info[5] * Map.TILESIZE;
 		this.game = game;
+		this.width = width;
+		this.height = height;
+		this.lumiSpawnX = lumiSpawnX;
+		this.lumiSpawnY = lumiSpawnY;
+		this.pattouSpawnX = pattouSpawnX;
+		this.pattouSpawnY = pattouSpawnY;
+		this.entityManager = new EntityManager(this);
+		this.lightManager = new LightManager(this);
 
 		// Creating Chunks
 		int xChunks = this.width / Chunk.SIZE, yChunks = this.height / Chunk.SIZE;
@@ -63,24 +111,9 @@ public class Map implements IRender, IUpdate
 			for (int y = 0; y < this.chunks.length; y++)
 			{
 				this.chunks[x][y] = new Chunk(x, y);
-				this.game.entityManager.registerChunk(this.chunks[x][y]);
+				this.entityManager.registerChunk(this.chunks[x][y]);
 			}
 
-		String[] values; // Tiles values temporarily stored per line from the map file
-		for (int y = 0; y < info[1]; y++)
-		{
-			values = mapText[y + 7].split("\t");
-
-			for (int x = 0; x < info[0]; x++)
-			{
-				this.setTileAt(x, y, Integer.valueOf(values[x]));
-			}
-
-		}
-
-		this.createWalls();
-
-		this.lightManager = new LightManager(this);
 	}
 
 	/** Creates the Walls. */
@@ -168,7 +201,7 @@ public class Map implements IRender, IUpdate
 				}
 			}
 		}
-
+		this.lightManager.setWalls(this.wallSet);
 	}
 
 	/** @param entity - The Entity to test.
@@ -229,7 +262,7 @@ public class Map implements IRender, IUpdate
 			for (int y = 0; y < this.chunks.length; ++y)
 				if (this.chunks[x][y].shouldRender()) this.chunks[x][y].render(g);
 
-		GameState.getInstance().entityManager.render(g);
+		this.entityManager.render(g);
 		this.lightManager.render(g);
 
 	}
@@ -257,5 +290,7 @@ public class Map implements IRender, IUpdate
 
 	@Override
 	public void update()
-	{}
+	{
+		this.entityManager.update();
+	}
 }

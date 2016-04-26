@@ -9,6 +9,7 @@ import java.awt.image.BufferStrategy;
 import net.watc4.game.display.AnimationManager;
 import net.watc4.game.display.TextRenderer;
 import net.watc4.game.display.Window;
+import net.watc4.game.entity.EntityRegistry;
 import net.watc4.game.map.TileRegistry;
 import net.watc4.game.states.State;
 import net.watc4.game.states.menu.MainMenuState;
@@ -31,6 +32,7 @@ public class Game implements Runnable {
 	{
 		AnimationManager.create();
 		TileRegistry.createTiles();
+		EntityRegistry.createEntities();
 
 		EventQueue.invokeLater(new Runnable()
 		{

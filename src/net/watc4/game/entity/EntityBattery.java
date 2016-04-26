@@ -14,9 +14,9 @@ public class EntityBattery extends Entity
 	/** Represents how long this Battery has been in the Light. */
 	private int power;
 
-	public EntityBattery(float xPos, float yPos, GameState game, int maxPower, int buffer)
+	public EntityBattery(GameState game, float xPos, float yPos, int maxPower, int buffer)
 	{
-		super(xPos, yPos, game);
+		super(game, xPos, yPos);
 		this.power = 0;
 		this.maxPower = maxPower;
 		this.buffer = buffer;

@@ -3,10 +3,8 @@ package net.watc4.game.entity;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
-import java.util.HashSet;
 
 import net.watc4.game.display.renderer.EntityRenderer;
-import net.watc4.game.map.Chunk;
 import net.watc4.game.map.Map;
 import net.watc4.game.map.Tile;
 import net.watc4.game.map.TileRegistry;
@@ -47,19 +45,18 @@ public abstract class Entity implements IRender, IUpdate
 
 	/** Creates a new Entity.
 	 * 
+	 * @param game - A reference to the GameState.
 	 * @param xPos - Its x position.
-	 * @param yPos - Its y position.
-	 * @param game - A reference to the GameState. */
-	public Entity(float xPos, float yPos, GameState game)
+	 * @param yPos - Its y position. */
+	public Entity(GameState game, float xPos, float yPos)
 	{
+		this.game = game;
 		this.xPos = xPos;
 		this.yPos = yPos;
 		this.xSpeed = 0;
 		this.ySpeed = 0;
 		this.hasGravity = true;
 		this.isSolid = false;
-		this.game = game;
-		this.game.entityManager.registerEntity(this);
 		this.renderer = new EntityRenderer(this);
 		this.width = (int) DEFAULT_SIZE;
 		this.height = (int) DEFAULT_SIZE;
@@ -127,21 +124,6 @@ public abstract class Entity implements IRender, IUpdate
 		{ this.getX() + this.getWidth() / 2, this.getY() + this.getHeight() / 2 };
 	}
 
-	/** @return The Chunk(s) that contain this Entity. */
-	public Chunk[] getChunks()
-	{
-		HashSet<Chunk> containers = new HashSet<Chunk>();
-		Chunk current = this.game.getMap().getChunk(this.getX(), this.getY());
-		containers.add(current);
-		current = this.game.getMap().getChunk(this.getX() + this.getWidth(), this.getY());
-		containers.add(current);
-		current = this.game.getMap().getChunk(this.getX(), this.getY() + this.getHeight());
-		containers.add(current);
-		current = this.game.getMap().getChunk(this.getX() + this.getWidth(), this.getY() + this.getHeight());
-		containers.add(current);
-		return containers.toArray(new Chunk[containers.size()]);
-	}
-
 	public int getDirection()
 	{
 		return this.direction;
@@ -202,7 +184,7 @@ public abstract class Entity implements IRender, IUpdate
 	/** Destroys this Entity. */
 	public void kill()
 	{
-		this.game.entityManager.unregisterEntity(this);
+		this.game.getMap().entityManager.unregisterEntity(this);
 	}
 
 	/** Called when this Entity collides with the given Entity.
@@ -228,9 +210,9 @@ public abstract class Entity implements IRender, IUpdate
 			}
 		}
 		// Test if on top of ladder
-		if (dy > 0 && !this.onLadder && this.game.getMap().getTileAt((int)((this.xPos + dx) / Map.TILESIZE), tileYEnd - 1) == TileRegistry.LADDER_TOP
+		if (dy > 0 && !this.onLadder && this.game.getMap().getTileAt((int) ((this.xPos + dx) / Map.TILESIZE), tileYEnd - 1) == TileRegistry.LADDER_TOP
 				&& (this.yPos + dy + this.height - 1) % Map.TILESIZE < Map.TILESIZE / 6) return false;
-		return this.game.entityManager.canEntityMove(this, dx, dy);
+		return this.game.getMap().entityManager.canEntityMove(this, dx, dy);
 	}
 
 	@Override
@@ -241,8 +223,10 @@ public abstract class Entity implements IRender, IUpdate
 		{
 			g.setColor(Color.BLUE);
 			g.drawRect((int) this.getX(), (int) this.getY(), (int) this.getWidth(), (int) this.getHeight());
-			g.drawLine(FileUtils.toInt(this.getX() + this.getWidth()/2), FileUtils.toInt(this.getY()), FileUtils.toInt(this.getX() + this.getWidth()/2), FileUtils.toInt(this.getY() + this.getHeight()));
-			g.drawLine(FileUtils.toInt(this.getX()), FileUtils.toInt(this.getY() + this.getHeight()/2), FileUtils.toInt(this.getX() + this.getWidth()), FileUtils.toInt(this.getY() + this.getHeight()/2));		
+			g.drawLine(FileUtils.toInt(this.getX() + this.getWidth() / 2), FileUtils.toInt(this.getY()), FileUtils.toInt(this.getX() + this.getWidth() / 2),
+					FileUtils.toInt(this.getY() + this.getHeight()));
+			g.drawLine(FileUtils.toInt(this.getX()), FileUtils.toInt(this.getY() + this.getHeight() / 2), FileUtils.toInt(this.getX() + this.getWidth()),
+					FileUtils.toInt(this.getY() + this.getHeight() / 2));
 		}
 	}
 
@@ -262,26 +246,6 @@ public abstract class Entity implements IRender, IUpdate
 	{
 		this.renderer.setAnimation(null);
 		this.renderer = renderer;
-	}
-
-	/** @return True if this Entity should render (i.e. it belongs to a rendered Chunk) */
-	public boolean shouldRender()
-	{
-		Chunk[] chunks = this.getChunks();
-		for (Chunk chunk : chunks)
-			if (chunk.shouldRender()) return true;
-
-		return false;
-	}
-
-	/** @return True if this Entity should update (i.e. it belongs to a updated Chunk) */
-	public boolean shouldUpdate()
-	{
-		Chunk[] chunks = this.getChunks();
-		for (Chunk chunk : chunks)
-			if (chunk.shouldUpdate()) return true;
-
-		return false;
 	}
 
 	@Override

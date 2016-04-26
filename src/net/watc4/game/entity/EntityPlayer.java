@@ -1,11 +1,9 @@
 package net.watc4.game.entity;
 
-import java.awt.Graphics;
-
 import net.watc4.game.states.GameState;
 
 /** Entity controller by the user */
-public class EntityPlayer extends Entity
+public abstract class EntityPlayer extends Entity
 {
 	/** The maximum health of the players. */
 	public static final int MAX_HEALTH = 20;
@@ -18,9 +16,9 @@ public class EntityPlayer extends Entity
 	 * @param xPos - Its x position.
 	 * @param yPos - Its y position.
 	 * @param game - A reference to the GameState. */
-	public EntityPlayer(float xPos, float yPos, GameState game)
+	public EntityPlayer(GameState game, float xPos, float yPos)
 	{
-		super(xPos, yPos, game);
+		super(game, xPos, yPos);
 		this.health = MAX_HEALTH;
 	}
 
@@ -28,18 +26,6 @@ public class EntityPlayer extends Entity
 	public int getHealth()
 	{
 		return this.health;
-	}
-
-	@Override
-	public void render(Graphics g)
-	{
-		super.render(g);
-	}
-
-	@Override
-	public void update()
-	{
-		super.update();
 	}
 
 }

@@ -84,6 +84,11 @@ public class LightManager implements IRender, IUpdate
 		g.drawImage(this.shadows, 0, 0, null);
 	}
 
+	public void setWalls(HashSet<Vector> wallSet)
+	{
+		this.wallSet = wallSet;
+	}
+
 	@Override
 	public void update()
 	{

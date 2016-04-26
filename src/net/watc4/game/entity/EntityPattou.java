@@ -22,9 +22,9 @@ public class EntityPattou extends EntityPlayer
 	/** Time, in UPS, for the begin of the jump */
 	private int jumpingTime;
 
-	public EntityPattou(float xPos, float yPos, GameState game)
+	public EntityPattou(GameState game, float xPos, float yPos)
 	{
-		super(xPos, yPos, game);
+		super(game, xPos, yPos);
 		this.setRenderer(new PattouRenderer(this));
 		this.width = 20;
 		this.height = 32;

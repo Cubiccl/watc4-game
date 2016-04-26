@@ -7,9 +7,7 @@ import java.awt.event.KeyEvent;
 import net.watc4.game.Game;
 import net.watc4.game.display.Camera;
 import net.watc4.game.display.TextRenderer;
-import net.watc4.game.entity.EntityBattery;
 import net.watc4.game.entity.EntityLumi;
-import net.watc4.game.entity.EntityManager;
 import net.watc4.game.entity.EntityPattou;
 import net.watc4.game.entity.EntityPlayer;
 import net.watc4.game.map.Map;
@@ -37,8 +35,6 @@ public class GameState extends State
 	public final Camera camera;
 	/** The Light Player. */
 	public EntityLumi entityLumi;
-	/** Manages Entities in this Game. */
-	public EntityManager entityManager;
 	/** The Shadow Player. */
 	public EntityPattou entityPattou;
 	/** The world they evolve into. */
@@ -47,13 +43,8 @@ public class GameState extends State
 	/** Creates the GameState. */
 	public GameState()
 	{
-		this.entityManager = new EntityManager();
 		this.camera = new Camera();
-		this.map = new Map("res/maps/map2.txt", this);
-		new EntityBattery(6 * Map.TILESIZE, 10 * Map.TILESIZE, this, 100, 500);
-
-		this.entityLumi = new EntityLumi(this.map.lumiSpawnX, this.map.lumiSpawnY, this);
-		this.entityPattou = new EntityPattou(this.map.pattouSpawnX, this.map.pattouSpawnY, this);
+		this.map = Map.createFrom("res/maps/map2.txt", this);
 	}
 
 	/** Draws a Red overlay. It becomes more opaque the more damage the player takes.
@@ -119,11 +110,7 @@ public class GameState extends State
 	/** Resets the Game & Map as they were created. */
 	public void reset()
 	{
-		this.entityManager = new EntityManager();
-		this.map = new Map("res/maps/map2.txt", this);
-
-		this.entityLumi = new EntityLumi(this.map.lumiSpawnX, this.map.lumiSpawnY, this);
-		this.entityPattou = new EntityPattou(this.map.pattouSpawnX, this.map.pattouSpawnY, this);
+		this.map = Map.createFrom("res/maps/map2.txt", this);
 		this.map.lightManager.update();
 	}
 
@@ -131,6 +118,5 @@ public class GameState extends State
 	public void update()
 	{
 		this.map.update();
-		this.entityManager.update();
 	}
 }
