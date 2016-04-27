@@ -78,8 +78,7 @@ public class Chunk implements IRender
 	public boolean shouldRender()
 	{
 		Camera camera = GameState.getInstance().camera;
-		return new Rectangle(this.xPos * ACTUAL_SIZE, this.yPos * ACTUAL_SIZE, ACTUAL_SIZE, ACTUAL_SIZE).intersects(new Rectangle(camera.getXOffset(), camera
-				.getYOffset(), camera.width, camera.height));
+		return new Rectangle(this.xPos * ACTUAL_SIZE, this.yPos * ACTUAL_SIZE, ACTUAL_SIZE, ACTUAL_SIZE).intersects(camera.rectangle());
 	}
 
 	/** @return True if this Chunk should Update. For now it always does, it may not in bigger maps. */

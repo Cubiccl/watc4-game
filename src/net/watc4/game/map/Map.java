@@ -108,7 +108,7 @@ public class Map implements IRender, IUpdate
 		if (this.height % Chunk.SIZE != 0) ++yChunks;
 		this.chunks = new Chunk[xChunks][yChunks];
 		for (int x = 0; x < this.chunks.length; x++)
-			for (int y = 0; y < this.chunks.length; y++)
+			for (int y = 0; y < this.chunks[x].length; y++)
 			{
 				this.chunks[x][y] = new Chunk(x, y);
 				this.entityManager.registerChunk(this.chunks[x][y]);
@@ -259,7 +259,7 @@ public class Map implements IRender, IUpdate
 	public void render(Graphics g)
 	{
 		for (int x = 0; x < this.chunks.length; ++x)
-			for (int y = 0; y < this.chunks.length; ++y)
+			for (int y = 0; y < this.chunks[x].length; ++y)
 				if (this.chunks[x][y].shouldRender()) this.chunks[x][y].render(g);
 
 		this.entityManager.render(g);

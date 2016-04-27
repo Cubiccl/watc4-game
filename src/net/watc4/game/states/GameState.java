@@ -2,6 +2,7 @@ package net.watc4.game.states;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 
 import net.watc4.game.Game;
@@ -75,10 +76,12 @@ public class GameState extends State
 	public void render(Graphics g)
 	{
 		this.camera.centerOn(this.entityLumi, this.entityPattou, this.map);
-		g.translate(-this.camera.getXOffset(), -this.camera.getYOffset());
+		((Graphics2D) g).scale(this.camera.getScale(), this.camera.getScale());
+		g.translate((int) -this.camera.getXOffset(), (int) -this.camera.getYOffset());
 		this.map.render(g);
 		this.entityPattou.render(g);
-		g.translate(this.camera.getXOffset(), this.camera.getYOffset());
+		((Graphics2D) g).scale(1 / this.camera.getScale(), 1 / this.camera.getScale());
+		g.translate((int) this.camera.getXOffset(), (int) this.camera.getYOffset());
 		this.drawDamage(g);
 
 		if (GameSettings.debugMode)
