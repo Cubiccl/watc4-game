@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 
 import net.watc4.game.Game;
+import net.watc4.game.display.Camera;
 import net.watc4.game.display.TextRenderer;
 import net.watc4.game.states.menu.MainMenuState;
 
@@ -40,7 +41,7 @@ public class GameOverState extends State
 	{
 		this.gameState.render(g);
 
-		int x = Game.getGame().window.canvas.getWidth() / 2, y = Game.getGame().window.canvas.getHeight() / 2;
+		int x = Camera.WIDTH / 2, y = Camera.HEIGHT / 2;
 		g.setColor(new Color(0, 0, 0, 200));
 		g.fillRect(0, 0, x * 2, y * 2);
 		g.setColor(Color.RED);

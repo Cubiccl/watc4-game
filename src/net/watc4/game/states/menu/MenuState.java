@@ -5,7 +5,7 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
-import net.watc4.game.Game;
+import net.watc4.game.display.Camera;
 import net.watc4.game.display.TextRenderer;
 import net.watc4.game.states.State;
 import net.watc4.game.utils.IRender;
@@ -82,7 +82,7 @@ public abstract class MenuState extends State
 
 		TextRenderer.setFontSize(40);
 		g.setColor(Color.DARK_GRAY);
-		TextRenderer.drawStringCentered(g, this.title, Game.getGame().window.getWidth() / 2, Game.getGame().window.getHeight() / 4);
+		TextRenderer.drawStringCentered(g, this.title, Camera.WIDTH / 2, Camera.HEIGHT / 4);
 		TextRenderer.setFontSize(30);
 
 		for (Button button : this.buttons)
@@ -94,8 +94,8 @@ public abstract class MenuState extends State
 	{
 		for (int i = 0; i < this.buttons.size(); i++)
 		{
-			this.buttons.get(i).xPosition = Game.getGame().window.getWidth() / 2;
-			this.buttons.get(i).yPosition = Game.getGame().window.getHeight() / 2 + i * (TextRenderer.getFontHeight() + 10);
+			this.buttons.get(i).xPosition = Camera.WIDTH / 2;
+			this.buttons.get(i).yPosition = Camera.HEIGHT / 2 + i * (TextRenderer.getFontHeight() + 10);
 		}
 	}
 

@@ -45,7 +45,7 @@ public final class TextRenderer
 	 * @return The width of the input text. */
 	public static int getStringWidth(Graphics g, String text)
 	{
-		return g.getFontMetrics(font).stringWidth(text);
+		return (int) g.getFontMetrics(font).getStringBounds(text, g).getWidth();
 	}
 
 	public static void setFontSize(int size)

@@ -1,12 +1,13 @@
 package net.watc4.game.display;
 
-import net.watc4.game.Game;
 import net.watc4.game.entity.Entity;
 import net.watc4.game.map.Map;
 
 /** Determines what part of the Map to draw on the Screen. */
 public class Camera
 {
+	public static final int WIDTH = 640, HEIGHT = 480;
+
 	/** The Dimensions of the Camera. */
 	public final int width, height;
 	/** The offset of the Camera. Represents how far from the original topleft corner the camera is at. */
@@ -14,7 +15,7 @@ public class Camera
 
 	public Camera()
 	{
-		this(Game.getGame().window.canvas.getWidth(), Game.getGame().window.canvas.getHeight());
+		this(WIDTH, HEIGHT);
 	}
 
 	public Camera(int width, int height)

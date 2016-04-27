@@ -3,10 +3,13 @@ package net.watc4.game;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
 
 import net.watc4.game.display.AnimationManager;
+import net.watc4.game.display.Camera;
 import net.watc4.game.display.TextRenderer;
 import net.watc4.game.display.Window;
 import net.watc4.game.entity.EntityRegistry;
@@ -18,7 +21,8 @@ import net.watc4.game.utils.GameUtils;
 import net.watc4.game.utils.InputManager;
 
 /** Main object. Contains a thread to run the game. */
-public class Game implements Runnable {
+public class Game implements Runnable
+{
 	/** The instance of the Game. */
 	private static Game instance;
 
@@ -41,7 +45,8 @@ public class Game implements Runnable {
 				try
 				{
 					instance = new Game();
-				} catch (Exception e) {}
+				} catch (Exception e)
+				{}
 			}
 		});
 	}
@@ -84,11 +89,10 @@ public class Game implements Runnable {
 	private void render()
 	{
 		AnimationManager.update();
-		BufferStrategy bufferStrategy = this.window.canvas.getBufferStrategy();
-		Graphics g = bufferStrategy.getDrawGraphics();
 
-		g.clearRect(0, 0, this.window.canvas.getWidth(), this.window.canvas.getHeight());
-		// Render here
+		BufferedImage screen = new BufferedImage(this.window.canvas.getWidth(), this.window.canvas.getHeight(), BufferedImage.TYPE_INT_RGB);
+		Graphics2D g = screen.createGraphics();
+		g.scale(this.window.canvas.getWidth() * 1f / Camera.WIDTH, this.window.canvas.getHeight() * 1f / Camera.HEIGHT);
 		this.state.render(g);
 
 		if (GameSettings.debugMode)
@@ -98,9 +102,12 @@ public class Game implements Runnable {
 			TextRenderer.drawString(g, "Debug mode (F1)", 0, 0);
 			TextRenderer.drawString(g, "FPS=" + GameUtils.currentFPS + ", UPS=" + GameUtils.currentUPS, 0, TextRenderer.getFontHeight());
 		}
-
-		bufferStrategy.show();
 		g.dispose();
+
+		BufferStrategy bufferStrategy = this.window.canvas.getBufferStrategy();
+		Graphics g2 = bufferStrategy.getDrawGraphics();
+		g2.drawImage(screen, 0, 0, null);
+		bufferStrategy.show();
 	}
 
 	@Override

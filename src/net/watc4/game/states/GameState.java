@@ -55,7 +55,7 @@ public class GameState extends State
 		int life = this.entityPattou.getHealth() * 255 / EntityPlayer.MAX_HEALTH;
 		if (life >= 255 || life < 0) return;
 		g.setColor(new Color(200, 50, 50, 255 - life));
-		g.fillRect(0, 0, Game.getGame().window.canvas.getWidth(), Game.getGame().window.canvas.getHeight());
+		g.fillRect(0, 0, Camera.WIDTH, Camera.HEIGHT);
 	}
 
 	/** @return The <code>Map</code>. */
@@ -85,7 +85,7 @@ public class GameState extends State
 		{
 			g.setColor(Color.DARK_GRAY);
 			TextRenderer.setFontSize(15);
-			int size = TextRenderer.getFontHeight();
+			int size = 40;
 			int y = 2;
 			TextRenderer.drawString(g, "Lumi: " + this.entityLumi.getX() + ", " + this.entityLumi.getY(), 0, y * size);
 			++y;
