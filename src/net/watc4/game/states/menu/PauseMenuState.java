@@ -28,7 +28,7 @@ public class PauseMenuState extends MenuState
 	@Override
 	protected void performAction(Button selected)
 	{
-		if (selected.id == CONTINUE) Game.getGame().setCurrentState(this.gameState);
+		if (selected.id == CONTINUE) Game.getGame().setCurrentState(this.gameState, false);
 		if (selected.id == MAINMENU) Game.getGame().setCurrentState(new MainMenuState());
 	}
 

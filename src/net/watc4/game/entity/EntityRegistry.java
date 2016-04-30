@@ -20,6 +20,7 @@ public final class EntityRegistry
 		registerEntity(0, EntityLumi.class);
 		registerEntity(1, EntityPattou.class);
 		registerEntity(2, EntityBattery.class);
+		registerEntity(3, EntityCutscene.class);
 	}
 
 	/** Creates the adequate arguments then spawns an Entity.

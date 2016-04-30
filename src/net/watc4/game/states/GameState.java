@@ -21,14 +21,20 @@ public class GameState extends State
 	/** The instance of the Game State. */
 	private static GameState instance;
 
+	/** Creates the GameState.
+	 * 
+	 * @param mapName - The (file) name of the Map to use.
+	 * @return The created GameState. */
+	public static GameState createNew(String mapName)
+	{
+		instance = new GameState(mapName);
+		instance.getMap().lightManager.update();
+		return instance;
+	}
+
 	/** @return The instance of the Game. */
 	public static GameState getInstance()
 	{
-		if (instance == null)
-		{
-			instance = new GameState();
-			instance.map.lightManager.update();
-		}
 		return instance;
 	}
 
@@ -38,14 +44,21 @@ public class GameState extends State
 	public EntityLumi entityLumi;
 	/** The Shadow Player. */
 	public EntityPattou entityPattou;
+	/** True if this State is in a Cutscene, thus the user cannot interact with this State. */
+	public boolean isInCutscene;
 	/** The world they evolve into. */
 	private Map map;
+	/** The name of the current Map. */
+	private String mapName;
 
-	/** Creates the GameState. */
-	public GameState()
+	/** Creates the GameState.
+	 * 
+	 * @param mapName - The (file) name of the Map to use. */
+	public GameState(String mapName)
 	{
+		this.mapName = mapName;
 		this.camera = new Camera();
-		this.map = Map.createFrom("res/maps/map2.txt", this);
+		this.map = Map.createFrom(this.mapName, this);
 	}
 
 	/** Draws a Red overlay. It becomes more opaque the more damage the player takes.
@@ -69,7 +82,10 @@ public class GameState extends State
 	public void onKeyPressed(int keyID)
 	{
 		super.onKeyPressed(keyID);
-		if (keyID == KeyEvent.VK_ESCAPE) Game.getGame().setCurrentState(new PauseMenuState(this));
+		if (!this.isInCutscene)
+		{
+			if (keyID == KeyEvent.VK_ESCAPE) Game.getGame().setCurrentState(new PauseMenuState(this), false);
+		}
 	}
 
 	@Override
@@ -113,7 +129,7 @@ public class GameState extends State
 	/** Resets the Game & Map as they were created. */
 	public void reset()
 	{
-		this.map = Map.createFrom("res/maps/map2.txt", this);
+		this.map = Map.createFrom(this.mapName, this);
 		this.map.lightManager.update();
 	}
 

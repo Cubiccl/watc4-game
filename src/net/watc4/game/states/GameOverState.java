@@ -27,7 +27,7 @@ public class GameOverState extends State
 		if (keyID == KeyEvent.VK_SPACE)
 		{
 			this.gameState.reset();
-			Game.getGame().setCurrentState(this.gameState);
+			Game.getGame().setCurrentState(this.gameState, false);
 		}
 		if (keyID == KeyEvent.VK_ESCAPE)
 		{

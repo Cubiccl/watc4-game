@@ -100,7 +100,7 @@ public class EntityLumi extends EntityPlayer
 	{
 		boolean wasMoving = this.ySpeed != 0 || this.xSpeed != 0;
 		super.update();
-		this.manageInput();
+		if (!this.game.isInCutscene) this.manageInput();
 
 		if (wasMoving || this.ySpeed != 0 || this.xSpeed != 0) this.game.getMap().lightManager.update();
 	}

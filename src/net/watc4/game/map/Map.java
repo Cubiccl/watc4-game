@@ -25,13 +25,13 @@ public class Map implements IRender, IUpdate
 
 	/** Creates a Map from the target URL.
 	 * 
-	 * @param url - The URL to the file containing the Map data.
+	 * @param mapName - The (file) name of the Map to use.
 	 * @param game - The game instance.
 	 * @return The built Map. */
-	public static Map createFrom(String url, GameState game)
+	public static Map createFrom(String mapName, GameState game)
 	{
 		// Creating basic data
-		String[] mapText = FileUtils.readFileAsStringArray(url);
+		String[] mapText = FileUtils.readFileAsStringArray("res/maps/" + mapName + ".txt");
 		int info[] = new int[6]; // width, height, lumiSpawnX, lumiSpawnY, pattouSpawnX and pattouSpawnY
 		for (int i = 0; i < info.length; i++)
 			info[i] = Integer.valueOf(mapText[i].split(" = ")[1]);

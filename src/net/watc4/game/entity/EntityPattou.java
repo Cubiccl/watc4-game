@@ -41,7 +41,7 @@ public class EntityPattou extends EntityPlayer
 	/** Kill Pattou and lumi - reset Pattou Spawn and lumi Spawn - reset Hitbox at Pattou Spawn and Lumi Spawn */
 	public void kill()
 	{
-		Game.getGame().setCurrentState(new GameOverState(this.game));
+		Game.getGame().setCurrentState(new GameOverState(this.game), false);
 	}
 
 	/** Checks for movement input and applies it. */
@@ -97,7 +97,7 @@ public class EntityPattou extends EntityPlayer
 	@Override
 	public void update()
 	{
-		this.manageInput();
+		if (!this.game.isInCutscene) this.manageInput();
 
 		if (!GameSettings.godMode && GameState.getInstance().entityLumi.isInLight(this)) --this.health;
 		else

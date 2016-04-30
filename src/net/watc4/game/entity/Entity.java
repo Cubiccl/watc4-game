@@ -218,10 +218,11 @@ public abstract class Entity implements IRender, IUpdate
 	@Override
 	public void render(Graphics g)
 	{
-		this.renderer.render(g);
+		if (this.renderer != null) this.renderer.render(g);
 		if (GameSettings.drawHitboxes)
 		{
-			g.setColor(Color.BLUE);
+			if (this instanceof EntityCutscene) g.setColor(Color.YELLOW);
+			else g.setColor(Color.BLUE);
 			g.drawRect((int) this.getX(), (int) this.getY(), (int) this.getWidth(), (int) this.getHeight());
 			g.drawLine(FileUtils.toInt(this.getX() + this.getWidth() / 2), FileUtils.toInt(this.getY()), FileUtils.toInt(this.getX() + this.getWidth() / 2),
 					FileUtils.toInt(this.getY() + this.getHeight()));

@@ -14,6 +14,7 @@ import net.watc4.game.display.TextRenderer;
 import net.watc4.game.display.Window;
 import net.watc4.game.entity.EntityRegistry;
 import net.watc4.game.map.TileRegistry;
+import net.watc4.game.states.GameState;
 import net.watc4.game.states.State;
 import net.watc4.game.states.menu.MainMenuState;
 import net.watc4.game.utils.GameSettings;
@@ -25,6 +26,8 @@ public class Game implements Runnable
 {
 	/** The instance of the Game. */
 	private static Game instance;
+
+	private static final int TRANSITION = 30;
 
 	/** @return The instance of the <code>Game</code> itself. */
 	public static Game getGame()
@@ -55,10 +58,14 @@ public class Game implements Runnable
 	private InputManager inputManager;
 	/** True if the <code>Game</code> is running. */
 	private boolean isRunning;
+	/** The next State to use. */
+	private State nextState;
 	/** The current State of the Game. */
 	private State state;
 	/** A Thread used to update & render the <code>Game</code>. */
 	private Thread thread;
+	/** Manages the transition between 2 states. */
+	private int transition;
 	/** The <code>Window</code> to display the <code>Game</code>. */
 	public final Window window;
 
@@ -67,6 +74,8 @@ public class Game implements Runnable
 		this.window = new Window();
 		this.isRunning = false;
 		this.inputManager = new InputManager(window);
+		this.transition = -TRANSITION;
+		GameState.createNew("map2");
 		this.thread = new Thread(this);
 		this.thread.start();
 	}
@@ -85,10 +94,16 @@ public class Game implements Runnable
 		return this.inputManager.isKeyPressed(key);
 	}
 
+	/** @return True if the Game is in a transition between two States, thus these States should not be updated. */
+	public boolean isTransitionning()
+	{
+		return this.transition != 0;
+	}
+
 	/** Displays the <code>Game</code> onto the {@link Window}. */
 	private void render()
 	{
-		AnimationManager.update();
+		if (this.transition != 0) AnimationManager.update();
 
 		BufferedImage screen = new BufferedImage(this.window.canvas.getWidth(), this.window.canvas.getHeight(), BufferedImage.TYPE_INT_RGB);
 		Graphics2D g = screen.createGraphics();
@@ -107,6 +122,11 @@ public class Game implements Runnable
 		BufferStrategy bufferStrategy = this.window.canvas.getBufferStrategy();
 		Graphics g2 = bufferStrategy.getDrawGraphics();
 		g2.drawImage(screen, 0, 0, null);
+		if (this.transition != 0)
+		{
+			g2.setColor(new Color(0, 0, 0, Math.abs(this.transition) * 255 / TRANSITION));
+			g2.fillRect(0, 0, this.window.canvas.getWidth(), this.window.canvas.getHeight());
+		}
 		bufferStrategy.show();
 	}
 
@@ -175,7 +195,20 @@ public class Game implements Runnable
 	 * @param state - The new State to apply. */
 	public void setCurrentState(State state)
 	{
-		this.state = state;
+		this.setCurrentState(state, true);
+	}
+
+	/** Changes the current State of the Game.
+	 * 
+	 * @param state - The new State to apply.
+	 * @param hasTransition - True if there should be a fading transition. */
+	public void setCurrentState(State state, boolean hasTransition)
+	{
+		if (hasTransition)
+		{
+			this.nextState = state;
+			this.transition = 1;
+		} else this.state = state;
 	}
 
 	/** Exits the game. */
@@ -187,7 +220,17 @@ public class Game implements Runnable
 	/** Manages the <code>Game</code> logic. */
 	private void update()
 	{
-		this.state.update();
+		if (this.transition == 0) this.state.update();
+		else
+		{
+			++this.transition;
+			if (this.transition == TRANSITION)
+			{
+				this.transition = -TRANSITION;
+				this.state = this.nextState;
+				this.nextState = null;
+			}
+		}
 	}
 
 }
