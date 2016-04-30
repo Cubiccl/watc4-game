@@ -46,7 +46,7 @@ public class Button implements IRender
 	public void render(Graphics g)
 	{
 		if (this.isSelected) g.setColor(Color.RED);
-		else g.setColor(Color.BLUE);
+		else g.setColor(Color.WHITE);
 		TextRenderer.drawStringCentered(g, this.text, this.xPosition, this.yPosition);
 	}
 

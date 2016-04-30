@@ -27,7 +27,7 @@ public class TileRegistry
 	public static void createTiles()
 	{
 		tiles = new HashMap<Integer, Tile>();
-		DEFAULT = new TileGround(0, new Animation(Sprite.TILE_DEFAULT)); // Black
+		DEFAULT = new TileAir(0, new Animation(Sprite.TILE_DEFAULT)); // Black
 		new TileGround(1, new Animation(Sprite.TILE_GROUND)); // Ground
 		AIR = new TileAir(2, new Animation(Sprite.TILE_WALL)); // BG Wall
 		new Tile(3, new Animation(Sprite.TILE_GLASS), true, false); // Glass

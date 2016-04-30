@@ -72,6 +72,12 @@ public class GameState extends State
 		g.fillRect(0, 0, Camera.WIDTH, Camera.HEIGHT);
 	}
 
+	/** @return The <code>Camera</code>. */
+	public Camera getCamera()
+	{
+		return this.camera;
+	}
+
 	/** @return The <code>Map</code>. */
 	public Map getMap()
 	{

@@ -1,7 +1,6 @@
 package net.watc4.game.utils;
 
 import java.util.HashSet;
-import java.util.Iterator;
 
 import javafx.geometry.Point2D;
 
@@ -40,7 +39,7 @@ public class Vector
 		return this.direction;
 	}
 
-	/** @return This Vector's position. */
+	/** @return This begin Vector's position. */
 	public Point2D getPosition()
 	{
 		return this.position;
@@ -50,17 +49,14 @@ public class Vector
 	 * @return The position at which this Vector intersects one of the input segments, if it does. null if it doesn't. */
 	public Point2D intersect(HashSet<Vector> segments)
 	{
-		Iterator<Vector> it = segments.iterator();
 		double tr = Double.MAX_VALUE;
-		while (it.hasNext())
+		for (Vector vector : segments)
 		{
-			Vector vector = it.next();
 			double cartesianProd = (vector.direction.getX() * this.direction.getY()) - (vector.direction.getY() * this.direction.getX());
 			if (cartesianProd != 0)
 			{
-				double ts = (this.direction.getX() * (vector.position.getY() - this.position.getY()) + this.direction.getY()
-						* (this.position.getX() - vector.position.getX()))
-						/ cartesianProd;
+				double ts = (this.direction.getX() * (vector.position.getY() - this.position.getY())
+						+ this.direction.getY() * (this.position.getX() - vector.position.getX())) / cartesianProd;
 				if (ts >= 0 && ts <= 1)
 				{
 					double tempTr = (vector.position.getX() + vector.direction.getX() * ts - this.position.getX()) / this.direction.getX();
@@ -70,6 +66,29 @@ public class Vector
 		}
 		if (tr != Double.MAX_VALUE) return new Point2D(this.position.getX() + tr * this.direction.getX(), this.position.getY() + tr * this.direction.getY());
 		return null;
+	}
+
+	public HashSet<Point2D> allIntersection(HashSet<Vector> segments)
+	{
+		HashSet<Point2D> res = new HashSet<>();
+		res.add(this.position);
+		double tr;
+		for (Vector vector : segments)
+		{
+			double cartesianProd = (vector.direction.getX() * this.direction.getY()) - (vector.direction.getY() * this.direction.getX());
+			if (cartesianProd != 0)
+			{
+				double ts = (this.direction.getX() * (vector.position.getY() - this.position.getY())
+						+ this.direction.getY() * (this.position.getX() - vector.position.getX())) / cartesianProd;
+				if (ts >= 0 && ts <= 1)
+				{
+					tr = (vector.position.getX() + vector.direction.getX() * ts - this.position.getX()) / this.direction.getX();
+					if (tr >= 0 && tr <= 1)
+						res.add(new Point2D(this.position.getX() + tr * this.direction.getX(), this.position.getY() + tr * this.direction.getY()));
+				}
+			}
+		}
+		return res;
 	}
 
 	/** Changes this Vector's direction.
