@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 
 import javax.swing.ImageIcon;
@@ -41,6 +42,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import net.watc4.game.display.AnimationManager;
 import net.watc4.game.display.Sprite;
+import net.watc4.game.entity.Entity;
+import net.watc4.game.entity.EntityRegistry;
 import net.watc4.game.map.TileRegistry;
 import net.watc4.game.utils.FileUtils;
 
@@ -60,17 +63,17 @@ public class MapEditor extends JFrame
 	private final static JMenuBar menuBar = new JMenuBar();
 	private final static JMenuItem createMapMenu = new JMenuItem("Nouveau");
 	private static TileLabel[][] tilemap;
-	private static TileLabel[] tileChoice;
-	private static int selectedTile;
-	private final static JPanel tilesMenu = new JPanel();
-	private final static JLabel lblTiles = new JLabel("Tuiles :");
-	private final static JPanel tileRegistry = new JPanel();
-	private final static JLabel lblTileSelected = new JLabel("Tuile s\u00E9lectionn\u00E9e :");
-	private final static JLabel selectedTileLabel = new JLabel();
+	private static TileLabel[] tileChoice, entityChoice;
+	private static int selectedTile, selectedEntity;
+	private static JPanel tilesMenu, entityMenu, characterMenu;
+	private static JLabel lblTiles = new JLabel("Tuiles :"), lblEntityName = new JLabel();
+	private static JPanel tileRegistry = new JPanel(), entityRegistry = new JPanel();
+	private static JLabel lblTileSelected = new JLabel("Tuile s\u00E9lectionn\u00E9e :");
+	private static JLabel selectedTileLabel = new JLabel(), selectedEntityLabel = new JLabel();
 	private static JTextField fieldPattouX, fieldPattouY, fieldLumiX, fieldLumiY;
 	private static JRadioButton radioPattou, radioLumi;
 	private static JLabel focusPattou, focusLumi, lumiEyes, lblSelected;
-	private static int lblSelectedIndex = -1;
+	private static int lblSelectedTileIndex = -1, lblSelectedEntityIndex = -1;
 	private static JButton btnRemovePattou, btnRemoveLumi;
 	private final static JFileChooser fc = new JFileChooser();
 	private static boolean exists = false;
@@ -158,12 +161,37 @@ public class MapEditor extends JFrame
 			addTileSelector(i);
 		}
 	}
+	
+	public static void getEntityFromRegistry()
+	{
+		entityChoice = new TileLabel[EntityRegistry.getEntities().size()];
+		for (int i = 0; i < entityChoice.length; i++)
+		{
+			entityChoice[i] = new TileLabel();
+			entityChoice[i].setLayout(null);
+			entityChoice[i].setPreferredSize(new Dimension(32, 32));
+
+			try
+			{
+				entityChoice[i].setEn((Entity) (EntityRegistry.getEntities().get(i).getConstructors()[1]).newInstance());
+			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | SecurityException | InvocationTargetException e)
+			{
+				System.out.println((EntityRegistry.getEntities().get(i).getConstructors()[0]).toString());
+				e.printStackTrace();
+			}
+			entityChoice[i].setIcon(new ImageIcon(entityChoice[i].getEn().getRenderer().getAnimation().getImage()));
+			entityChoice[i].setVisible(true);
+			gbc.gridx = i;
+			entityRegistry.add(entityChoice[i], gbc);
+			addEntitySelector(i);
+		}
+	}
 
 	public static void addTileUpdater(int i, int j)
 	{
 		tilemap[i][j].addMouseListener(new MouseAdapter()
 		{
-			public void mouseClicked(MouseEvent arg0)
+			public void mouseClicked(MouseEvent ev)
 			{
 				if (mode == MapEditor.MODE_TILES)
 				{
@@ -171,7 +199,25 @@ public class MapEditor extends JFrame
 					tilemap[i][j].setId(selectedTile);
 				} else if (mode == MapEditor.MODE_ENTITY)
 				{
-
+					if (ev.getButton() == MouseEvent.BUTTON3 && tilemap[i][j].getEn() != null)
+					{
+						System.out.println("lel");
+						// TODO ouvrir une fenêtre de gestion de l'entité
+					} else
+					{
+						if (tilemap[i][j].getEn() != null) tilemap[i][j].removeAll();
+						try
+						{
+							tilemap[i][j].setEn(entityChoice[selectedEntity].getEn().getClass().newInstance());
+						} catch (InstantiationException | IllegalAccessException e)
+						{
+							e.printStackTrace();
+						}
+						JLabel icon = new JLabel(new ImageIcon(tilemap[i][j].getEn().getRenderer().getAnimation().getImage()));
+						icon.setBounds(0, 0, 32, 32);
+						tilemap[i][j].add(icon);
+						tilemap[i][j].updateUI();
+					}
 				} else if (mode == MapEditor.MODE_CHARACTERS)
 				{
 					if (radioPattou.isSelected() & !radioLumi.isSelected())
@@ -217,14 +263,37 @@ public class MapEditor extends JFrame
 
 				selectedTile = i;
 				selectedTileLabel.setIcon(new ImageIcon(TileRegistry.getTileFromId(selectedTile).sprite.getImage()));
-				if (lblSelectedIndex >= 0)
+				if (lblSelectedTileIndex >= 0)
 				{
-					tileChoice[lblSelectedIndex].removeAll();
-					tileChoice[lblSelectedIndex].updateUI();
+					tileChoice[lblSelectedTileIndex].removeAll();
+					tileChoice[lblSelectedTileIndex].updateUI();
 				}
-				lblSelectedIndex = i;
+				lblSelectedTileIndex = i;
 				tileChoice[i].add(lblSelected);
 				tileChoice[i].updateUI();
+			}
+		});
+	}
+	
+	public static void addEntitySelector(int i)
+	{
+		entityChoice[i].addMouseListener(new MouseAdapter()
+		{
+			public void mouseClicked(MouseEvent arg0)
+			{
+
+				selectedEntity = i;
+				selectedEntityLabel.setIcon(new ImageIcon(entityChoice[selectedEntity].getEn().getRenderer().getAnimation().getImage()));
+				if (lblSelectedEntityIndex >= 0)
+				{
+					entityChoice[lblSelectedEntityIndex].removeAll();
+					entityChoice[lblSelectedEntityIndex].updateUI();
+				}
+				lblSelectedEntityIndex = i;
+				entityChoice[i].add(lblSelected);
+				entityChoice[i].updateUI();
+				String name = entityChoice[i].getEn().getClass().getSimpleName();
+				lblEntityName.setText(name.substring(6, name.length()));
 			}
 		});
 	}
@@ -274,6 +343,46 @@ public class MapEditor extends JFrame
 				mapView.add(tilemap[i][j], gbc);
 				addTileUpdater(i, j);
 			}
+		}
+		
+		for(int i = 8 + info[1]; i < lines.length; i++)
+		{
+			String[] entityValues = lines[i].split(" ");
+			Entity en = null;
+			try
+			{
+				// TODO rentrer directement un tableau en argument contenant ce qu'il faut (en gros tout sauf l'id)
+				switch (entityValues.length){
+					case 3 : {
+						en = (Entity) EntityRegistry.getEntities().get(Integer.valueOf(entityValues[0])).getConstructors()[0].newInstance(null, Float.valueOf(entityValues[1]), Float.valueOf(entityValues[2]));
+						break;
+					}
+					case 4 : {
+						en = (Entity) EntityRegistry.getEntities().get(Integer.valueOf(entityValues[0])).getConstructors()[0].newInstance(null, Float.valueOf(entityValues[1]), Float.valueOf(entityValues[2]), Integer.valueOf(entityValues[3]));
+						break;
+					}
+					case 5 : {
+						en = (Entity) EntityRegistry.getEntities().get(Integer.valueOf(entityValues[0])).getConstructors()[0].newInstance(null, Float.valueOf(entityValues[1]), Float.valueOf(entityValues[2]), Integer.valueOf(entityValues[3]), Integer.valueOf(entityValues[4]));
+						break;
+					}
+					case 6 : {
+						en = (Entity) EntityRegistry.getEntities().get(Integer.valueOf(entityValues[0])).getConstructors()[0].newInstance(null, Float.valueOf(entityValues[1]), Float.valueOf(entityValues[2]), Integer.valueOf(entityValues[3]), Integer.valueOf(entityValues[4]), Integer.valueOf(entityValues[5]));
+						break;
+					}
+					default : {
+						System.out.println(entityValues.length);
+						break;
+					}
+				}
+			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e)
+			{
+				e.printStackTrace();
+			}
+			tilemap[Integer.valueOf(entityValues[1])][Integer.valueOf(entityValues[2])].setEn(en);
+			JLabel icon = new JLabel(new ImageIcon(en.getRenderer().getAnimation().getImage()));
+			icon.setBounds(0, 0, 32, 32);
+			tilemap[Integer.valueOf(entityValues[1])][Integer.valueOf(entityValues[2])].add(icon);
+			tilemap[Integer.valueOf(entityValues[1])][Integer.valueOf(entityValues[2])].updateUI();
 		}
 		mapView.updateUI();
 
@@ -329,6 +438,8 @@ public class MapEditor extends JFrame
 
 		AnimationManager.create();
 		TileRegistry.createTiles();
+		EntityRegistry.createEntities();
+		getEntityFromRegistry();
 		getTilesFromRegistry();
 
 		FileFilter txtOnly = new FileNameExtensionFilter("Fichier texte", "txt");
@@ -486,6 +597,7 @@ public class MapEditor extends JFrame
 		JTabbedPane menu = new JTabbedPane();
 		contentPane.add(menu, BorderLayout.NORTH);
 		selectedTileLabel.setIcon(new ImageIcon(TileRegistry.getTileFromId(selectedTile).sprite.getImage()));
+		tilesMenu = new JPanel();
 		tilesMenu.setPreferredSize(new Dimension(620, 90));
 		menu.add(tilesMenu, "Tuiles");
 		tilesMenu.setMinimumSize(new Dimension(100, 10));
@@ -512,7 +624,7 @@ public class MapEditor extends JFrame
 		selectedTileLabel.setBounds(555, 15, 32, 32);
 		tilesMenu.add(selectedTileLabel);
 
-		JPanel entityMenu = new JPanel();
+		entityMenu = new JPanel();
 		menu.add(entityMenu, "Entit\u00E9s");
 		entityMenu.setLayout(null);
 		entityMenu.setPreferredSize(new Dimension(620, 90));
@@ -528,6 +640,11 @@ public class MapEditor extends JFrame
 		scrollEntityRegistry.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 		scrollEntityRegistry.setBounds(74, 15, 300, 50);
 		entityMenu.add(scrollEntityRegistry);
+		
+		scrollEntityRegistry.setViewportView(entityRegistry);
+		GridBagLayout gbl_entityRegistry = new GridBagLayout();
+		entityRegistry.setPreferredSize(new Dimension(32 * entityChoice.length, 32));
+		entityRegistry.setLayout(gbl_entityRegistry);
 
 		JLabel lblSelectedEntity = new JLabel("Entit\u00E9 s\u00E9lectionn\u00E9e :");
 		lblSelectedEntity.setBounds(430, 23, 116, 14);
@@ -536,8 +653,11 @@ public class MapEditor extends JFrame
 		JLabel label_2 = new JLabel();
 		label_2.setBounds(555, 15, 32, 32);
 		entityMenu.add(label_2);
+		
+		lblEntityName.setBounds(459, 49, 55, 16);
+		entityMenu.add(lblEntityName);
 
-		JPanel characterMenu = new JPanel();
+		characterMenu = new JPanel();
 		menu.add(characterMenu, "Personnages");
 		characterMenu.setLayout(null);
 		characterMenu.setPreferredSize(new Dimension(620, 90));

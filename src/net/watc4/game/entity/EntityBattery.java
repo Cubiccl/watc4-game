@@ -23,6 +23,11 @@ public class EntityBattery extends Entity
 		this.hasGravity = false;
 		this.isSolid = true;
 	}
+	
+	public EntityBattery()
+	{
+		this(null,0,0,0,0);
+	}
 
 	/** @return The power of this Battery. */
 	public int getPower()

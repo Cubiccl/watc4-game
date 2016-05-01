@@ -61,6 +61,23 @@ public abstract class Entity implements IRender, IUpdate
 		this.width = (int) DEFAULT_SIZE;
 		this.height = (int) DEFAULT_SIZE;
 	}
+	
+	/** Creates a new Entity without parameters.
+	 * Useful for the level editor.
+	 */
+	public Entity()
+	{
+		this.game = null;
+		this.xPos = 0;
+		this.yPos = 0;
+		this.xSpeed = 0;
+		this.ySpeed = 0;
+		this.hasGravity = true;
+		this.isSolid = false;
+		this.renderer = new EntityRenderer(this);
+		this.width = (int) DEFAULT_SIZE;
+		this.height = (int) DEFAULT_SIZE;
+	}
 
 	/** @param entity - The Entity to test.
 	 * @return The angle in degrees (=orientation) of the segment between this and the given Entity. Determines where the Entity is compared to this one.<br />
@@ -167,6 +184,12 @@ public abstract class Entity implements IRender, IUpdate
 	public float getYSpeed()
 	{
 		return this.ySpeed;
+	}
+	
+	/** @return This Entity's EntityRenderer. */
+	public EntityRenderer getRenderer()
+	{
+		return this.renderer;
 	}
 
 	/** @return This Entity's Hitbox. */

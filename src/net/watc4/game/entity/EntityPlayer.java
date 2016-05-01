@@ -21,6 +21,14 @@ public abstract class EntityPlayer extends Entity
 		super(game, xPos, yPos);
 		this.health = MAX_HEALTH;
 	}
+	
+	/** Creates a new Entity Player without parameters.
+	 * Useful for the level editor.
+	 */
+	public EntityPlayer()
+	{
+		this(null,0,0);
+	}
 
 	/** @return The health points of this Player. */
 	public int getHealth()

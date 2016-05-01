@@ -63,4 +63,10 @@ public class PattouRenderer extends EntityRenderer
 
 		g.drawImage(image, (int) this.entity.getX() - 6, (int) this.entity.getY(), null);
 	}
+	
+	/** Useful for the level editor */
+	public Animation getAnimation()
+	{
+		return idleLeft;
+	}
 }

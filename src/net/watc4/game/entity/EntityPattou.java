@@ -32,6 +32,10 @@ public class EntityPattou extends EntityPlayer
 		this.jumpingTime = 0;
 		this.direction = -1;
 	}
+	
+	public EntityPattou(){
+		this(null,0,0);
+	}
 
 	public int getJumpingTime()
 	{

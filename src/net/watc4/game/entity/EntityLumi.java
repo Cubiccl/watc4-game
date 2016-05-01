@@ -18,6 +18,11 @@ public class EntityLumi extends EntityPlayer
 		this.hasGravity = false;
 		this.setRenderer(new LumiRenderer(this));
 	}
+	
+	public EntityLumi()
+	{
+		this(null,0,0);
+	}
 
 	/** @param entity - The Entity to test.
 	 * @return True if the input Entity is in the light of Lumi. */

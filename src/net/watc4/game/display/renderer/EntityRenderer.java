@@ -49,4 +49,10 @@ public class EntityRenderer implements IRender
 		if (this.animation != null) this.animation.register();
 	}
 
+	/** @return The Entity's Animation */
+	public Animation getAnimation()
+	{
+		return this.animation;
+	}
+
 }
