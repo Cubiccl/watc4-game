@@ -167,7 +167,6 @@ public class Map implements IRender, IUpdate
 		for (int x = 0; x < this.chunks.length; ++x)
 			for (int y = 0; y < this.chunks[x].length; ++y)
 				if (this.chunks[x][y].shouldRender()) this.chunks[x][y].render(g);
-
 		this.entityManager.render(g);
 		this.lightManager.render(g);
 	}

@@ -48,7 +48,9 @@ public class LightManager implements IRender, IUpdate
 	/** The field of view of Lumi */
 	private BufferedImage lumiLight;
 
-	private HashSet<Vector> viewWallSet, wallSet;
+	private Vector[] viewWallSet;
+
+	private HashSet<Vector> wallSet;
 
 	private HashSet<Point2D> tmpEndPoints;
 
@@ -60,7 +62,7 @@ public class LightManager implements IRender, IUpdate
 		this.map = map;
 		this.endPoints = new TreeMap<>();
 		this.tmpEndPoints = new HashSet<>();
-		this.viewWallSet = new HashSet<>();
+		this.viewWallSet = new Vector[4];
 		this.wallSet = new HashSet<>();
 		try
 		{
@@ -82,18 +84,6 @@ public class LightManager implements IRender, IUpdate
 	{
 		this.updateShadows();
 		g.drawImage(this.shadows, 0, 0, null);
-
-		g.setColor(Color.GREEN);
-		for (Vector v : wallSet)
-		{
-			g.fillOval((int) v.getPosition().getX() - 3, (int) v.getPosition().getY() - 3, 6, 6);
-		}
-
-		g.setColor(Color.RED);
-		for (Point2D p : tmpEndPoints)
-		{
-			g.fillOval((int) p.getX() - 3, (int) p.getY() - 3, 6, 6);
-		}
 	}
 
 	public void setWalls(HashSet<Vector> wallSet)
@@ -105,26 +95,33 @@ public class LightManager implements IRender, IUpdate
 	public void update()
 	{
 		this.endPoints.clear();
-
 		EntityLumi lumi = GameState.getInstance().entityLumi;
 		Point2D lightPosition = new Point2D(GameState.getInstance().entityLumi.getX() + GameState.getInstance().entityLumi.getWidth() / 2,
 				GameState.getInstance().entityLumi.getY() + GameState.getInstance().entityLumi.getHeight() / 2);
 
 		// Create the fieldOfView Rectangle
-		viewWallSet.clear();
-		for (int x = -1; x < 2; x+=2)
-		for (int y = -1; y < 2; y+=2)
-			viewWallSet.add(new Vector(new Point2D(lightPosition.getX() + x * lumi.LIGHT_INTENSITY, lightPosition.getY() + y* lumi.LIGHT_INTENSITY),
-				new Point2D(0.00001 + (-x - y)*lumi.LIGHT_INTENSITY,(x-y) * lumi.LIGHT_INTENSITY)));
+		viewWallSet[0] = new Vector(new Point2D(lightPosition.getX() - lumi.LIGHT_INTENSITY, lightPosition.getY() - lumi.LIGHT_INTENSITY),
+				new Point2D(2 * lumi.LIGHT_INTENSITY, 0));
+		viewWallSet[1] = new Vector(new Point2D(lightPosition.getX() + lumi.LIGHT_INTENSITY, lightPosition.getY() - lumi.LIGHT_INTENSITY),
+				new Point2D(0.00001, 2 * lumi.LIGHT_INTENSITY));
+		viewWallSet[2] = new Vector(new Point2D(lightPosition.getX() - lumi.LIGHT_INTENSITY, lightPosition.getY() + lumi.LIGHT_INTENSITY),
+				new Point2D(0.00001, -2 * lumi.LIGHT_INTENSITY));
+		viewWallSet[3] = new Vector(new Point2D(lightPosition.getX() + lumi.LIGHT_INTENSITY, lightPosition.getY() + lumi.LIGHT_INTENSITY),
+				new Point2D(-2 * lumi.LIGHT_INTENSITY, 0));
 
 		// Add concerned walls
 		wallSet.clear();
-		for (Vector viewWall : viewWallSet)
-		{
-			Chunk chunk = this.map.getChunk((float) viewWall.getPosition().getX(), (float) viewWall.getPosition().getY());
-			if (chunk != null) wallSet.addAll(chunk.getWallSet());
-		}		
-		
+		Chunk TL = this.map.getChunk((float) viewWallSet[0].getPosition().getX(), (float) viewWallSet[0].getPosition().getY());
+		int TLx = (TL != null) ? TL.xPos : 0;
+		int TLy = (TL != null) ? TL.yPos : 0;
+		Chunk TR = this.map.getChunk((float) viewWallSet[1].getPosition().getX(), (float) viewWallSet[1].getPosition().getY());
+		int TRx = (TR != null) ? TR.xPos : map.chunks.length-1;
+		Chunk BL = this.map.getChunk((float) viewWallSet[2].getPosition().getX(), (float) viewWallSet[2].getPosition().getY());
+		int BLy = (BL != null) ? BL.yPos : map.chunks[0].length-1;
+		for (int x = TLx; x <= TRx; x++)
+			for (int y = TLy; y <= BLy; y++)
+				wallSet.addAll(map.getChunk(x * Chunk.SIZE, y * Chunk.SIZE).getWallSet());
+
 		// Find tmpEndPoints
 		tmpEndPoints.clear();
 		for (Vector viewWall : viewWallSet)
@@ -138,11 +135,12 @@ public class LightManager implements IRender, IUpdate
 					&& endPoint.getPosition().getY() >= lightPosition.getY() - lumi.LIGHT_INTENSITY
 					&& endPoint.getPosition().getY() <= lightPosition.getY() + lumi.LIGHT_INTENSITY)
 				tmpEndPoints.add(endPoint.getPosition());
-				
-				}
+
+		}
 
 		// Find true endPoints
-		wallSet.addAll(viewWallSet);
+		for (int i = 0; i < viewWallSet.length; i++)
+			wallSet.add(viewWallSet[i]);
 		for (Point2D endPoint : tmpEndPoints)
 		{
 			double cos = ((endPoint.getX() - lightPosition.getX())
@@ -167,12 +165,10 @@ public class LightManager implements IRender, IUpdate
 
 		List<Integer> stockTriangleX = new ArrayList<Integer>();
 		List<Integer> stockTriangleY = new ArrayList<Integer>();
-		shadowsG.setColor(Color.BLUE);
 		for (Entry<Double, Point2D> entry : endPoints.entrySet())
 		{
 			stockTriangleX.add(FileUtils.toInt(entry.getValue().getX()));
 			stockTriangleY.add(FileUtils.toInt(entry.getValue().getY()));
-			shadowsG.fillOval(FileUtils.toInt(entry.getValue().getX()) - 3, FileUtils.toInt(entry.getValue().getY()) - 3, 6, 6);
 		}
 		int[] triangleX = new int[stockTriangleX.size()];
 		triangleX = toIntArray(stockTriangleX);
@@ -197,18 +193,9 @@ public class LightManager implements IRender, IUpdate
 		} else
 		{
 			shadowsG.setColor(Color.RED);
-			// hole.intersect(view);
+			hole.intersect(view);
 			polygon.subtract(hole);
 			shadowsG.draw(polygon);
-			shadowsG.setColor(Color.GREEN);
-			shadowsG.draw(new Area(new Rectangle(FileUtils.toInt(lumi.getX() + lumi.getWidth() / 2 - lumi.LIGHT_INTENSITY),
-					FileUtils.toInt(lumi.getY() + lumi.getHeight() / 2 - lumi.LIGHT_INTENSITY), lumi.LIGHT_INTENSITY * 2, lumi.LIGHT_INTENSITY * 2)));
-
 		}
-	}
-
-	public void registerChunk(Chunk chunk)
-	{
-
 	}
 }
