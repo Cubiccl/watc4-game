@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 
@@ -161,7 +162,7 @@ public class MapEditor extends JFrame
 			addTileSelector(i);
 		}
 	}
-	
+
 	public static void getEntityFromRegistry()
 	{
 		entityChoice = new TileLabel[EntityRegistry.getEntities().size()];
@@ -202,13 +203,17 @@ public class MapEditor extends JFrame
 					if (ev.getButton() == MouseEvent.BUTTON3 && tilemap[i][j].getEn() != null)
 					{
 						System.out.println("lel");
-						// TODO ouvrir une fenêtre de gestion de l'entité
+						// TODO ouvrir une fenetre de gestion de l'entite
 					} else
 					{
 						if (tilemap[i][j].getEn() != null) tilemap[i][j].removeAll();
 						try
 						{
 							tilemap[i][j].setEn(entityChoice[selectedEntity].getEn().getClass().newInstance());
+							tilemap[i][j].setEnId(selectedEntity);
+							tilemap[i][j].getEn().setX(i);
+							tilemap[i][j].getEn().setY(j);
+							tilemap[i][j].initValues();
 						} catch (InstantiationException | IllegalAccessException e)
 						{
 							e.printStackTrace();
@@ -274,7 +279,7 @@ public class MapEditor extends JFrame
 			}
 		});
 	}
-	
+
 	public static void addEntitySelector(int i)
 	{
 		entityChoice[i].addMouseListener(new MouseAdapter()
@@ -344,41 +349,34 @@ public class MapEditor extends JFrame
 				addTileUpdater(i, j);
 			}
 		}
-		
-		for(int i = 8 + info[1]; i < lines.length; i++)
+
+		for (int i = 8 + info[1]; i < lines.length; i++)
 		{
 			String[] entityValues = lines[i].split(" ");
 			Entity en = null;
+			Object[] arguments = new Object[entityValues.length];
+			arguments[0] = null;
+			@SuppressWarnings("unchecked")
+			Constructor<Entity> constructor = (Constructor<Entity>) EntityRegistry.getEntities().get(Integer.valueOf(entityValues[0])).getConstructors()[0];
+
+			for (int j = 1; j < entityValues.length; j++)
+			{
+				if (constructor.getParameters()[j].getType().toString().equals("int")) arguments[j] = Integer.parseInt(entityValues[j]);
+				else if (constructor.getParameters()[j].getType().toString().equals("float")) arguments[j] = Float.parseFloat(entityValues[j]);
+				else arguments[j] = entityValues[j];
+			}
+
 			try
 			{
-				// TODO rentrer directement un tableau en argument contenant ce qu'il faut (en gros tout sauf l'id)
-				switch (entityValues.length){
-					case 3 : {
-						en = (Entity) EntityRegistry.getEntities().get(Integer.valueOf(entityValues[0])).getConstructors()[0].newInstance(null, Float.valueOf(entityValues[1]), Float.valueOf(entityValues[2]));
-						break;
-					}
-					case 4 : {
-						en = (Entity) EntityRegistry.getEntities().get(Integer.valueOf(entityValues[0])).getConstructors()[0].newInstance(null, Float.valueOf(entityValues[1]), Float.valueOf(entityValues[2]), Integer.valueOf(entityValues[3]));
-						break;
-					}
-					case 5 : {
-						en = (Entity) EntityRegistry.getEntities().get(Integer.valueOf(entityValues[0])).getConstructors()[0].newInstance(null, Float.valueOf(entityValues[1]), Float.valueOf(entityValues[2]), Integer.valueOf(entityValues[3]), Integer.valueOf(entityValues[4]));
-						break;
-					}
-					case 6 : {
-						en = (Entity) EntityRegistry.getEntities().get(Integer.valueOf(entityValues[0])).getConstructors()[0].newInstance(null, Float.valueOf(entityValues[1]), Float.valueOf(entityValues[2]), Integer.valueOf(entityValues[3]), Integer.valueOf(entityValues[4]), Integer.valueOf(entityValues[5]));
-						break;
-					}
-					default : {
-						System.out.println(entityValues.length);
-						break;
-					}
-				}
+				en = (Entity) EntityRegistry.getEntities().get(Integer.valueOf(entityValues[0])).getConstructors()[0].newInstance(arguments);
 			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e)
 			{
 				e.printStackTrace();
+				System.out.println(entityValues.length);
 			}
+			tilemap[Integer.valueOf(entityValues[1])][Integer.valueOf(entityValues[2])].setEnId(Integer.valueOf(entityValues[0]));
 			tilemap[Integer.valueOf(entityValues[1])][Integer.valueOf(entityValues[2])].setEn(en);
+			tilemap[Integer.valueOf(entityValues[1])][Integer.valueOf(entityValues[2])].setEntityValues(entityValues);
 			JLabel icon = new JLabel(new ImageIcon(en.getRenderer().getAnimation().getImage()));
 			icon.setBounds(0, 0, 32, 32);
 			tilemap[Integer.valueOf(entityValues[1])][Integer.valueOf(entityValues[2])].add(icon);
@@ -403,7 +401,7 @@ public class MapEditor extends JFrame
 	public static boolean createMapFile(File mapFile) throws IOException
 	{
 		String path = mapFile.getAbsolutePath();
-		if (!path.endsWith(".txt")) path += ".txt";
+		if (!(path.endsWith(".txt") || path.endsWith(".TXT"))) path += ".txt";
 		PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(path)));
 		int[] info = new int[]
 		{ tilemap.length, tilemap[0].length, Integer.valueOf(fieldLumiX.getText()), Integer.valueOf(fieldLumiY.getText()),
@@ -422,6 +420,23 @@ public class MapEditor extends JFrame
 				pw.print(tilemap[j][i].getId() + "\t");
 			}
 			pw.println(tilemap[i][tilemap[i].length - 1].getId());
+		}
+
+		pw.println("entities =");
+
+		for (int i = 0; i < tilemap[0].length; i++)
+		{
+			for (int j = 0; j < tilemap.length; j++)
+			{
+				if (tilemap[j][i].getEntityValues() != null)
+				{
+					for (int h = 0; h < tilemap[j][i].getEntityValues().length; h++)
+					{
+						pw.print(tilemap[j][i].getEntityValues()[h] + " ");
+						if (h == tilemap[j][i].getEntityValues().length - 1) pw.println();
+					}
+				}
+			}
 		}
 
 		exists = true;
@@ -640,7 +655,7 @@ public class MapEditor extends JFrame
 		scrollEntityRegistry.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 		scrollEntityRegistry.setBounds(74, 15, 300, 50);
 		entityMenu.add(scrollEntityRegistry);
-		
+
 		scrollEntityRegistry.setViewportView(entityRegistry);
 		GridBagLayout gbl_entityRegistry = new GridBagLayout();
 		entityRegistry.setPreferredSize(new Dimension(32 * entityChoice.length, 32));
@@ -653,7 +668,7 @@ public class MapEditor extends JFrame
 		JLabel label_2 = new JLabel();
 		label_2.setBounds(555, 15, 32, 32);
 		entityMenu.add(label_2);
-		
+
 		lblEntityName.setBounds(459, 49, 55, 16);
 		entityMenu.add(lblEntityName);
 

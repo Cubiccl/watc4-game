@@ -23,6 +23,7 @@ public class CreateMap extends JDialog
 	public CreateMap()
 	{
 		setBounds(100, 100, 320, 200);
+		setModal(true);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);

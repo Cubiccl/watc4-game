@@ -180,6 +180,7 @@ public abstract class Entity implements IRender, IUpdate
 		return this.yPos;
 	}
 
+
 	/** @return This Entity's vertical speed. */
 	public float getYSpeed()
 	{
@@ -252,6 +253,16 @@ public abstract class Entity implements IRender, IUpdate
 			g.drawLine(FileUtils.toInt(this.getX()), FileUtils.toInt(this.getY() + this.getHeight() / 2), FileUtils.toInt(this.getX() + this.getWidth()),
 					FileUtils.toInt(this.getY() + this.getHeight() / 2));
 		}
+	}
+	
+	public void setX(float xPos)
+	{
+		this.xPos = xPos;
+	}
+
+	public void setY(float yPos)
+	{
+		this.yPos = yPos;
 	}
 
 	public void setPosition(int x, int y)
