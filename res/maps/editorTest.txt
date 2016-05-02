@@ -1,0 +1,14 @@
+width = 5
+height = 5
+lumiSpawnX = 1
+lumiSpawnY = 3
+pattouSpawnX = 1
+pattouSpawnY = 0
+tiles =
+1	2	2	2	1
+1	1	1	1	1
+1	2	2	2	1
+1	2	2	2	1
+1	1	1	1	1
+entities =
+2 3 0 50 50 

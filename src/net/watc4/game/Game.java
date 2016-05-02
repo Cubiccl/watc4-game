@@ -35,6 +35,15 @@ public class Game implements Runnable
 		return instance;
 	}
 
+	/** Used to set the instance when the game is tested from the Editor.
+	 * 
+	 * @param instance
+	 */
+	public static void setInstance(Game instance)
+	{
+		Game.instance = instance;
+	}
+
 	public static void main(String[] args)
 	{
 		AnimationManager.create();
@@ -76,6 +85,17 @@ public class Game implements Runnable
 		this.inputManager = new InputManager(window);
 		this.transition = -TRANSITION;
 		GameState.createNew("map2");
+		this.thread = new Thread(this);
+		this.thread.start();
+	}
+	
+	public Game(String map)
+	{
+		this.window = new Window();
+		this.isRunning = false;
+		this.inputManager = new InputManager(window);
+		this.transition = -TRANSITION;
+		GameState.createNew(map);
 		this.thread = new Thread(this);
 		this.thread.start();
 	}

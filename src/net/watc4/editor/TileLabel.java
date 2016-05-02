@@ -16,8 +16,8 @@ public class TileLabel extends JLabel
 	{
 		entityValues = new Object[en.getClass().getConstructors()[0].getParameters().length];
 		entityValues[0] = enId;
-		entityValues[1] = (int)en.getX();
-		entityValues[2] = (int)en.getY();
+		entityValues[1] = (int) en.getX();
+		entityValues[2] = (int) en.getY();
 
 		for (int i = 3; i < entityValues.length; i++)
 		{

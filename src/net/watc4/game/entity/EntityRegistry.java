@@ -13,6 +13,9 @@ public final class EntityRegistry
 	/** Sorts Entities by ID. */
 	private static HashMap<Integer, Class<? extends Entity>> entities;
 
+	/** Contains description of the Entity's parameters by class. */
+	private static HashMap<Class<? extends Entity>, String[]> arguments;
+
 	/** Creates and registers all Entities. */
 	public static void createEntities()
 	{
@@ -21,6 +24,20 @@ public final class EntityRegistry
 		registerEntity(1, EntityPattou.class);
 		registerEntity(2, EntityBattery.class);
 		registerEntity(3, EntityCutscene.class);
+	}
+
+	/** Registers all the parameters. Note : X and Y are considered as unsigned int for the editor. */
+	public static void defineEntities()
+	{
+		arguments = new HashMap<Class<? extends Entity>, String[]>();
+		arguments.put(EntityLumi.class, new String[]
+		{ "X", "unsigned int", "Y", "unsigned int" });
+		arguments.put(EntityPattou.class, new String[]
+		{ "X", "unsigned int", "Y", "unsigned int" });
+		arguments.put(EntityBattery.class, new String[]
+		{ "X", "unsigned int", "Y", "unsigned int", "Buffer", "unsigned int", "Max Power", "unsigned int" });
+		arguments.put(EntityCutscene.class, new String[]
+		{ "X", "unsigned int", "Y", "unsigned int", "Tile Width", "unsigned int", "Tile Heigth", "unsigned int", "Cutscene Name", "string" });
 	}
 
 	/** Creates the adequate arguments then spawns an Entity.
@@ -53,6 +70,12 @@ public final class EntityRegistry
 	public static HashMap<Integer, Class<? extends Entity>> getEntities()
 	{
 		return entities;
+	}
+
+	/** @return The list of Entity definitions sorted by ID. (0 -> size-1) */
+	public static HashMap<Class<? extends Entity>, String[]> getDefinitions()
+	{
+		return arguments;
 	}
 
 	/** Registers the target Entity.

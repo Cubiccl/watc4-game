@@ -41,11 +41,13 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import net.watc4.game.Game;
 import net.watc4.game.display.AnimationManager;
 import net.watc4.game.display.Sprite;
 import net.watc4.game.entity.Entity;
 import net.watc4.game.entity.EntityRegistry;
 import net.watc4.game.map.TileRegistry;
+import net.watc4.game.states.GameState;
 import net.watc4.game.utils.FileUtils;
 
 import org.eclipse.wb.swing.FocusTraversalOnArray;
@@ -57,6 +59,7 @@ public class MapEditor extends JFrame
 	private static final int MODE_ENTITY = 1;
 	private static final int MODE_CHARACTERS = 2;
 	private static int mode;
+	private static Game g;
 	private static JPanel contentPane;
 	private static GridBagConstraints gbc = new GridBagConstraints();
 	private static JPanel mapView = new JPanel();
@@ -194,34 +197,42 @@ public class MapEditor extends JFrame
 		{
 			public void mouseClicked(MouseEvent ev)
 			{
+				TileLabel tl = tilemap[i][j];
 				if (mode == MapEditor.MODE_TILES)
 				{
-					tilemap[i][j].setIcon(new ImageIcon(TileRegistry.getTileFromId(selectedTile).sprite.getImage()));
-					tilemap[i][j].setId(selectedTile);
+					tl.setIcon(new ImageIcon(TileRegistry.getTileFromId(selectedTile).sprite.getImage()));
+					tl.setId(selectedTile);
 				} else if (mode == MapEditor.MODE_ENTITY)
 				{
-					if (ev.getButton() == MouseEvent.BUTTON3 && tilemap[i][j].getEn() != null)
+					if (ev.getButton() == MouseEvent.BUTTON3 && tl.getEn() != null && tl.getEntityValues().length > 3)
 					{
-						System.out.println("lel");
-						// TODO ouvrir une fenetre de gestion de l'entite
-					} else
-					{
-						if (tilemap[i][j].getEn() != null) tilemap[i][j].removeAll();
 						try
 						{
-							tilemap[i][j].setEn(entityChoice[selectedEntity].getEn().getClass().newInstance());
-							tilemap[i][j].setEnId(selectedEntity);
-							tilemap[i][j].getEn().setX(i);
-							tilemap[i][j].getEn().setY(j);
-							tilemap[i][j].initValues();
+							EntityValues dialog = new EntityValues(tl);
+							dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+							dialog.setVisible(true);
+						} catch (Exception e)
+						{
+							e.printStackTrace();
+						}
+					} else
+					{
+						if (tl.getEn() != null) tl.removeAll();
+						try
+						{
+							tl.setEn(entityChoice[selectedEntity].getEn().getClass().newInstance());
+							tl.setEnId(selectedEntity);
+							tl.getEn().setX(i);
+							tl.getEn().setY(j);
+							tl.initValues();
 						} catch (InstantiationException | IllegalAccessException e)
 						{
 							e.printStackTrace();
 						}
-						JLabel icon = new JLabel(new ImageIcon(tilemap[i][j].getEn().getRenderer().getAnimation().getImage()));
+						JLabel icon = new JLabel(new ImageIcon(tl.getEn().getRenderer().getAnimation().getImage()));
 						icon.setBounds(0, 0, 32, 32);
-						tilemap[i][j].add(icon);
-						tilemap[i][j].updateUI();
+						tl.add(icon);
+						tl.updateUI();
 					}
 				} else if (mode == MapEditor.MODE_CHARACTERS)
 				{
@@ -236,8 +247,8 @@ public class MapEditor extends JFrame
 						}
 						fieldPattouX.setText(String.valueOf(i));
 						fieldPattouY.setText(String.valueOf(j));
-						tilemap[i][j].add(focusPattou);
-						tilemap[i][j].updateUI();
+						tl.add(focusPattou);
+						tl.updateUI();
 
 					} else if (radioLumi.isSelected() & !radioPattou.isSelected())
 					{
@@ -251,8 +262,8 @@ public class MapEditor extends JFrame
 						fieldLumiX.setText(String.valueOf(i));
 						fieldLumiY.setText(String.valueOf(j));
 						focusLumi.add(lumiEyes);
-						tilemap[i][j].add(focusLumi);
-						tilemap[i][j].updateUI();
+						tl.add(focusLumi);
+						tl.updateUI();
 					}
 				}
 			}
@@ -460,6 +471,7 @@ public class MapEditor extends JFrame
 		FileFilter txtOnly = new FileNameExtensionFilter("Fichier texte", "txt");
 		fc.addChoosableFileFilter(txtOnly);
 		fc.removeChoosableFileFilter(fc.getAcceptAllFileFilter());
+		fc.setCurrentDirectory(new File("res/maps/"));
 
 		setJMenuBar(menuBar);
 		createMapMenu.setToolTipText("Choisissez les dimensions de votre nouvelle carte");
@@ -487,11 +499,51 @@ public class MapEditor extends JFrame
 
 		menuBar.add(createMapMenu);
 
-		JMenuItem mntmModifier = new JMenuItem("Modifier");
-		mntmModifier.setToolTipText("Modifiez les dimensions de votre carte");
-		mntmModifier.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		mntmModifier.setMaximumSize(new Dimension(80, 32767));
-		menuBar.add(mntmModifier);
+		JMenuItem mntmTester = new JMenuItem("Tester");
+		mntmTester.addMouseListener(new MouseAdapter()
+		{
+			@Override
+			public void mouseClicked(MouseEvent arg0)
+			{
+				if (tilemap == null || fieldLumiX.getText().equals("") || fieldLumiY.getText().equals("") || fieldPattouX.getText().equals("")
+						|| fieldPattouY.getText().equals(""))
+				{
+					if (tilemap == null)
+					{
+						JOptionPane.showMessageDialog(null, "Veuillez cr\u00E9er une carte.", null, JOptionPane.ERROR_MESSAGE);
+					} else if (tilemap != null)
+					{
+						JOptionPane.showMessageDialog(null, "Veuillez placer Lumi et Pattou sur la carte.", null, JOptionPane.ERROR_MESSAGE);
+					}
+				} else
+				{
+					try
+					{
+						createMapFile(new File("res/maps/editorTest.txt"));
+						EventQueue.invokeLater(new Runnable()
+						{
+							public void run()
+							{
+								try
+								{
+									g = new Game("editorTest");
+									Game.setInstance(g);
+									g.window.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+								} catch (Exception e)
+								{}
+							}
+						});
+					} catch (IOException e)
+					{
+						e.printStackTrace();
+					}
+				}
+			}
+		});
+		mntmTester.setToolTipText("Lance le jeu avec la carte en cours d'\u00E9dition.");
+		mntmTester.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		mntmTester.setMaximumSize(new Dimension(80, 32767));
+		menuBar.add(mntmTester);
 
 		JMenuItem mntmOuvrirUneCarte = new JMenuItem("Ouvrir");
 		mntmOuvrirUneCarte.addMouseListener(new MouseAdapter()
@@ -523,7 +575,10 @@ public class MapEditor extends JFrame
 				if (tilemap == null || fieldLumiX.getText().equals("") || fieldLumiY.getText().equals("") || fieldPattouX.getText().equals("")
 						|| fieldPattouY.getText().equals(""))
 				{
-					if (tilemap != null)
+					if (tilemap == null)
+					{
+						JOptionPane.showMessageDialog(null, "Veuillez cr\u00E9er une carte.", null, JOptionPane.ERROR_MESSAGE);
+					} else if (tilemap != null)
 					{
 						JOptionPane.showMessageDialog(null, "Veuillez placer Lumi et Pattou sur la carte.", null, JOptionPane.ERROR_MESSAGE);
 					}
@@ -570,7 +625,13 @@ public class MapEditor extends JFrame
 				if (tilemap == null || fieldLumiX.getText().equals("") || fieldLumiY.getText().equals("") || fieldPattouX.getText().equals("")
 						|| fieldPattouY.getText().equals(""))
 				{
-					JOptionPane.showMessageDialog(null, "Veuillez placer Lumi et Pattou sur la carte.", null, JOptionPane.ERROR_MESSAGE);
+					if (tilemap == null)
+					{
+						JOptionPane.showMessageDialog(null, "Veuillez cr\u00E9er une carte.", null, JOptionPane.ERROR_MESSAGE);
+					} else if (tilemap != null)
+					{
+						JOptionPane.showMessageDialog(null, "Veuillez placer Lumi et Pattou sur la carte.", null, JOptionPane.ERROR_MESSAGE);
+					}
 				} else
 				{
 					int returnVal = fc.showSaveDialog(MapEditor.this);
