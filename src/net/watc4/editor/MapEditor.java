@@ -45,6 +45,7 @@ import net.watc4.game.Game;
 import net.watc4.game.display.AnimationManager;
 import net.watc4.game.display.Sprite;
 import net.watc4.game.entity.Entity;
+import net.watc4.game.entity.EntityCutscene;
 import net.watc4.game.entity.EntityRegistry;
 import net.watc4.game.map.TileRegistry;
 import net.watc4.game.states.GameState;
@@ -157,7 +158,10 @@ public class MapEditor extends JFrame
 			tileChoice[i] = new TileLabel();
 			tileChoice[i].setLayout(null);
 			tileChoice[i].setPreferredSize(new Dimension(32, 32));
-			tileChoice[i].setIcon(new ImageIcon(TileRegistry.getTiles().get(i).sprite.getImage()));
+			if (TileRegistry.getTileFromId(i).sprite == null)
+			{
+				tileChoice[i].setIcon(new ImageIcon(Sprite.TILE_WALL.getImage()));
+			} else tileChoice[i].setIcon(new ImageIcon(TileRegistry.getTiles().get(i).sprite.getImage()));
 			tileChoice[i].setId(i);
 			tileChoice[i].setVisible(true);
 			gbc.gridx = i;
@@ -183,7 +187,10 @@ public class MapEditor extends JFrame
 				System.out.println((EntityRegistry.getEntities().get(i).getConstructors()[0]).toString());
 				e.printStackTrace();
 			}
-			entityChoice[i].setIcon(new ImageIcon(entityChoice[i].getEn().getRenderer().getAnimation().getImage()));
+			if (entityChoice[i].getEn().getRenderer() == null)
+			{
+				entityChoice[i].setIcon(new ImageIcon(Sprite.UNKNOWN.getImage()));
+			} else entityChoice[i].setIcon(new ImageIcon(entityChoice[i].getEn().getRenderer().getAnimation().getImage()));
 			entityChoice[i].setVisible(true);
 			gbc.gridx = i;
 			entityRegistry.add(entityChoice[i], gbc);
@@ -200,7 +207,8 @@ public class MapEditor extends JFrame
 				TileLabel tl = tilemap[i][j];
 				if (mode == MapEditor.MODE_TILES)
 				{
-					tl.setIcon(new ImageIcon(TileRegistry.getTileFromId(selectedTile).sprite.getImage()));
+					if (TileRegistry.getTileFromId(selectedTile).sprite == null) tl.setIcon(new ImageIcon(Sprite.TILE_WALL.getImage()));
+					else tl.setIcon(new ImageIcon(TileRegistry.getTileFromId(selectedTile).sprite.getImage()));
 					tl.setId(selectedTile);
 				} else if (mode == MapEditor.MODE_ENTITY)
 				{
@@ -284,7 +292,8 @@ public class MapEditor extends JFrame
 			{
 
 				selectedTile = i;
-				selectedTileLabel.setIcon(new ImageIcon(TileRegistry.getTileFromId(selectedTile).sprite.getImage()));
+				if (TileRegistry.getTileFromId(i).sprite == null) selectedTileLabel.setIcon(new ImageIcon(Sprite.TILE_WALL.getImage()));
+				else selectedTileLabel.setIcon(new ImageIcon(TileRegistry.getTileFromId(selectedTile).sprite.getImage()));
 				if (lblSelectedTileIndex >= 0)
 				{
 					tileChoice[lblSelectedTileIndex].removeAll();
@@ -305,7 +314,10 @@ public class MapEditor extends JFrame
 			{
 
 				selectedEntity = i;
-				selectedEntityLabel.setIcon(new ImageIcon(entityChoice[selectedEntity].getEn().getRenderer().getAnimation().getImage()));
+				if (entityChoice[selectedEntity].getEn().getRenderer() == null)
+				{
+					selectedEntityLabel.setIcon(new ImageIcon(Sprite.UNKNOWN.getImage()));
+				} else selectedEntityLabel.setIcon(new ImageIcon(entityChoice[selectedEntity].getEn().getRenderer().getAnimation().getImage()));
 				if (lblSelectedEntityIndex >= 0)
 				{
 					entityChoice[lblSelectedEntityIndex].removeAll();
@@ -358,7 +370,10 @@ public class MapEditor extends JFrame
 				tilemap[i][j].setLayout(null);
 				tilemap[i][j].setPreferredSize(new Dimension(32, 32));
 				tilemap[i][j].setId(ids[i][j]);
-				tilemap[i][j].setIcon(new ImageIcon(TileRegistry.getTileFromId(tilemap[i][j].getId()).sprite.getImage()));
+				if (TileRegistry.getTileFromId(tilemap[i][j].getId()).sprite == null)
+				{
+					tilemap[i][j].setIcon(new ImageIcon(Sprite.TILE_WALL.getImage()));
+				} else tilemap[i][j].setIcon(new ImageIcon(TileRegistry.getTileFromId(tilemap[i][j].getId()).sprite.getImage()));
 				tilemap[i][j].setVisible(true);
 				gbc.gridx = i;
 				gbc.gridy = j;
@@ -394,7 +409,11 @@ public class MapEditor extends JFrame
 			tilemap[Integer.valueOf(entityValues[1])][Integer.valueOf(entityValues[2])].setEnId(Integer.valueOf(entityValues[0]));
 			tilemap[Integer.valueOf(entityValues[1])][Integer.valueOf(entityValues[2])].setEn(en);
 			tilemap[Integer.valueOf(entityValues[1])][Integer.valueOf(entityValues[2])].setEntityValues(entityValues);
-			JLabel icon = new JLabel(new ImageIcon(en.getRenderer().getAnimation().getImage()));
+			JLabel icon;
+			if (en.getRenderer() == null)
+			{
+				icon = new JLabel(new ImageIcon(Sprite.UNKNOWN.getImage()));
+			} else icon = new JLabel(new ImageIcon(en.getRenderer().getAnimation().getImage()));
 			icon.setBounds(0, 0, 32, 32);
 			tilemap[Integer.valueOf(entityValues[1])][Integer.valueOf(entityValues[2])].add(icon);
 			tilemap[Integer.valueOf(entityValues[1])][Integer.valueOf(entityValues[2])].updateUI();
