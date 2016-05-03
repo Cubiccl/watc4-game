@@ -82,9 +82,10 @@ public class EntityValues extends JDialog
 	/** Create the dialog. */
 	public EntityValues(TileLabel tl)
 	{
-		this.en = tl.getEn();
+		en = tl.getEn();
 		EntityRegistry.defineEntities();
-		this.definitions = EntityRegistry.getDefinitions().get(en.getClass());
+		setModal(true);
+		definitions = EntityRegistry.getDefinitions().get(en.getClass());
 		setBounds(100, 100, 400, 75 * (en.getClass().getConstructors()[0].getParameterCount() - 3));
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setLayout(new FlowLayout());
@@ -117,7 +118,7 @@ public class EntityValues extends JDialog
 							}
 							try
 							{
-								EntityValues.this.en = (Entity) en.getClass().getConstructors()[0].newInstance(values);
+								EntityValues.en = (Entity) en.getClass().getConstructors()[0].newInstance(values);
 								tl.setEntityValues(values);
 								tl.getEntityValues()[0] = tl.getEnId();
 								EntityValues.this.dispose();
@@ -129,6 +130,20 @@ public class EntityValues extends JDialog
 					}
 
 				});
+				{
+					JButton btnSupprimer = new JButton("Supprimer");
+					btnSupprimer.addMouseListener(new MouseAdapter() {
+						@Override
+						public void mouseClicked(MouseEvent arg0) {
+							EntityValues.this.dispose();
+							tl.setEn(null);
+							tl.setEntityValues(null);
+							tl.removeAll();
+							tl.updateUI();
+						}
+					});
+					buttonPane.add(btnSupprimer);
+				}
 				okButton.setActionCommand("OK");
 				buttonPane.add(okButton);
 				getRootPane().setDefaultButton(okButton);

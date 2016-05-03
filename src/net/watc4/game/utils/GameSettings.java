@@ -37,10 +37,10 @@ public final class GameSettings
 				return "640 x 480";
 				
 			case R960:
-				return "960 x 640";
+				return "960 x 720";
 				
 			case R1280:
-				return "1280 x 760";
+				return "1280 x 960";
 
 			default:
 				return "Unknown";

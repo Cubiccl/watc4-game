@@ -204,7 +204,13 @@ public class MapEditor extends JFrame
 					tl.setId(selectedTile);
 				} else if (mode == MapEditor.MODE_ENTITY)
 				{
-					if (ev.getButton() == MouseEvent.BUTTON3 && tl.getEn() != null && tl.getEntityValues().length > 3)
+					if (ev.getButton() == MouseEvent.BUTTON3 && tl.getEn() != null && tl.getEntityValues().length <= 3)
+					{
+						tl.setEn(null);
+						tl.setEntityValues(null);
+						tl.removeAll();
+						tl.updateUI();
+					} else if (ev.getButton() == MouseEvent.BUTTON3 && tl.getEn() != null && tl.getEntityValues().length > 3)
 					{
 						try
 						{

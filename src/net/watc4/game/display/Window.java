@@ -42,12 +42,12 @@ public class Window extends JFrame
 					break;
 
 				case GameSettings.R960:
-					this.setSize(960, 640);
+					this.setSize(960, 720);
 					this.setLocationRelativeTo(null);
 					break;
 
 				case GameSettings.R1280:
-					this.setSize(1280, 760);
+					this.setSize(1280, 960);
 					this.setLocationRelativeTo(null);
 					break;
 
