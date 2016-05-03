@@ -73,6 +73,7 @@ public class Window extends JFrame
 	private void createFrame()
 	{
 		this.setTitle(GameUtils.NAME);
+		this.setSize(640, 480);
 		this.setResizable(false);
 		this.setFocusable(false);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);

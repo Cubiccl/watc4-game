@@ -6,7 +6,10 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 
 import net.watc4.game.Game;
+import net.watc4.game.display.Animation;
+import net.watc4.game.display.Background;
 import net.watc4.game.display.Camera;
+import net.watc4.game.display.Sprite;
 import net.watc4.game.display.TextRenderer;
 import net.watc4.game.entity.EntityLumi;
 import net.watc4.game.entity.EntityPattou;
@@ -59,6 +62,7 @@ public class GameState extends State
 		this.mapName = mapName;
 		this.camera = new Camera();
 		this.map = Map.createFrom(this.mapName, this);
+		this.setBackground(new Background(new Animation(Sprite.TILE_WALL), this));
 	}
 
 	/** Draws a Red overlay. It becomes more opaque the more damage the player takes.
@@ -100,6 +104,7 @@ public class GameState extends State
 		this.camera.centerOn(this.entityLumi, this.entityPattou, this.map);
 		((Graphics2D) g).scale(this.camera.getScale(), this.camera.getScale());
 		g.translate((int) -this.camera.getXOffset(), (int) -this.camera.getYOffset());
+		super.render(g);
 		this.map.render(g);
 		this.entityPattou.render(g);
 		((Graphics2D) g).scale(1 / this.camera.getScale(), 1 / this.camera.getScale());

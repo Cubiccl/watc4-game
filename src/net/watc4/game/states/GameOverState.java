@@ -18,6 +18,7 @@ public class GameOverState extends State
 	public GameOverState(GameState gameState)
 	{
 		this.gameState = gameState;
+		this.setBackground(this.gameState);
 	}
 
 	@Override
@@ -39,7 +40,7 @@ public class GameOverState extends State
 	@Override
 	public void render(Graphics g)
 	{
-		this.gameState.render(g);
+		super.render(g);
 
 		int x = Camera.WIDTH / 2, y = Camera.HEIGHT / 2;
 		g.setColor(new Color(0, 0, 0, 200));

@@ -29,7 +29,7 @@ public class TileRegistry
 		tiles = new HashMap<Integer, Tile>();
 		DEFAULT = new TileAir(0, new Animation(Sprite.TILE_DEFAULT)); // Black
 		new TileGround(1, new Animation(Sprite.TILE_GROUND)); // Ground
-		AIR = new TileAir(2, new Animation(Sprite.TILE_WALL)); // BG Wall
+		AIR = new TileAir(2, null); // BG Wall
 		new Tile(3, new Animation(Sprite.TILE_GLASS), true, false); // Glass
 		new TileMirror(4, new Animation(Sprite.TILE_MIRROR_TOP), GameUtils.UP); // Mirror Top
 		new TileMirror(5, new Animation(Sprite.TILE_MIRROR_RIGHT), GameUtils.RIGHT); // Mirror Right

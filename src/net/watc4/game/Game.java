@@ -124,6 +124,7 @@ public class Game implements Runnable
 	private void render()
 	{
 		if (this.transition != 0) AnimationManager.update();
+		if (this.window.canvas.getWidth() == 0) return;
 
 		BufferedImage screen = new BufferedImage(this.window.canvas.getWidth(), this.window.canvas.getHeight(), BufferedImage.TYPE_INT_RGB);
 		Graphics2D g = screen.createGraphics();

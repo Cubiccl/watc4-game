@@ -14,7 +14,7 @@ public class PauseMenuState extends MenuState
 	public PauseMenuState(GameState gameState)
 	{
 		super("Pause");
-		this.background = gameState;
+		this.setBackground(gameState);
 		this.gameState = gameState;
 	}
 

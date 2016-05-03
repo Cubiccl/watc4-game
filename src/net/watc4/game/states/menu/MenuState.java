@@ -8,14 +8,11 @@ import java.util.ArrayList;
 import net.watc4.game.display.Camera;
 import net.watc4.game.display.TextRenderer;
 import net.watc4.game.states.State;
-import net.watc4.game.utils.IRender;
 
 /** A State with different buttons to select. */
 public abstract class MenuState extends State
 {
 
-	/** The background : drawn behind the menu. */
-	protected IRender background;
 	/** Contains all the buttons of this Menu. */
 	private ArrayList<Button> buttons;
 	/** The id of the currently selected button. */
@@ -78,8 +75,8 @@ public abstract class MenuState extends State
 	@Override
 	public void render(Graphics g)
 	{
-		if (this.background != null) this.background.render(g);
-
+		super.render(g);
+		
 		TextRenderer.setFontSize(40);
 		g.setColor(Color.DARK_GRAY);
 		TextRenderer.drawStringCentered(g, this.title, Camera.WIDTH / 2, Camera.HEIGHT / 4);
