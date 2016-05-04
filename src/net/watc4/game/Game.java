@@ -5,11 +5,10 @@ import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferStrategy;
-import java.awt.image.BufferedImage;
 
 import net.watc4.game.display.AnimationManager;
-import net.watc4.game.display.Camera;
 import net.watc4.game.display.TextRenderer;
 import net.watc4.game.display.Window;
 import net.watc4.game.entity.EntityRegistry;
@@ -35,15 +34,6 @@ public class Game implements Runnable
 		return instance;
 	}
 
-	/** Used to set the instance when the game is tested from the Editor.
-	 * 
-	 * @param instance
-	 */
-	public static void setInstance(Game instance)
-	{
-		Game.instance = instance;
-	}
-
 	public static void main(String[] args)
 	{
 		AnimationManager.create();
@@ -61,6 +51,14 @@ public class Game implements Runnable
 				{}
 			}
 		});
+	}
+
+	/** Used to set the instance when the game is tested from the Editor.
+	 * 
+	 * @param instance */
+	public static void setInstance(Game instance)
+	{
+		Game.instance = instance;
 	}
 
 	/** Manages keyboard inputs from the user. */
@@ -88,7 +86,7 @@ public class Game implements Runnable
 		this.thread = new Thread(this);
 		this.thread.start();
 	}
-	
+
 	public Game(String map)
 	{
 		this.window = new Window();
@@ -126,9 +124,10 @@ public class Game implements Runnable
 		if (this.transition == 0) AnimationManager.update();
 		if (this.window.canvas.getWidth() == 0) return;
 
-		BufferedImage screen = new BufferedImage(this.window.canvas.getWidth(), this.window.canvas.getHeight(), BufferedImage.TYPE_INT_RGB);
-		Graphics2D g = screen.createGraphics();
-		g.scale(this.window.canvas.getWidth() * 1f / Camera.WIDTH, this.window.canvas.getHeight() * 1f / Camera.HEIGHT);
+		BufferStrategy bufferStrategy = this.window.canvas.getBufferStrategy();
+		Graphics g = bufferStrategy.getDrawGraphics();
+		AffineTransform defaultTransform = ((Graphics2D) g).getTransform();
+		this.window.prepareGraphics((Graphics2D) g);
 		this.state.render(g);
 
 		if (GameSettings.debugMode)
@@ -138,16 +137,16 @@ public class Game implements Runnable
 			TextRenderer.drawString(g, "Debug mode (F1)", 0, 0);
 			TextRenderer.drawString(g, "FPS=" + GameUtils.currentFPS + ", UPS=" + GameUtils.currentUPS, 0, TextRenderer.getFontHeight());
 		}
-		g.dispose();
 
-		BufferStrategy bufferStrategy = this.window.canvas.getBufferStrategy();
-		Graphics g2 = bufferStrategy.getDrawGraphics();
-		g2.drawImage(screen, 0, 0, null);
 		if (this.transition != 0)
 		{
-			g2.setColor(new Color(0, 0, 0, Math.abs(this.transition) * 255 / TRANSITION));
-			g2.fillRect(0, 0, this.window.canvas.getWidth(), this.window.canvas.getHeight());
+			g.setColor(new Color(0, 0, 0, Math.abs(this.transition) * 255 / TRANSITION));
+			g.fillRect(0, 0, this.window.canvas.getWidth(), this.window.canvas.getHeight());
 		}
+
+		((Graphics2D) g).setTransform(defaultTransform);
+		this.window.drawBorders((Graphics2D) g);
+		g.dispose();
 		bufferStrategy.show();
 	}
 

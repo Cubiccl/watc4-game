@@ -1,7 +1,9 @@
 package net.watc4.game.display;
 
 import java.awt.Canvas;
+import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.Graphics2D;
 
 import javax.swing.JFrame;
 
@@ -13,6 +15,7 @@ public class Window extends JFrame
 {
 	/** The Canvas used to draw the <code>Game</code>. */
 	public final Canvas canvas;
+	private int width, height, offset;
 
 	public Window()
 	{
@@ -65,6 +68,9 @@ public class Window extends JFrame
 			{
 				canvas.requestFocus();
 				canvas.setSize(getSize());
+				height = canvas.getHeight();
+				width = height * 4 / 3;
+				offset = (canvas.getWidth() - width) / 2;
 			}
 		});
 	}
@@ -78,6 +84,27 @@ public class Window extends JFrame
 		this.setFocusable(false);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.applyResolution();
+	}
+
+	/** Draws the borders of the Window.
+	 * 
+	 * @param g - The Graphics required to draw. */
+	public void drawBorders(Graphics2D g)
+	{
+		g.setColor(Color.BLACK);
+		g.fillRect(0, 0, this.offset, this.height);
+		g.fillRect(this.offset + this.width, 0, this.offset, this.height);
+	}
+
+	/** Prepares the Graphics to draw the Game. Scales and places the Graphics depending on this Window's dimensions.
+	 * 
+	 * @param g - The Graphics to use. */
+	public void prepareGraphics(Graphics2D g)
+	{
+		g.setColor(Color.BLACK);
+		g.fillRect(0, 0, this.canvas.getWidth(), this.canvas.getHeight());
+		g.translate(this.offset, 0);
+		g.scale(this.width * 1f / Camera.WIDTH, this.height * 1f / Camera.HEIGHT);
 	}
 
 }
