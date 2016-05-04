@@ -123,7 +123,7 @@ public class Game implements Runnable
 	/** Displays the <code>Game</code> onto the {@link Window}. */
 	private void render()
 	{
-		if (this.transition != 0) AnimationManager.update();
+		if (this.transition == 0) AnimationManager.update();
 		if (this.window.canvas.getWidth() == 0) return;
 
 		BufferedImage screen = new BufferedImage(this.window.canvas.getWidth(), this.window.canvas.getHeight(), BufferedImage.TYPE_INT_RGB);
