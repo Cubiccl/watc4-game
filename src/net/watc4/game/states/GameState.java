@@ -102,20 +102,31 @@ public class GameState extends State
 	public void render(Graphics g)
 	{
 		this.camera.centerOn(this.entityLumi, this.entityPattou, this.map);
+
+		int xOffset = (int) this.camera.getXOffset(), yOffset = (int) this.camera.getYOffset();
+		int width = (int) this.camera.getWidth(), height = (int) this.camera.getHeight();
 		((Graphics2D) g).scale(this.camera.getScale(), this.camera.getScale());
-		g.translate((int) -this.camera.getXOffset(), (int) -this.camera.getYOffset());
+		g.translate(-xOffset, -yOffset);
+
 		super.render(g);
 		this.map.render(g);
 		this.entityPattou.render(g);
+
+		g.setColor(Color.BLACK);
+		if (xOffset < 0) g.fillRect(xOffset, yOffset, -xOffset, height);
+		if (yOffset < 0) g.fillRect(xOffset, yOffset, width, -yOffset);
+		g.fillRect(this.map.width * Map.TILESIZE, yOffset, xOffset, height);
+		g.fillRect(xOffset, this.map.height * Map.TILESIZE, width, height);
+
 		((Graphics2D) g).scale(1 / this.camera.getScale(), 1 / this.camera.getScale());
-		g.translate((int) this.camera.getXOffset(), (int) this.camera.getYOffset());
+		g.translate(xOffset, yOffset);
 		this.drawDamage(g);
 
 		if (GameSettings.debugMode)
 		{
 			g.setColor(Color.DARK_GRAY);
 			TextRenderer.setFontSize(15);
-			int size = 40;
+			int size = 20;
 			int y = 2;
 			TextRenderer.drawString(g, "Lumi: " + this.entityLumi.getX() + ", " + this.entityLumi.getY(), 0, y * size);
 			++y;

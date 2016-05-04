@@ -29,12 +29,12 @@ public class Background implements IRender
 		int xOffset = 0, yOffset = 0;
 		if (this.game != null)
 		{
-			xOffset = (int) (this.game.camera.getXOffset() * this.parallax % width);
-			yOffset = (int) (this.game.camera.getYOffset() * this.parallax % height);
+			xOffset = (int) (this.game.camera.getXOffset() * this.parallax - this.game.camera.getXOffset());
+			yOffset = (int) (this.game.camera.getYOffset() * this.parallax - this.game.camera.getYOffset());
 		}
-		for (int x = 0; x < Camera.WIDTH / width; x++)
+		for (int x = 0; x < Camera.WIDTH / width / this.parallax; x++)
 		{
-			for (int y = 0; y < Camera.HEIGHT / height; y++)
+			for (int y = 0; y < Camera.HEIGHT / height / this.parallax; y++)
 			{
 				g.drawImage(this.animation.getImage(), x * width - xOffset, y * height - yOffset, null);
 			}

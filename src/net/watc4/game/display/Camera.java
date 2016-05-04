@@ -71,7 +71,7 @@ public class Camera
 			else this.scale = this.width / distanceX;
 		}
 
-		//double maxX = this.maxXOffset(map), maxY = this.maxYOffset(map);
+		// double maxX = this.maxXOffset(map), maxY = this.maxYOffset(map);
 		if (distanceY <= this.height && distanceX <= this.width) this.scale = 1;
 
 		double middleX = (bounds[0] + bounds[2]) / 2;
@@ -80,15 +80,25 @@ public class Camera
 		this.xOffset = middleX - this.actualWidth() / 2;
 		this.yOffset = middleY - this.actualHeight() / 2;
 
-		/*if (this.xOffset < 0) this.xOffset = 0; if (this.yOffset < 0) this.yOffset = 0;
+		/* if (this.xOffset < 0) this.xOffset = 0; if (this.yOffset < 0) this.yOffset = 0;
 		 * 
 		 * if (this.xOffset > maxX) this.xOffset = maxX; if (this.yOffset > maxY) this.yOffset = maxY; */
+	}
+
+	public double getHeight()
+	{
+		return this.height / this.scale;
 	}
 
 	/** @return The scale, i.e. how much zoomed out the image is. */
 	public double getScale()
 	{
 		return this.scale;
+	}
+
+	public double getWidth()
+	{
+		return this.width / this.scale;
 	}
 
 	/** @return The X Offset, i.e. the horizontal distance from the topleft corner. */

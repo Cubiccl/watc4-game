@@ -1,6 +1,7 @@
 package net.watc4.game.map;
 
 import java.awt.Graphics;
+
 import net.watc4.game.display.LightManager;
 import net.watc4.game.entity.Entity;
 import net.watc4.game.entity.EntityLumi;
@@ -58,15 +59,9 @@ public class Map implements IRender, IUpdate
 		return map;
 	}
 
-	private void createWalls()
-	{
-		for (int x = 0; x < this.chunks.length; x++)
-			for (int y = 0; y < this.chunks[x].length; y++)
-				this.chunks[x][y].createWalls();
-	}
-
 	/** List of Areas of this Map. Used to limit Entity collision detections. */
 	public final Chunk[][] chunks;
+
 	/** Manages Entities in this Game. */
 	public EntityManager entityManager;
 	/** The instance of the GameState. */
@@ -113,6 +108,13 @@ public class Map implements IRender, IUpdate
 				this.entityManager.registerChunk(this.chunks[x][y]);
 			}
 
+	}
+
+	private void createWalls()
+	{
+		for (int x = 0; x < this.chunks.length; x++)
+			for (int y = 0; y < this.chunks[x].length; y++)
+				this.chunks[x][y].createWalls();
 	}
 
 	/** @param entity - The Entity to test.
