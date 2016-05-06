@@ -26,7 +26,13 @@ public class CutsceneState extends State
 				String[] values = line.split(" ");
 				cutscene.addEvent(new ChangeCutsceneEvent(cutscene, values[1], values[2]));
 			}
+			if (line.startsWith("Move"))
+			{
+				String[] values = line.split(" ");
+				cutscene.addEvent(new EntityMovementEvent(cutscene, Integer.parseInt(values[1]), Float.parseFloat(values[2]), Float.parseFloat(values[3])));
+			}
 		}
+		if (cutscene.events.size() > 0) cutscene.events.peek().begin();
 		return cutscene;
 	}
 
@@ -73,14 +79,16 @@ public class CutsceneState extends State
 	{
 		while (!this.events.isEmpty() && this.events.peek().isOver())
 		{
-			this.events.pop();
+			this.events.pop().finish();
 			if (!this.events.isEmpty()) this.events.peek().begin();
 		}
+
 		if (this.events.isEmpty())
 		{
 			Game.getGame().setCurrentState(this.gameState, false);
 			this.gameState.isInCutscene = false;
 		} else this.events.peek().update();
+
 		this.gameState.update();
 	}
 

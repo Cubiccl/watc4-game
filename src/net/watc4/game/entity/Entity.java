@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 
 import net.watc4.game.display.renderer.EntityRenderer;
+import net.watc4.game.entity.ai.AI;
 import net.watc4.game.map.Map;
 import net.watc4.game.map.Tile;
 import net.watc4.game.map.TileRegistry;
@@ -20,9 +21,11 @@ import net.watc4.game.utils.IUpdate;
 public abstract class Entity implements IRender, IUpdate
 {
 	public static final float DEFAULT_SIZE = 32;
-
 	private static final float GRAVITY = 0.4f;
-	/** The direction that the entity is facing 1:Rigth, -1:Left */
+
+	/** Defines this Entity's behavior. */
+	public AI ai;
+	/** The direction that the entity is facing 1:Right, -1:Left */
 	protected int direction;
 	/** Reference to the GameState. */
 	public final GameState game;
@@ -43,6 +46,21 @@ public abstract class Entity implements IRender, IUpdate
 	/** Its x and y speed. */
 	protected float xSpeed, ySpeed;
 
+	/** Creates a new Entity without parameters. Useful for the level editor. */
+	public Entity()
+	{
+		this.game = null;
+		this.xPos = 0;
+		this.yPos = 0;
+		this.xSpeed = 0;
+		this.ySpeed = 0;
+		this.hasGravity = true;
+		this.isSolid = false;
+		this.renderer = new EntityRenderer(this);
+		this.width = (int) DEFAULT_SIZE;
+		this.height = (int) DEFAULT_SIZE;
+	}
+
 	/** Creates a new Entity.
 	 * 
 	 * @param game - A reference to the GameState.
@@ -53,23 +71,6 @@ public abstract class Entity implements IRender, IUpdate
 		this.game = game;
 		this.xPos = xPos;
 		this.yPos = yPos;
-		this.xSpeed = 0;
-		this.ySpeed = 0;
-		this.hasGravity = true;
-		this.isSolid = false;
-		this.renderer = new EntityRenderer(this);
-		this.width = (int) DEFAULT_SIZE;
-		this.height = (int) DEFAULT_SIZE;
-	}
-	
-	/** Creates a new Entity without parameters.
-	 * Useful for the level editor.
-	 */
-	public Entity()
-	{
-		this.game = null;
-		this.xPos = 0;
-		this.yPos = 0;
 		this.xSpeed = 0;
 		this.ySpeed = 0;
 		this.hasGravity = true;
@@ -157,6 +158,12 @@ public abstract class Entity implements IRender, IUpdate
 		return this.getAdjacentTile(-1);
 	}
 
+	/** @return This Entity's EntityRenderer. */
+	public EntityRenderer getRenderer()
+	{
+		return this.renderer;
+	}
+
 	public float getWidth()
 	{
 		return this.width;
@@ -180,17 +187,10 @@ public abstract class Entity implements IRender, IUpdate
 		return this.yPos;
 	}
 
-
 	/** @return This Entity's vertical speed. */
 	public float getYSpeed()
 	{
 		return this.ySpeed;
-	}
-	
-	/** @return This Entity's EntityRenderer. */
-	public EntityRenderer getRenderer()
-	{
-		return this.renderer;
 	}
 
 	/** @return This Entity's Hitbox. */
@@ -254,18 +254,8 @@ public abstract class Entity implements IRender, IUpdate
 					FileUtils.toInt(this.getY() + this.getHeight() / 2));
 		}
 	}
-	
-	public void setX(float xPos)
-	{
-		this.xPos = xPos;
-	}
 
-	public void setY(float yPos)
-	{
-		this.yPos = yPos;
-	}
-
-	public void setPosition(int x, int y)
+	public void setPosition(float x, float y)
 	{
 		this.xSpeed = 0;
 		this.ySpeed = 0;
@@ -281,6 +271,16 @@ public abstract class Entity implements IRender, IUpdate
 	{
 		this.renderer.setAnimation(null);
 		this.renderer = renderer;
+	}
+
+	public void setX(float xPos)
+	{
+		this.xPos = xPos;
+	}
+
+	public void setY(float yPos)
+	{
+		this.yPos = yPos;
 	}
 
 	@Override

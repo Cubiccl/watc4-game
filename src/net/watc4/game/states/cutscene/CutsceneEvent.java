@@ -20,8 +20,12 @@ public abstract class CutsceneEvent implements IUpdate, IRender
 		this.cutscene = cutscene;
 	}
 
-	/** Called when this Event should start. */
+	/** Called when this Event starts. */
 	public void begin()
+	{}
+
+	/** Called when this Event ends. */
+	public void finish()
 	{}
 
 	/** @return True if this Event is finished. */

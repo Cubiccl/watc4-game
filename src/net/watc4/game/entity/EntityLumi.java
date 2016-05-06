@@ -9,19 +9,58 @@ import net.watc4.game.utils.GameUtils;
 /** First Player : can fly and spreads light. */
 public class EntityLumi extends EntityPlayer
 {
-	public final int LIGHT_INTENSITY = 400;
-	private final int MOVE_SPEED = 5;
+
+	/** Lumi's AI. */
+	public class AILumi extends AIPlayer
+	{
+		public AILumi(EntityLumi entity)
+		{
+			super(entity);
+		}
+
+		@Override
+		public boolean down()
+		{
+			if (!this.entity.game.isInCutscene) return Game.getGame().isKeyPressed(GameUtils.LUMI_DOWN);
+			return super.down();
+		}
+
+		@Override
+		public boolean left()
+		{
+			if (!this.entity.game.isInCutscene) return Game.getGame().isKeyPressed(GameUtils.LUMI_LEFT);
+			return super.left();
+		}
+
+		@Override
+		public boolean right()
+		{
+			if (!this.entity.game.isInCutscene) return Game.getGame().isKeyPressed(GameUtils.LUMI_RIGHT);
+			return super.right();
+		}
+
+		@Override
+		public boolean up()
+		{
+			if (!this.entity.game.isInCutscene) return Game.getGame().isKeyPressed(GameUtils.LUMI_UP);
+			return super.up();
+		}
+	}
+
+	public static final int LIGHT_INTENSITY = 400;
+	private static final int MOVE_SPEED = 5;
+
+	public EntityLumi()
+	{
+		this(null, 0, 0);
+	}
 
 	public EntityLumi(GameState game, float xPos, float yPos)
 	{
 		super(game, xPos, yPos);
 		this.hasGravity = false;
 		this.setRenderer(new LumiRenderer(this));
-	}
-	
-	public EntityLumi()
-	{
-		this(null,0,0);
+		this.ai = new AILumi(this);
 	}
 
 	/** @param entity - The Entity to test.
@@ -74,10 +113,7 @@ public class EntityLumi extends EntityPlayer
 	/** Checks for movement input and applies it. */
 	private void manageInput()
 	{
-		boolean up = Game.getGame().isKeyPressed(GameUtils.LUMI_UP);
-		boolean down = Game.getGame().isKeyPressed(GameUtils.LUMI_DOWN);
-		boolean left = Game.getGame().isKeyPressed(GameUtils.LUMI_LEFT);
-		boolean right = Game.getGame().isKeyPressed(GameUtils.LUMI_RIGHT);
+		boolean up = ((AILumi) this.ai).up(), down = ((AILumi) this.ai).down(), left = ((AILumi) this.ai).left(), right = ((AILumi) this.ai).right();
 		float hMove = 0;
 		float vMove = 0;
 
@@ -94,7 +130,7 @@ public class EntityLumi extends EntityPlayer
 	}
 
 	@Override
-	public void setPosition(int x, int y)
+	public void setPosition(float x, float y)
 	{
 		super.setPosition(x, y);
 		this.game.getMap().lightManager.update();
@@ -105,7 +141,8 @@ public class EntityLumi extends EntityPlayer
 	{
 		boolean wasMoving = this.ySpeed != 0 || this.xSpeed != 0;
 		super.update();
-		if (!this.game.isInCutscene) this.manageInput();
+		this.manageInput();
+		if (this.game.isInCutscene) this.ai.update();
 
 		if (wasMoving || this.ySpeed != 0 || this.xSpeed != 0) this.game.getMap().lightManager.update();
 	}
