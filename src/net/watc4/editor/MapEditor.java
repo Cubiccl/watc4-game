@@ -243,7 +243,10 @@ public class MapEditor extends JFrame
 						{
 							e.printStackTrace();
 						}
-						JLabel icon = new JLabel(new ImageIcon(tl.getEn().getRenderer().getAnimation().getImage()));
+						JLabel icon = new JLabel();
+						if(tl.getEn().getRenderer() == null)
+							icon.setIcon(new ImageIcon(Sprite.UNKNOWN.getImage()));
+						else icon.setIcon(new ImageIcon(tl.getEn().getRenderer().getAnimation().getImage()));
 						icon.setBounds(0, 0, 32, 32);
 						tl.add(icon);
 						tl.updateUI();

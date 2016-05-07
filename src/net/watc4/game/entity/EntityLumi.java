@@ -50,17 +50,17 @@ public class EntityLumi extends EntityPlayer
 	public static final int LIGHT_INTENSITY = 400;
 	private static final int MOVE_SPEED = 5;
 
-	public EntityLumi()
-	{
-		this(null, 0, 0);
-	}
-
 	public EntityLumi(GameState game, float xPos, float yPos)
 	{
 		super(game, xPos, yPos);
 		this.hasGravity = false;
 		this.setRenderer(new LumiRenderer(this));
 		this.ai = new AILumi(this);
+	}
+	
+	public EntityLumi()
+	{
+		this(null, 0, 0);
 	}
 
 	/** @param entity - The Entity to test.
