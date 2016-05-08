@@ -41,6 +41,7 @@ public class Button implements IRender
 		this.xPosition = xPosition;
 		this.yPosition = yPosition;
 	}
+	
 
 	@Override
 	public void render(Graphics g)

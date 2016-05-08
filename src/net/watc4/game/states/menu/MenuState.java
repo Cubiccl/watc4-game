@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
+import net.watc4.game.Game;
 import net.watc4.game.display.Camera;
 import net.watc4.game.display.TextRenderer;
 import net.watc4.game.states.State;
@@ -19,6 +20,8 @@ public abstract class MenuState extends State
 	private int selected;
 	/** The Title of this Menu. */
 	protected String title;
+	
+	protected int offset = 0;
 
 	/** Creates a new MenuState.
 	 * 
@@ -48,13 +51,18 @@ public abstract class MenuState extends State
 	{
 		return this.selected;
 	}
+	
+	public ArrayList<Button> getButtons()
+	{
+		return this.buttons;
+	}
 
 	@Override
 	public void onKeyPressed(int keyID)
 	{
 		super.onKeyPressed(keyID);
-		if (keyID == KeyEvent.VK_UP) this.setSelected(this.selected - 1);
-		if (keyID == KeyEvent.VK_DOWN) this.setSelected(this.selected + 1);
+		if (keyID == KeyEvent.VK_UP) { this.setSelected(this.selected - 1); this.offset = Math.max(0, this.selected-3); }
+		if (keyID == KeyEvent.VK_DOWN) { this.setSelected(this.selected + 1); this.offset = Math.max(0, this.selected-3); }
 		if (keyID == KeyEvent.VK_ENTER) this.performAction(this.buttons.get(this.selected));
 	}
 
@@ -82,17 +90,23 @@ public abstract class MenuState extends State
 		TextRenderer.drawStringCentered(g, this.title, Camera.WIDTH / 2, Camera.HEIGHT / 4);
 		TextRenderer.setFontSize(30);
 
-		for (Button button : this.buttons)
-			button.render(g);
+		for(int i = offset; i < this.buttons.size(); i++)
+		{
+			buttons.get(i).render(g);
+		}
+		
+		replaceButtons();
 	}
 
 	/** Places the buttons correctly on the Screen. Called when a Button is added or removed. */
 	private void replaceButtons()
 	{
-		for (int i = 0; i < this.buttons.size(); i++)
+		int m = 0;
+		for (int i = offset; i < this.buttons.size(); i++)
 		{
 			this.buttons.get(i).xPosition = Camera.WIDTH / 2;
-			this.buttons.get(i).yPosition = Camera.HEIGHT / 2 + i * (TextRenderer.getFontHeight() + 10);
+			this.buttons.get(i).yPosition = Camera.HEIGHT / 2 + m * (TextRenderer.getFontHeight() + 10);
+			m++;
 		}
 	}
 

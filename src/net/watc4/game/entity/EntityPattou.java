@@ -52,12 +52,12 @@ public class EntityPattou extends EntityPlayer
 	private void manageInput()
 	{
 		int move = 0;
-		boolean jumpPressed = Game.getGame().isKeyPressed(GameUtils.PATTOU_JUMP);
-		boolean ladderMovement = Game.getGame().isKeyPressed(GameUtils.PATTOU_UP) || Game.getGame().isKeyPressed(GameUtils.PATTOU_DOWN);
-		if (Game.getGame().isKeyPressed(GameUtils.PATTOU_LEFT)) move--;
-		if (Game.getGame().isKeyPressed(GameUtils.PATTOU_RIGHT)) move++;
+		boolean jumpPressed = Game.getGame().getControls().p_jump.isPressed();
+		boolean ladderMovement = Game.getGame().getControls().p_up.isPressed() || Game.getGame().getControls().p_down.isPressed();
+		if (Game.getGame().getControls().p_left.isPressed()) move--;
+		if (Game.getGame().getControls().p_right.isPressed()) move++;
 		if (ladderMovement && this.getOccupiedTile() instanceof TileLadder) this.onLadder = true;
-		if (Game.getGame().isKeyPressed(GameUtils.PATTOU_DOWN) && this.getAdjacentTile(GameUtils.DOWN) == TileRegistry.LADDER_TOP)
+		if (Game.getGame().getControls().p_down.isPressed() && this.getAdjacentTile(GameUtils.DOWN) == TileRegistry.LADDER_TOP)
 		{
 			this.onLadder = true;
 			if (!this.placeFree(0, 1)) this.onLadder = false;
@@ -65,8 +65,8 @@ public class EntityPattou extends EntityPlayer
 		}
 		if (this.isOnLadder())
 		{
-			if (Game.getGame().isKeyPressed(GameUtils.PATTOU_UP)) this.ySpeed = -LADDER_SPEED;
-			else if (Game.getGame().isKeyPressed(GameUtils.PATTOU_DOWN))
+			if (Game.getGame().getControls().p_up.isPressed()) this.ySpeed = -LADDER_SPEED;
+			else if (Game.getGame().getControls().p_down.isPressed())
 			{
 				this.ySpeed = LADDER_SPEED;
 				if (!this.placeFree(0, this.ySpeed)) this.onLadder = false;

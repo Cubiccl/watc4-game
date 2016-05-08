@@ -113,7 +113,14 @@ public class EntityLumi extends EntityPlayer
 	/** Checks for movement input and applies it. */
 	private void manageInput()
 	{
+<<<<<<< Updated upstream
 		boolean up = ((AILumi) this.ai).up(), down = ((AILumi) this.ai).down(), left = ((AILumi) this.ai).left(), right = ((AILumi) this.ai).right();
+=======
+		boolean up = Game.getGame().getControls().l_up.isPressed();
+		boolean down = Game.getGame().getControls().l_down.isPressed();
+		boolean left = Game.getGame().getControls().l_left.isPressed();
+		boolean right = Game.getGame().getControls().l_right.isPressed();
+>>>>>>> Stashed changes
 		float hMove = 0;
 		float vMove = 0;
 

@@ -6,52 +6,34 @@ import net.watc4.game.utils.GameSettings;
 /** Screen where the user can adjust settings */
 public class SettingsMenuState extends MenuState
 {
-	private static final int OK = 0, CANCEL = 1, RESOLUTION = 2;
-
-	private int previousResolution;
+	public static final int CONTROLS = 0, VIDEO_SETTINGS = 1, BACK = 2;
 
 	public SettingsMenuState()
 	{
 		super("Settings");
-		this.previousResolution = GameSettings.resolution;
-	}
-
-	/** Resets all changes made to the Settings. Called when the user selects Cancel. */
-	private void abortChanges()
-	{
-		GameSettings.resolution = this.previousResolution;
-	}
-
-	/** Confirms and applies all changes made to the Settings. Called when the user selects OK. */
-	private void confirmChanges()
-	{
-		if (this.previousResolution != GameSettings.resolution) Game.getGame().window.applyResolution();
 	}
 
 	@Override
 	protected void createButtons()
 	{
-		this.addButton(new Button(RESOLUTION, "Resolution: " + GameSettings.getResolution()));
-		this.addButton(new Button(OK, "OK"));
-		this.addButton(new Button(CANCEL, "Cancel"));
+		this.addButton(new Button(CONTROLS, "CONTROLS"));
+		this.addButton(new Button(VIDEO_SETTINGS, "VIDEO SETTINGS"));
+		this.addButton(new Button(BACK, "BACK"));
 	}
 
 	@Override
 	protected void performAction(Button selected)
 	{
-		if (selected.id == RESOLUTION)
+		if (selected.id == CONTROLS)
 		{
-			GameSettings.cycleResolution();
-			selected.text = "Resolution: " + GameSettings.getResolution();
+			Game.getGame().setCurrentState(new ControlsMenuState());
 		}
-		if (selected.id == OK)
+		if (selected.id == VIDEO_SETTINGS)
 		{
-			this.confirmChanges();
-			Game.getGame().setCurrentState(new MainMenuState());
+			Game.getGame().setCurrentState(new VideoMenuState());
 		}
-		if (selected.id == CANCEL)
+		if (selected.id == BACK)
 		{
-			this.abortChanges();
 			Game.getGame().setCurrentState(new MainMenuState());
 		}
 	}

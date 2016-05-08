@@ -16,6 +16,7 @@ import net.watc4.game.map.TileRegistry;
 import net.watc4.game.states.GameState;
 import net.watc4.game.states.State;
 import net.watc4.game.states.menu.MainMenuState;
+import net.watc4.game.utils.Controls;
 import net.watc4.game.utils.GameSettings;
 import net.watc4.game.utils.GameUtils;
 import net.watc4.game.utils.InputManager;
@@ -63,6 +64,8 @@ public class Game implements Runnable
 
 	/** Manages keyboard inputs from the user. */
 	private InputManager inputManager;
+	/** Creates and hold keyActions, and mapping functions for the keyboard **/
+	private Controls controls;
 	/** True if the <code>Game</code> is running. */
 	private boolean isRunning;
 	/** The next State to use. */
@@ -78,13 +81,7 @@ public class Game implements Runnable
 
 	public Game()
 	{
-		this.window = new Window();
-		this.isRunning = false;
-		this.inputManager = new InputManager(window);
-		this.transition = -TRANSITION;
-		GameState.createNew("map2");
-		this.thread = new Thread(this);
-		this.thread.start();
+		this("map2");		
 	}
 
 	public Game(String map)
@@ -92,16 +89,29 @@ public class Game implements Runnable
 		this.window = new Window();
 		this.isRunning = false;
 		this.inputManager = new InputManager(window);
+		this.controls = new Controls(inputManager);
 		this.transition = -TRANSITION;
 		GameState.createNew(map);
 		this.thread = new Thread(this);
 		this.thread.start();
+		
+		
 	}
 
 	/** @return The current State of the Game. */
 	public State getCurrentState()
 	{
 		return this.state;
+	}
+	
+	public InputManager getInputManager() 
+	{
+		return this.inputManager;
+	}
+	
+	public Controls getControls()
+	{
+		return this.controls;
 	}
 
 	/** @param key - The ID of the key pressed.
