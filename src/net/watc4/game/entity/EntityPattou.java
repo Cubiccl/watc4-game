@@ -29,7 +29,7 @@ public class EntityPattou extends EntityPlayer
 
 	public EntityPattou(GameState game, float xPos, float yPos)
 	{
-		super(game, 1, xPos, yPos);
+		super(game, xPos, yPos, 1);
 		this.setRenderer(new PattouRenderer(this));
 		this.width = 20;
 		this.height = 32;

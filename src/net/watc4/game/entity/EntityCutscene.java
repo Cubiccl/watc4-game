@@ -24,9 +24,9 @@ public class EntityCutscene extends Entity
 	 * @param tileWidth - Its width (in tiles.)
 	 * @param tileHeight - Its height (in tiles.)
 	 * @param cutsceneName - The name of the Cutscene it will trigger if collided with. */
-	public EntityCutscene(GameState game, int UUID, float xPos, float yPos, int tileWidth, int tileHeight, String cutsceneName)
+	public EntityCutscene(GameState game, float xPos, float yPos, int UUID, int tileWidth, int tileHeight, String cutsceneName)
 	{
-		super(game, UUID, xPos, yPos);
+		super(game, xPos, yPos, UUID);
 		this.cutsceneName = cutsceneName;
 		this.width = tileWidth * Map.TILESIZE;
 		this.height = tileHeight * Map.TILESIZE;

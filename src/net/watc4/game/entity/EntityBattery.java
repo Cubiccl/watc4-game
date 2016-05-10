@@ -19,9 +19,9 @@ public class EntityBattery extends Entity
 		this(null, 0, 0, 0, 0, 0);
 	}
 
-	public EntityBattery(GameState game, int UUID, float xPos, float yPos, int maxPower, int buffer)
+	public EntityBattery(GameState game, float xPos, float yPos, int UUID, int maxPower, int buffer)
 	{
-		super(game, UUID, xPos, yPos);
+		super(game, xPos, yPos, UUID);
 		this.power = 0;
 		this.maxPower = maxPower;
 		this.buffer = buffer;

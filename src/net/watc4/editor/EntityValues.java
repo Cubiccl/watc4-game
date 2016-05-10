@@ -23,6 +23,7 @@ public class EntityValues extends JDialog
 
 	private static String[] definitions;
 	private static Entity en;
+	private static int enId;
 	private static JTextField[] fields;
 	private static JLabel[] fieldsName;
 
@@ -30,6 +31,18 @@ public class EntityValues extends JDialog
 	{
 		for (int i = 2; i < fields.length; i++)
 		{
+			if (definitions[i * 2].equals("UUID"))
+			{
+				int f = 0;
+				try
+				{
+					f = Integer.parseInt(fields[i].getText());
+				} catch (Exception e)
+				{
+					return false;
+				}
+				if (f < enId * 100 || f >= (enId + 1) * 100) return false;
+			}
 			if (definitions[1 + i * 2].equals("unsigned int"))
 			{
 				int f = 0;
@@ -80,10 +93,11 @@ public class EntityValues extends JDialog
 	/** Create the dialog. */
 	public EntityValues(TileLabel tl)
 	{
+		enId = tl.getEnId();
 		en = tl.getEn();
 		setModal(true);
 		definitions = EntityRegistry.getDefinitions().get(en.getClass());
-		setBounds(100, 100, 400, 40 * (en.getClass().getConstructors()[1].getParameterCount() + 1));
+		setBounds(100, 100, 400, 40 * (en.getClass().getConstructors()[1].getParameterCount() - 1));
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setLayout(new FlowLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -107,9 +121,9 @@ public class EntityValues extends JDialog
 							values[2] = en.getY();
 							for (int i = 0; i < values.length - 1; i++)
 							{
-								if (definitions[1 + i * 2].equals("unsigned int") || definitions[1 + i * 2].equals("int")) values[i + 1] = Integer
+								if (definitions[1 + i * 2].startsWith("unsigned int") || definitions[1 + i * 2].equals("int")) values[i + 1] = Integer
 										.parseInt(fields[i].getText());
-								else if (definitions[1 + i * 2].equals("unsigned float") || definitions[1 + i * 2].equals("float")) values[i + 1] = Float
+								else if (definitions[1 + i * 2].startsWith("unsigned float") || definitions[1 + i * 2].equals("float")) values[i + 1] = Float
 										.parseFloat(fields[i].getText());
 								else values[i + 1] = fields[i].getText();
 							}
@@ -170,12 +184,15 @@ public class EntityValues extends JDialog
 		for (int i = 0; i < fields.length; i++)
 		{
 			fields[i] = new JTextField(String.valueOf(tl.getEntityValues()[i + 1]));
-			fieldsName[i] = new JLabel(definitions[i * 2] + " (" + definitions[1 + i * 2] + ") : ");
-			fieldsName[i].setBounds(30, currentY, 150, 20);
-			fields[i].setBounds(250, currentY - 3, 100, 20);
-			contentPanel.add(fields[i]);
-			contentPanel.add(fieldsName[i]);
-			currentY += 40;
+			if (i >= 2)
+			{
+				fieldsName[i] = new JLabel(definitions[i * 2] + " (" + definitions[1 + i * 2] + ") : ");
+				fieldsName[i].setBounds(30, currentY, 200, 20);
+				fields[i].setBounds(250, currentY + 3, 100, 20);
+				contentPanel.add(fields[i]);
+				contentPanel.add(fieldsName[i]);
+				currentY += 40;
+			}
 		}
 	}
 

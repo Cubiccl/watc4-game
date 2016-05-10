@@ -22,13 +22,13 @@ public final class EntityRegistry
 		entities = new HashMap<Integer, Class<? extends Entity>>();
 		arguments = new HashMap<Class<? extends Entity>, String[]>();
 		registerEntity(0, EntityLumi.class, new String[]
-		{ "UUID", "unsigned int", "X", "unsigned int", "Y", "unsigned int" });
+		{ "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 000 - 099"  });
 		registerEntity(1, EntityPattou.class, new String[]
-		{ "UUID", "unsigned int", "X", "unsigned int", "Y", "unsigned int" });
+		{ "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 100 - 199" });
 		registerEntity(2, EntityBattery.class, new String[]
-		{ "UUID", "unsigned int", "X", "unsigned int", "Y", "unsigned int", "Buffer", "unsigned int", "Max Power", "unsigned int" });
+		{ "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 200 - 299", "Buffer", "unsigned int", "Max Power", "unsigned int" });
 		registerEntity(3, EntityCutscene.class, new String[]
-		{ "UUID", "unsigned int", "X", "unsigned int", "Y", "unsigned int", "Tile Width", "unsigned int", "Tile Heigth", "unsigned int", "Cutscene Name",
+		{ "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 300 - 399", "Tile Width", "unsigned int", "Tile Heigth", "unsigned int", "Cutscene Name",
 				"string" });
 	}
 

@@ -61,9 +61,9 @@ public abstract class EntityPlayer extends Entity
 	 * @param UUID - The Unique Universal IDentifier of this Entity.
 	 * @param xPos - Its x position.
 	 * @param yPos - Its y position. */
-	public EntityPlayer(GameState game, int UUID, float xPos, float yPos)
+	public EntityPlayer(GameState game, float xPos, float yPos, int UUID)
 	{
-		super(game, UUID, xPos, yPos);
+		super(game, xPos, yPos, UUID);
 		this.health = MAX_HEALTH;
 	}
 

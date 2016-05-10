@@ -61,7 +61,7 @@ public abstract class Entity implements IRender, IUpdate
 	 * @param UUID - The Unique Universal IDentifier of this Entity.
 	 * @param xPos - Its x position.
 	 * @param yPos - Its y position. */
-	public Entity(GameState game, int UUID, float xPos, float yPos)
+	public Entity(GameState game, float xPos, float yPos, int UUID)
 	{
 		this.game = game;
 		this.UUID = UUID;

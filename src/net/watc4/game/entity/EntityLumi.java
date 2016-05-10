@@ -56,7 +56,7 @@ public class EntityLumi extends EntityPlayer
 
 	public EntityLumi(GameState game, float xPos, float yPos)
 	{
-		super(game, 0, xPos, yPos);
+		super(game, xPos, yPos, 0);
 		this.hasGravity = false;
 		this.setRenderer(new LumiRenderer(this));
 		this.ai = new AILumi(this);
