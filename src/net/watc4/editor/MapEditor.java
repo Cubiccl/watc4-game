@@ -179,10 +179,10 @@ public class MapEditor extends JFrame
 
 			try
 			{
-				entityChoice[i].setEn((Entity) (EntityRegistry.getEntities().get(i).getConstructors()[1]).newInstance());
+				entityChoice[i].setEn((Entity) (EntityRegistry.getDefaultConstructor(i)).newInstance());
 			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | SecurityException | InvocationTargetException e)
 			{
-				System.out.println((EntityRegistry.getEntities().get(i).getConstructors()[0]).toString());
+				System.out.println((EntityRegistry.getDefaultConstructor(i)).toString());
 				e.printStackTrace();
 			}
 			if (entityChoice[i].getEn().getRenderer() == null)
@@ -242,8 +242,7 @@ public class MapEditor extends JFrame
 							e.printStackTrace();
 						}
 						JLabel icon = new JLabel();
-						if(tl.getEn().getRenderer() == null)
-							icon.setIcon(new ImageIcon(Sprite.UNKNOWN.getImage()));
+						if (tl.getEn().getRenderer() == null) icon.setIcon(new ImageIcon(Sprite.UNKNOWN.getImage()));
 						else icon.setIcon(new ImageIcon(tl.getEn().getRenderer().getAnimation().getImage()));
 						icon.setBounds(0, 0, 32, 32);
 						tl.add(icon);
@@ -383,14 +382,14 @@ public class MapEditor extends JFrame
 			}
 		}
 
+		final int X = 2, Y = 3;
 		for (int i = 8 + info[1]; i < lines.length; i++)
 		{
 			String[] entityValues = lines[i].split(" ");
 			Entity en = null;
 			Object[] arguments = new Object[entityValues.length];
 			arguments[0] = null;
-			@SuppressWarnings("unchecked")
-			Constructor<Entity> constructor = (Constructor<Entity>) EntityRegistry.getEntities().get(Integer.valueOf(entityValues[0])).getConstructors()[0];
+			Constructor<Entity> constructor = EntityRegistry.getConstructor(Integer.valueOf(entityValues[0]));
 
 			for (int j = 1; j < entityValues.length; j++)
 			{
@@ -401,23 +400,23 @@ public class MapEditor extends JFrame
 
 			try
 			{
-				en = (Entity) EntityRegistry.getEntities().get(Integer.valueOf(entityValues[0])).getConstructors()[0].newInstance(arguments);
+				en = (Entity) EntityRegistry.getConstructor(Integer.valueOf(entityValues[0])).newInstance(arguments);
 			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e)
 			{
 				e.printStackTrace();
-				System.out.println(entityValues.length);
+				System.out.println(EntityRegistry.getConstructor(Integer.valueOf(entityValues[0])));
 			}
-			tilemap[Integer.valueOf(entityValues[1])][Integer.valueOf(entityValues[2])].setEnId(Integer.valueOf(entityValues[0]));
-			tilemap[Integer.valueOf(entityValues[1])][Integer.valueOf(entityValues[2])].setEn(en);
-			tilemap[Integer.valueOf(entityValues[1])][Integer.valueOf(entityValues[2])].setEntityValues(entityValues);
+			tilemap[Integer.valueOf(entityValues[X])][Integer.valueOf(entityValues[Y])].setEnId(Integer.valueOf(entityValues[0]));
+			tilemap[Integer.valueOf(entityValues[X])][Integer.valueOf(entityValues[Y])].setEn(en);
+			tilemap[Integer.valueOf(entityValues[X])][Integer.valueOf(entityValues[Y])].setEntityValues(entityValues);
 			JLabel icon;
 			if (en.getRenderer() == null)
 			{
 				icon = new JLabel(new ImageIcon(Sprite.UNKNOWN.getImage()));
 			} else icon = new JLabel(new ImageIcon(en.getRenderer().getAnimation().getImage()));
 			icon.setBounds(0, 0, 32, 32);
-			tilemap[Integer.valueOf(entityValues[1])][Integer.valueOf(entityValues[2])].add(icon);
-			tilemap[Integer.valueOf(entityValues[1])][Integer.valueOf(entityValues[2])].updateUI();
+			tilemap[Integer.valueOf(entityValues[X])][Integer.valueOf(entityValues[Y])].add(icon);
+			tilemap[Integer.valueOf(entityValues[X])][Integer.valueOf(entityValues[Y])].updateUI();
 		}
 		mapView.updateUI();
 

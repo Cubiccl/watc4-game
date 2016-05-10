@@ -52,17 +52,18 @@ public abstract class EntityPlayer extends Entity
 	/** Creates a new Entity Player without parameters. Useful for the level editor. */
 	public EntityPlayer()
 	{
-		this(null, 0, 0);
+		this(null, 0, 0, 0);
 	}
 
 	/** Creates a new EntityPlayer
 	 * 
+	 * @param game - A reference to the GameState.
+	 * @param UUID - The Unique Universal IDentifier of this Entity.
 	 * @param xPos - Its x position.
-	 * @param yPos - Its y position.
-	 * @param game - A reference to the GameState. */
-	public EntityPlayer(GameState game, float xPos, float yPos)
+	 * @param yPos - Its y position. */
+	public EntityPlayer(GameState game, int UUID, float xPos, float yPos)
 	{
-		super(game, xPos, yPos);
+		super(game, UUID, xPos, yPos);
 		this.health = MAX_HEALTH;
 	}
 

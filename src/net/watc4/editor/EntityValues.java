@@ -21,11 +21,10 @@ import net.watc4.game.entity.EntityRegistry;
 public class EntityValues extends JDialog
 {
 
-	private final JPanel contentPanel = new JPanel();
-	private static JLabel[] fieldsName;
-	private static JTextField[] fields;
-	private static Entity en;
 	private static String[] definitions;
+	private static Entity en;
+	private static JTextField[] fields;
+	private static JLabel[] fieldsName;
 
 	public static boolean checkFields()
 	{
@@ -76,14 +75,15 @@ public class EntityValues extends JDialog
 		return true;
 	}
 
+	private final JPanel contentPanel = new JPanel();
+
 	/** Create the dialog. */
 	public EntityValues(TileLabel tl)
 	{
 		en = tl.getEn();
-		EntityRegistry.defineEntities();
 		setModal(true);
 		definitions = EntityRegistry.getDefinitions().get(en.getClass());
-		setBounds(100, 100, 400, 75 * (en.getClass().getConstructors()[0].getParameterCount() - 3));
+		setBounds(100, 100, 400, 40 * (en.getClass().getConstructors()[1].getParameterCount() + 1));
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setLayout(new FlowLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -115,7 +115,7 @@ public class EntityValues extends JDialog
 							}
 							try
 							{
-								EntityValues.en = (Entity) en.getClass().getConstructors()[0].newInstance(values);
+								EntityValues.en = (Entity) en.getClass().getConstructors()[1].newInstance(values);
 								tl.setEntityValues(values);
 								tl.getEntityValues()[0] = tl.getEnId();
 								EntityValues.this.dispose();
@@ -163,20 +163,19 @@ public class EntityValues extends JDialog
 		}
 
 		contentPanel.setLayout(null);
-		fields = new JTextField[en.getClass().getConstructors()[0].getParameterCount() - 1];
+		fields = new JTextField[definitions.length / 2];
 		fieldsName = new JLabel[fields.length];
 
+		int currentY = 10;
 		for (int i = 0; i < fields.length; i++)
 		{
 			fields[i] = new JTextField(String.valueOf(tl.getEntityValues()[i + 1]));
-			if (i >= 2)
-			{
-				fieldsName[i] = new JLabel(definitions[i * 2] + " (" + definitions[1 + i * 2] + ") : ");
-				fieldsName[i].setBounds(30, -73 + 40 * i, 150, 20);
-				fields[i].setBounds(250, -70 + 40 * i, 100, 20);
-				contentPanel.add(fields[i]);
-				contentPanel.add(fieldsName[i]);
-			}
+			fieldsName[i] = new JLabel(definitions[i * 2] + " (" + definitions[1 + i * 2] + ") : ");
+			fieldsName[i].setBounds(30, currentY, 150, 20);
+			fields[i].setBounds(250, currentY - 3, 100, 20);
+			contentPanel.add(fields[i]);
+			contentPanel.add(fieldsName[i]);
+			currentY += 40;
 		}
 	}
 

@@ -20,10 +20,16 @@ public final class EntityRegistry
 	public static void createEntities()
 	{
 		entities = new HashMap<Integer, Class<? extends Entity>>();
-		registerEntity(0, EntityLumi.class);
-		registerEntity(1, EntityPattou.class);
-		registerEntity(2, EntityBattery.class);
-		registerEntity(3, EntityCutscene.class);
+		arguments = new HashMap<Class<? extends Entity>, String[]>();
+		registerEntity(0, EntityLumi.class, new String[]
+		{ "UUID", "unsigned int", "X", "unsigned int", "Y", "unsigned int" });
+		registerEntity(1, EntityPattou.class, new String[]
+		{ "UUID", "unsigned int", "X", "unsigned int", "Y", "unsigned int" });
+		registerEntity(2, EntityBattery.class, new String[]
+		{ "UUID", "unsigned int", "X", "unsigned int", "Y", "unsigned int", "Buffer", "unsigned int", "Max Power", "unsigned int" });
+		registerEntity(3, EntityCutscene.class, new String[]
+		{ "UUID", "unsigned int", "X", "unsigned int", "Y", "unsigned int", "Tile Width", "unsigned int", "Tile Heigth", "unsigned int", "Cutscene Name",
+				"string" });
 	}
 
 	/** Creates the adequate arguments then spawns an Entity.
@@ -32,17 +38,17 @@ public final class EntityRegistry
 	 * @param id - The ID of the Entity.
 	 * @param values - The data from the map file.
 	 * @return The spawned Entity. */
-	@SuppressWarnings("unchecked")
 	public static Entity createEntity(Map map, int id, String[] values)
 	{
 		Object[] arguments = new Object[values.length];
 		arguments[0] = map.game;
-		arguments[1] = Float.parseFloat(values[1]) * Map.TILESIZE;
+		arguments[1] = Integer.parseInt(values[1]);
 		arguments[2] = Float.parseFloat(values[2]) * Map.TILESIZE;
+		arguments[3] = Float.parseFloat(values[3]) * Map.TILESIZE;
 
-		Constructor<Entity> constructor = (Constructor<Entity>) entities.get(Integer.parseInt(values[0])).getConstructors()[0];
+		Constructor<Entity> constructor = getConstructor(Integer.parseInt(values[0]));
 
-		for (int i = 3; i < arguments.length; i++)
+		for (int i = 4; i < arguments.length; i++)
 		{
 			if (constructor.getParameters()[i].getType().toString().equals("int")) arguments[i] = Integer.parseInt(values[i]);
 			else if (constructor.getParameters()[i].getType().toString().equals("float")) arguments[i] = Float.parseFloat(values[i]);
@@ -52,18 +58,20 @@ public final class EntityRegistry
 		return spawnEntity(map, id, arguments);
 	}
 
-	/** Registers all the parameters. Note : X and Y are considered as unsigned int for the editor. */
-	public static void defineEntities()
+	/** @param id - The ID of the Entity.
+	 * @return The Constructor for the given Entity. */
+	@SuppressWarnings("unchecked")
+	public static Constructor<Entity> getConstructor(int id)
 	{
-		arguments = new HashMap<Class<? extends Entity>, String[]>();
-		arguments.put(EntityLumi.class, new String[]
-		{ "X", "unsigned int", "Y", "unsigned int" });
-		arguments.put(EntityPattou.class, new String[]
-		{ "X", "unsigned int", "Y", "unsigned int" });
-		arguments.put(EntityBattery.class, new String[]
-		{ "X", "unsigned int", "Y", "unsigned int", "Buffer", "unsigned int", "Max Power", "unsigned int" });
-		arguments.put(EntityCutscene.class, new String[]
-		{ "X", "unsigned int", "Y", "unsigned int", "Tile Width", "unsigned int", "Tile Heigth", "unsigned int", "Cutscene Name", "string" });
+		return (Constructor<Entity>) entities.get(id).getConstructors()[1];
+	}
+
+	/** @param id - The ID of the Entity.
+	 * @return The default Constructor (without arguments) for the given Entity. */
+	@SuppressWarnings("unchecked")
+	public static Constructor<Entity> getDefaultConstructor(int id)
+	{
+		return (Constructor<Entity>) entities.get(id).getConstructors()[0];
 	}
 
 	/** @return The list of Entity definitions sorted by ID. (0 -> size-1) */
@@ -81,24 +89,27 @@ public final class EntityRegistry
 	/** Registers the target Entity.
 	 * 
 	 * @param id - The ID of the Entity.
-	 * @param entityClass - The Class of the Entity to register. */
-	private static void registerEntity(int id, Class<? extends Entity> entityClass)
+	 * @param entityClass - The Class of the Entity to register.
+	 * @param parameters - Parameters to input when creating an Entity in the Editor. */
+	private static void registerEntity(int id, Class<? extends Entity> entityClass, String... parameters)
 	{
 		if (!entities.containsKey(id)) entities.put(id, entityClass);
+		if (!arguments.containsKey(entityClass)) arguments.put(entityClass, parameters);
 	}
 
 	/** Spawns an Entity.
 	 * 
 	 * @param map - The Map to spawn the Entity in.
 	 * @param id - The ID of the Entity to spawn.
-	 * @param arguments - The Arguments to spawn the Entity. Always start with GameState, xPos, yPos. See theEntity's constructor for additionnal arguments.
+	 * @param arguments - The Arguments to spawn the Entity. Always start with UUID, GameState, xPos, yPos. See theEntity's constructor for additionnal arguments.
 	 * @return The spawned Entity. */
 	public static Entity spawnEntity(Map map, int id, Object... arguments)
 	{
 		if (entities.containsKey(id)) try
 		{
 			Entity entity = null;
-			for (@SuppressWarnings("rawtypes") Constructor constructor : entities.get(id).getConstructors())
+			for (@SuppressWarnings("rawtypes")
+			Constructor constructor : entities.get(id).getConstructors())
 				if (constructor.getParameterCount() == arguments.length) entity = (Entity) constructor.newInstance(arguments);
 			map.entityManager.registerEntity(entity);
 			return entity;

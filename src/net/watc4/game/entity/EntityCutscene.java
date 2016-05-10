@@ -11,6 +11,11 @@ public class EntityCutscene extends Entity
 	/** The name of the Cutscene (file name). */
 	public final String cutsceneName;
 
+	public EntityCutscene()
+	{
+		this(null, 0, 0, 0, 0, 0, null);
+	}
+
 	/** Creates a new Entity Cutscene.
 	 * 
 	 * @param game - Its GameState.
@@ -19,19 +24,14 @@ public class EntityCutscene extends Entity
 	 * @param tileWidth - Its width (in tiles.)
 	 * @param tileHeight - Its height (in tiles.)
 	 * @param cutsceneName - The name of the Cutscene it will trigger if collided with. */
-	public EntityCutscene(GameState game, float xPos, float yPos, int tileWidth, int tileHeight, String cutsceneName)
+	public EntityCutscene(GameState game, int UUID, float xPos, float yPos, int tileWidth, int tileHeight, String cutsceneName)
 	{
-		super(game, xPos, yPos);
+		super(game, UUID, xPos, yPos);
 		this.cutsceneName = cutsceneName;
 		this.width = tileWidth * Map.TILESIZE;
 		this.height = tileHeight * Map.TILESIZE;
 		this.hasGravity = false;
 		this.setRenderer(null);
-	}
-	
-	public EntityCutscene()
-	{
-		this(null,0,0,0,0,null);
 	}
 
 	@Override

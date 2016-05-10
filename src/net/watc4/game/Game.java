@@ -49,7 +49,9 @@ public class Game implements Runnable
 				{
 					instance = new Game();
 				} catch (Exception e)
-				{}
+				{
+					e.printStackTrace();
+				}
 			}
 		});
 	}
@@ -62,10 +64,10 @@ public class Game implements Runnable
 		Game.instance = instance;
 	}
 
-	/** Manages keyboard inputs from the user. */
-	private InputManager inputManager;
 	/** Creates and hold keyActions, and mapping functions for the keyboard **/
 	private Controls controls;
+	/** Manages keyboard inputs from the user. */
+	private InputManager inputManager;
 	/** True if the <code>Game</code> is running. */
 	private boolean isRunning;
 	/** The next State to use. */
@@ -81,7 +83,7 @@ public class Game implements Runnable
 
 	public Game()
 	{
-		this("map2");		
+		this("map2");
 	}
 
 	public Game(String map)
@@ -94,8 +96,12 @@ public class Game implements Runnable
 		GameState.createNew(map);
 		this.thread = new Thread(this);
 		this.thread.start();
-		
-		
+
+	}
+
+	public Controls getControls()
+	{
+		return this.controls;
 	}
 
 	/** @return The current State of the Game. */
@@ -103,15 +109,10 @@ public class Game implements Runnable
 	{
 		return this.state;
 	}
-	
-	public InputManager getInputManager() 
+
+	public InputManager getInputManager()
 	{
 		return this.inputManager;
-	}
-	
-	public Controls getControls()
-	{
-		return this.controls;
 	}
 
 	/** @param key - The ID of the key pressed.

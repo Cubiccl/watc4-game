@@ -39,6 +39,9 @@ public abstract class Entity implements IRender, IUpdate
 	protected boolean onLadder;
 	/** Renders the Entity onto the screen. */
 	private EntityRenderer renderer;
+	/** Unique Universal IDentifier for this Entity. Each Entity should have a unique ID in a map. 0 is reserved for Lumi and 1 for Pattou. <br />
+	 * For better comprehension, please always use Entity ID * 100 + whatever. Example : Battery can be from 200 to 299, and Cutscene from 300 to 399. */
+	public final int UUID;
 	/** The width/height of the entity. */
 	protected int width, height;
 	/** Its x and y positions. Topleft of the Entity. */
@@ -49,26 +52,19 @@ public abstract class Entity implements IRender, IUpdate
 	/** Creates a new Entity without parameters. Useful for the level editor. */
 	public Entity()
 	{
-		this.game = null;
-		this.xPos = 0;
-		this.yPos = 0;
-		this.xSpeed = 0;
-		this.ySpeed = 0;
-		this.hasGravity = true;
-		this.isSolid = false;
-		this.renderer = new EntityRenderer(this);
-		this.width = (int) DEFAULT_SIZE;
-		this.height = (int) DEFAULT_SIZE;
+		this(null, 0, 0, 0);
 	}
 
 	/** Creates a new Entity.
 	 * 
 	 * @param game - A reference to the GameState.
+	 * @param UUID - The Unique Universal IDentifier of this Entity.
 	 * @param xPos - Its x position.
 	 * @param yPos - Its y position. */
-	public Entity(GameState game, float xPos, float yPos)
+	public Entity(GameState game, int UUID, float xPos, float yPos)
 	{
 		this.game = game;
+		this.UUID = UUID;
 		this.xPos = xPos;
 		this.yPos = yPos;
 		this.xSpeed = 0;

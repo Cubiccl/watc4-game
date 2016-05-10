@@ -14,19 +14,19 @@ public class EntityBattery extends Entity
 	/** Represents how long this Battery has been in the Light. */
 	private int power;
 
-	public EntityBattery(GameState game, float xPos, float yPos, int maxPower, int buffer)
+	public EntityBattery()
 	{
-		super(game, xPos, yPos);
+		this(null, 0, 0, 0, 0, 0);
+	}
+
+	public EntityBattery(GameState game, int UUID, float xPos, float yPos, int maxPower, int buffer)
+	{
+		super(game, UUID, xPos, yPos);
 		this.power = 0;
 		this.maxPower = maxPower;
 		this.buffer = buffer;
 		this.hasGravity = false;
 		this.isSolid = true;
-	}
-	
-	public EntityBattery()
-	{
-		this(null,0,0,0,0);
 	}
 
 	/** @return The power of this Battery. */
