@@ -16,9 +16,10 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import javafx.geometry.Point2D;
+
 import javax.imageio.ImageIO;
 
-import javafx.geometry.Point2D;
 import net.watc4.game.entity.EntityLumi;
 import net.watc4.game.map.Chunk;
 import net.watc4.game.map.Map;

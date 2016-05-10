@@ -4,7 +4,6 @@ import net.watc4.game.Game;
 import net.watc4.game.display.renderer.LumiRenderer;
 import net.watc4.game.map.Map;
 import net.watc4.game.states.GameState;
-import net.watc4.game.utils.GameUtils;
 
 /** First Player : can fly and spreads light. */
 public class EntityLumi extends EntityPlayer
@@ -21,28 +20,28 @@ public class EntityLumi extends EntityPlayer
 		@Override
 		public boolean down()
 		{
-			if (!this.entity.game.isInCutscene) return Game.getGame().isKeyPressed(GameUtils.LUMI_DOWN);
+			if (!this.entity.game.isInCutscene) return Game.getGame().getControls().l_down.isPressed();
 			return super.down();
 		}
 
 		@Override
 		public boolean left()
 		{
-			if (!this.entity.game.isInCutscene) return Game.getGame().isKeyPressed(GameUtils.LUMI_LEFT);
+			if (!this.entity.game.isInCutscene) return Game.getGame().getControls().l_left.isPressed();
 			return super.left();
 		}
 
 		@Override
 		public boolean right()
 		{
-			if (!this.entity.game.isInCutscene) return Game.getGame().isKeyPressed(GameUtils.LUMI_RIGHT);
+			if (!this.entity.game.isInCutscene) return Game.getGame().getControls().l_right.isPressed();
 			return super.right();
 		}
 
 		@Override
 		public boolean up()
 		{
-			if (!this.entity.game.isInCutscene) return Game.getGame().isKeyPressed(GameUtils.LUMI_UP);
+			if (!this.entity.game.isInCutscene) return Game.getGame().getControls().l_up.isPressed();
 			return super.up();
 		}
 	}
@@ -113,14 +112,8 @@ public class EntityLumi extends EntityPlayer
 	/** Checks for movement input and applies it. */
 	private void manageInput()
 	{
-<<<<<<< Updated upstream
 		boolean up = ((AILumi) this.ai).up(), down = ((AILumi) this.ai).down(), left = ((AILumi) this.ai).left(), right = ((AILumi) this.ai).right();
-=======
-		boolean up = Game.getGame().getControls().l_up.isPressed();
-		boolean down = Game.getGame().getControls().l_down.isPressed();
-		boolean left = Game.getGame().getControls().l_left.isPressed();
-		boolean right = Game.getGame().getControls().l_right.isPressed();
->>>>>>> Stashed changes
+
 		float hMove = 0;
 		float vMove = 0;
 

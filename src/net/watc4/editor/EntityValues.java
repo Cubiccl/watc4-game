@@ -2,6 +2,9 @@ package net.watc4.editor;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -12,13 +15,9 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import net.watc4.game.entity.Entity;
-import net.watc4.game.entity.EntityBattery;
 import net.watc4.game.entity.EntityRegistry;
 
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.lang.reflect.InvocationTargetException;
-
+@SuppressWarnings("serial")
 public class EntityValues extends JDialog
 {
 
@@ -45,10 +44,9 @@ public class EntityValues extends JDialog
 				if (f < 0) return false;
 			} else if (definitions[1 + i * 2].equals("int"))
 			{
-				int f = 0;
 				try
 				{
-					f = Integer.parseInt(fields[i].getText());
+					Integer.parseInt(fields[i].getText());
 				} catch (Exception e)
 				{
 					return false;
@@ -66,10 +64,9 @@ public class EntityValues extends JDialog
 				if (f < 0) return false;
 			} else if (definitions[1 + i * 2].equals("float"))
 			{
-				float f = 0;
 				try
 				{
-					f = Float.parseFloat(fields[i].getText());
+					Float.parseFloat(fields[i].getText());
 				} catch (Exception e)
 				{
 					return false;
@@ -132,9 +129,11 @@ public class EntityValues extends JDialog
 				});
 				{
 					JButton btnSupprimer = new JButton("Supprimer");
-					btnSupprimer.addMouseListener(new MouseAdapter() {
+					btnSupprimer.addMouseListener(new MouseAdapter()
+					{
 						@Override
-						public void mouseClicked(MouseEvent arg0) {
+						public void mouseClicked(MouseEvent arg0)
+						{
 							EntityValues.this.dispose();
 							tl.setEn(null);
 							tl.setEntityValues(null);

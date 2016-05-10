@@ -45,10 +45,8 @@ import net.watc4.game.Game;
 import net.watc4.game.display.AnimationManager;
 import net.watc4.game.display.Sprite;
 import net.watc4.game.entity.Entity;
-import net.watc4.game.entity.EntityCutscene;
 import net.watc4.game.entity.EntityRegistry;
 import net.watc4.game.map.TileRegistry;
-import net.watc4.game.states.GameState;
 import net.watc4.game.utils.FileUtils;
 
 import org.eclipse.wb.swing.FocusTraversalOnArray;

@@ -1,7 +1,6 @@
 package net.watc4.game.states.menu;
 
 import net.watc4.game.Game;
-import net.watc4.game.utils.GameSettings;
 
 /** Screen where the user can adjust settings */
 public class SettingsMenuState extends MenuState

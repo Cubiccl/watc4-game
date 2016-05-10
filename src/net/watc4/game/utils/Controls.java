@@ -3,9 +3,6 @@ package net.watc4.game.utils;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
-import net.watc4.game.Game;
-import net.watc4.game.states.GameState;
-
 public class Controls {
 	
 	private InputManager inputManager;
