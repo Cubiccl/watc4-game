@@ -99,6 +99,15 @@ public class EntityManager implements IRender, IUpdate
 		return containers.toArray(new Chunk[containers.size()]);
 	}
 
+	/** @param UUID - The UUID of the target Entity.
+	 * @return The Entity with the input UUID. */
+	public Entity getEntityByUUID(int UUID)
+	{
+		for (Entity entity : this.entities)
+			if (entity.UUID == UUID) return entity;
+		return null;
+	}
+
 	/** Adds a Chunk to the Chunk Manager.
 	 * 
 	 * @param chunk - The new Chunk. */

@@ -15,13 +15,13 @@ public class EntityMovementEvent extends CutsceneEvent
 	/** Creates a new Entity Movement Event.
 	 * 
 	 * @param cutscene - The Cutscene it belongs to.
-	 * @param entityID - The ID of the Entity to move.
+	 * @param UUID - The UUID of the Entity to move.
 	 * @param x - The X destination (in tiles)
 	 * @param y - The Y destination (in tiles) */
-	public EntityMovementEvent(CutsceneState cutscene, int entityID, float x, float y)
+	public EntityMovementEvent(CutsceneState cutscene, int UUID, float x, float y)
 	{
 		super(cutscene);
-		this.entity = this.cutscene.gameState.entityLumi;
+		this.entity = this.cutscene.gameState.getMap().entityManager.getEntityByUUID(UUID);
 		this.x = x * Map.TILESIZE;
 		this.y = y * Map.TILESIZE;
 	}
@@ -30,14 +30,14 @@ public class EntityMovementEvent extends CutsceneEvent
 	public void begin()
 	{
 		super.begin();
-		if (this.entity.ai != null) this.entity.ai.setDestination(this.x, this.y);
+		if (this.entity != null && this.entity.ai != null) this.entity.ai.setDestination(this.x, this.y);
 	}
 
 	@Override
 	public void finish()
 	{
 		super.finish();
-		if (this.entity.ai != null)
+		if (this.entity != null && this.entity.ai != null)
 		{
 			this.entity.setPosition(this.x, this.y);
 			this.entity.ai.cancelDestination();
@@ -47,7 +47,7 @@ public class EntityMovementEvent extends CutsceneEvent
 	@Override
 	public boolean isOver()
 	{
-		return this.entity.ai == null || this.entity.ai.destinationReached();
+		return this.entity == null || this.entity.ai == null || this.entity.ai.destinationReached();
 	}
 
 }

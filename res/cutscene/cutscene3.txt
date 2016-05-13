@@ -1,1 +1,2 @@
-Move 0 1 1
+Text=Pattou will now try to move to the end left of the Map.
+Move= 1 14 39
