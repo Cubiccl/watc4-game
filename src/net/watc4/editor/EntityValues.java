@@ -4,15 +4,20 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 
+import javax.swing.AbstractButton;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+import javax.swing.text.JTextComponent;
 
 import net.watc4.game.entity.Entity;
 import net.watc4.game.entity.EntityRegistry;
@@ -25,7 +30,26 @@ public class EntityValues extends JDialog
 	private static Entity en;
 	private static int enId;
 	private static JTextField[] fields;
+	private static JComboBox<String> cutsceneField;
 	private static JLabel[] fieldsName;
+	private static TileLabel tl;
+
+	public static String[] getCutsceneList()
+	{
+		File direc = new File("res/cutscene/");
+		String[] res = direc.list();
+		for (int i = 0; i < res.length; i++)
+		{
+			res[i] = res[i].split(".txt")[0];
+		}
+		return res;
+	}
+	
+	public static String getText(int i){
+		if(tl.getEnId() == 3 && i == 5)
+			return ((String)cutsceneField.getSelectedItem());
+		else return fields[i].getText();
+	}
 
 	public static boolean checkFields()
 	{
@@ -36,9 +60,10 @@ public class EntityValues extends JDialog
 				int f = 0;
 				try
 				{
-					f = Integer.parseInt(fields[i].getText());
+					f = Integer.parseInt(getText(i));
 				} catch (Exception e)
 				{
+					System.out.println(1);
 					return false;
 				}
 				if (f < enId * 100 || f >= (enId + 1) * 100) return false;
@@ -48,9 +73,10 @@ public class EntityValues extends JDialog
 				int f = 0;
 				try
 				{
-					f = Integer.parseInt(fields[i].getText());
+					f = Integer.parseInt(getText(i));
 				} catch (Exception e)
 				{
+					System.out.println(2);
 					return false;
 				}
 				if (f < 0) return false;
@@ -58,9 +84,10 @@ public class EntityValues extends JDialog
 			{
 				try
 				{
-					Integer.parseInt(fields[i].getText());
+					Integer.parseInt(getText(i));
 				} catch (Exception e)
 				{
+					System.out.println(3);
 					return false;
 				}
 			} else if (definitions[1 + i * 2].equals("unsigned float"))
@@ -68,9 +95,10 @@ public class EntityValues extends JDialog
 				float f = 0;
 				try
 				{
-					f = Float.parseFloat(fields[i].getText());
+					f = Float.parseFloat(getText(i));
 				} catch (Exception e)
 				{
+					System.out.println(4);
 					return false;
 				}
 				if (f < 0) return false;
@@ -78,9 +106,10 @@ public class EntityValues extends JDialog
 			{
 				try
 				{
-					Float.parseFloat(fields[i].getText());
+					Float.parseFloat(getText(i));
 				} catch (Exception e)
 				{
+					System.out.println(5);
 					return false;
 				}
 			}
@@ -95,6 +124,7 @@ public class EntityValues extends JDialog
 	{
 		enId = tl.getEnId();
 		en = tl.getEn();
+		this.tl = tl;
 		setModal(true);
 		definitions = EntityRegistry.getDefinitions().get(en.getClass());
 		setBounds(100, 100, 400, 40 * (en.getClass().getConstructors()[1].getParameterCount() - 1));
@@ -122,10 +152,10 @@ public class EntityValues extends JDialog
 							for (int i = 0; i < values.length - 1; i++)
 							{
 								if (definitions[1 + i * 2].startsWith("unsigned int") || definitions[1 + i * 2].equals("int")) values[i + 1] = Integer
-										.parseInt(fields[i].getText());
+										.parseInt(getText(i));
 								else if (definitions[1 + i * 2].startsWith("unsigned float") || definitions[1 + i * 2].equals("float")) values[i + 1] = Float
-										.parseFloat(fields[i].getText());
-								else values[i + 1] = fields[i].getText();
+										.parseFloat(getText(i));
+								else values[i + 1] = getText(i);
 							}
 							try
 							{
@@ -183,8 +213,19 @@ public class EntityValues extends JDialog
 		int currentY = 10;
 		for (int i = 0; i < fields.length; i++)
 		{
-			fields[i] = new JTextField(String.valueOf(tl.getEntityValues()[i + 1]));
-			if (i >= 2)
+			if (tl.getEnId() == 3 && i == 5)
+			{
+				cutsceneField = new JComboBox<String>(getCutsceneList());
+				cutsceneField.setBounds(250, currentY + 3, 100, 20);
+				contentPanel.add(cutsceneField);
+				fieldsName[i] = new JLabel(definitions[i * 2] + " (" + definitions[1 + i * 2] + ") : ");
+				fieldsName[i].setBounds(30, currentY, 200, 20);
+				contentPanel.add(fieldsName[i]);
+				if(!tl.getEntityValues()[6].equals("null")){
+					cutsceneField.setSelectedItem(tl.getEntityValues()[6]);
+				}
+			} else fields[i] = new JTextField(String.valueOf(tl.getEntityValues()[i + 1]));
+			if (i >= 2 &! (tl.getEnId() == 3 && i == 5))
 			{
 				fieldsName[i] = new JLabel(definitions[i * 2] + " (" + definitions[1 + i * 2] + ") : ");
 				fieldsName[i].setBounds(30, currentY, 200, 20);

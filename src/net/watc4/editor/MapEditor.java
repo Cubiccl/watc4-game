@@ -382,7 +382,7 @@ public class MapEditor extends JFrame
 			}
 		}
 
-		final int X = 2, Y = 3;
+		final int X = 1, Y = 2;
 		for (int i = 8 + info[1]; i < lines.length; i++)
 		{
 			String[] entityValues = lines[i].split(" ");
