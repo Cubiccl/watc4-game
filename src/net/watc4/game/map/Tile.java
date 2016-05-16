@@ -1,5 +1,7 @@
 package net.watc4.game.map;
 
+import java.awt.Graphics2D;
+
 import net.watc4.game.display.Animation;
 import net.watc4.game.utils.geometry.Hitbox;
 import net.watc4.game.utils.geometry.RectangleHitbox;
@@ -35,6 +37,18 @@ public class Tile
 	public Hitbox hitbox(int x, int y)
 	{
 		return new RectangleHitbox(x * Map.TILESIZE, y * Map.TILESIZE, Map.TILESIZE, Map.TILESIZE);
+	}
+
+	/** Renders this Tile.
+	 * 
+	 * @param g - The Graphics required to draw.
+	 * @param map - The Map
+	 * @param x - The X Position (in Tiles).
+	 * @param y - The Y Position (in Tiles).
+	 * @param data - This Tile's Data. */
+	public void renderAt(Graphics2D g, Map map, int x, int y, int data)
+	{
+		if (this.sprite != null) g.drawImage(this.sprite.getImage(), x * Map.TILESIZE, y * Map.TILESIZE, null);
 	}
 
 }

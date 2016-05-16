@@ -20,27 +20,34 @@ public class Chunk implements IRender
 	/** The Size of a Chunk, in tiles. */
 	public static final int SIZE = 10;
 
+	/** The tile data. */
+	private byte[][] data;
+	/** A reference to the Map it belongs to. */
+	private Map map;
 	/** This Chunk's size.
 	 * 
 	 * @see Chunk#SIZE */
 	public final int size;
 	/** The tiles in this Chunk. */
 	private int[][] tiles;
-	/** The position of this Chunk (in tiles.) */
-	public final int xPos, yPos;
 	/** List of segments stopping light */
 	private CopyOnWriteArraySet<Vector> wallSet;
+	/** The position of this Chunk (in tiles.) */
+	public final int xPos, yPos;
 
 	/** Creates a new Chunk.
 	 * 
 	 * @param xPos - Its X Position.
-	 * @param yPos - Its Y Position. */
-	public Chunk(int xPos, int yPos)
+	 * @param yPos - Its Y Position.
+	 * @param map - The Map it belongs to. */
+	public Chunk(int xPos, int yPos, Map map)
 	{
 		this.xPos = xPos;
 		this.yPos = yPos;
+		this.map = map;
 		this.size = SIZE;
 		this.tiles = new int[this.size][this.size];
+		this.data = new byte[this.size][this.size];
 	}
 
 	/** Creates the Walls. */
@@ -55,17 +62,17 @@ public class Chunk implements IRender
 			{
 				// Add the vertical ones
 				{
-					if (this.getTileAt(x, y).isOpaque && !this.getTileAt(x + 1, y).isOpaque) this.wallSet
-							.add(new Vector((this.xPos * this.size + x + 1) * Map.TILESIZE, (this.yPos * this.size + y) * Map.TILESIZE, 0, Map.TILESIZE));
-					else if (!this.getTileAt(x, y).isOpaque && this.getTileAt(x + 1, y).isOpaque) this.wallSet
-							.add(new Vector((this.xPos * this.size + x + 1) * Map.TILESIZE, (this.yPos * this.size + y + 1) * Map.TILESIZE, 0, -Map.TILESIZE));
+					if (this.getTileAt(x, y).isOpaque && !this.getTileAt(x + 1, y).isOpaque) this.wallSet.add(new Vector((this.xPos * this.size + x + 1)
+							* Map.TILESIZE, (this.yPos * this.size + y) * Map.TILESIZE, 0, Map.TILESIZE));
+					else if (!this.getTileAt(x, y).isOpaque && this.getTileAt(x + 1, y).isOpaque) this.wallSet.add(new Vector((this.xPos * this.size + x + 1)
+							* Map.TILESIZE, (this.yPos * this.size + y + 1) * Map.TILESIZE, 0, -Map.TILESIZE));
 				}
 				// Add the horizontal ones
 				{
-					if (this.getTileAt(x, y).isOpaque && !this.getTileAt(x, y + 1).isOpaque) this.wallSet
-							.add(new Vector((this.xPos * this.size + x + 1) * Map.TILESIZE, (this.yPos * this.size + y + 1) * Map.TILESIZE, -Map.TILESIZE, 0));
-					else if (!this.getTileAt(x, y).isOpaque && this.getTileAt(x, y + 1).isOpaque) this.wallSet
-							.add(new Vector((this.xPos * this.size + x) * Map.TILESIZE, (this.yPos * this.size + y + 1) * Map.TILESIZE, Map.TILESIZE, 0));
+					if (this.getTileAt(x, y).isOpaque && !this.getTileAt(x, y + 1).isOpaque) this.wallSet.add(new Vector((this.xPos * this.size + x + 1)
+							* Map.TILESIZE, (this.yPos * this.size + y + 1) * Map.TILESIZE, -Map.TILESIZE, 0));
+					else if (!this.getTileAt(x, y).isOpaque && this.getTileAt(x, y + 1).isOpaque) this.wallSet.add(new Vector((this.xPos * this.size + x)
+							* Map.TILESIZE, (this.yPos * this.size + y + 1) * Map.TILESIZE, Map.TILESIZE, 0));
 				}
 			}
 		}
@@ -92,16 +99,26 @@ public class Chunk implements IRender
 					}
 				}
 				if (vectorFound == null) manyVectorFound = true;
-				if (!manyVectorFound && targetVector.getDirection().getX() * vectorFound.getDirection().getY()
-						- targetVector.getDirection().getY() * vectorFound.getDirection().getX() == 0)
+				if (!manyVectorFound
+						&& targetVector.getDirection().getX() * vectorFound.getDirection().getY() - targetVector.getDirection().getY()
+								* vectorFound.getDirection().getX() == 0)
 				{
-					vectorFound.setDirection(new Point2D(vectorFound.getDirection().getX() + targetVector.getDirection().getX(),
-							vectorFound.getDirection().getY() + targetVector.getDirection().getY()));
+					vectorFound.setDirection(new Point2D(vectorFound.getDirection().getX() + targetVector.getDirection().getX(), vectorFound.getDirection()
+							.getY() + targetVector.getDirection().getY()));
 					this.wallSet.remove(targetVector);
 					done = false;
 				}
 			}
 		}
+	}
+
+	/** @param x - X position.
+	 * @param y - Y position.
+	 * @return The Tile Data at the given coordinates. */
+	public byte getDataAt(int x, int y)
+	{
+		if (x < 0 || x >= this.size || y < 0 || y >= this.size) return 0;
+		return this.data[x][y];
 	}
 
 	/** @param x - X position.
@@ -122,18 +139,24 @@ public class Chunk implements IRender
 	public void render(Graphics2D g)
 	{
 		for (int x = 0; x < this.size; x++)
-		{
 			for (int y = 0; y < this.size; y++)
-			{
-				if (this.getTileAt(x, y).sprite != null) g.drawImage(this.getTileAt(x, y).sprite.getImage(), this.xPos * ACTUAL_SIZE + x * Map.TILESIZE,
-						this.yPos * ACTUAL_SIZE + y * Map.TILESIZE, null);
-			}
-		}
+				this.getTileAt(x, y).renderAt(g, this.map, this.xPos * this.size + x, this.yPos * this.size + y, this.getDataAt(x, y));
+
 		if (GameSettings.drawHitboxes)
 		{
 			g.setColor(Color.GREEN);
 			g.drawRect(this.xPos * ACTUAL_SIZE, this.yPos * ACTUAL_SIZE, ACTUAL_SIZE, ACTUAL_SIZE);
 		}
+	}
+
+	/** Sets the Tile at x, y to the input Tile.
+	 * 
+	 * @param x - The X coordinate.
+	 * @param y - The Y coordinate.
+	 * @param data - The Tile Data to set. */
+	public void setDataAt(int x, int y, byte data)
+	{
+		if (x >= 0 && x < this.size && y >= 0 && y < this.size) this.data[x][y] = data;
 	}
 
 	/** Sets the Tile at x, y to the input Tile.

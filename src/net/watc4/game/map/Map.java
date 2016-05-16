@@ -39,7 +39,11 @@ public class Map implements IRender, IUpdate
 			values = mapText[y + 7].split("\t");
 
 			for (int x = 0; x < info[0]; x++)
-				map.setTileAt(x, y, Integer.valueOf(values[x]));
+			{
+				String[] tileData = values[x].split(",");
+				map.setTileAt(x, y, Integer.parseInt(tileData[0]));
+				if (tileData.length > 1) map.setDataAt(x, y, Byte.parseByte(tileData[1]));
+			}
 
 		}
 		map.createWalls();
@@ -63,6 +67,7 @@ public class Map implements IRender, IUpdate
 
 	/** Manages Entities in this Game. */
 	public EntityManager entityManager;
+
 	/** The instance of the GameState. */
 	public final GameState game;
 	/** Height of the map in tiles. */
@@ -103,7 +108,7 @@ public class Map implements IRender, IUpdate
 		for (int x = 0; x < this.chunks.length; x++)
 			for (int y = 0; y < this.chunks[x].length; y++)
 			{
-				this.chunks[x][y] = new Chunk(x, y);
+				this.chunks[x][y] = new Chunk(x, y, this);
 				this.entityManager.registerChunk(this.chunks[x][y]);
 			}
 
@@ -136,6 +141,16 @@ public class Map implements IRender, IUpdate
 
 	/** @param x - X position.
 	 * @param y - Y position.
+	 * @return The Tile data at the given coordinates. */
+	public byte getDataAt(int x, int y)
+	{
+		Chunk chunk = this.getChunk(x, y);
+		if (chunk != null) return chunk.getDataAt(x % Chunk.SIZE, y % Chunk.SIZE);
+		return 0;
+	}
+
+	/** @param x - X position.
+	 * @param y - Y position.
 	 * @return The Tile at the given coordinates. */
 	public Tile getTileAt(int x, int y)
 	{
@@ -152,6 +167,17 @@ public class Map implements IRender, IUpdate
 				if (this.chunks[x][y].shouldRender()) this.chunks[x][y].render(g);
 		this.entityManager.render(g);
 		this.lightManager.render(g);
+	}
+
+	/** Sets the Tile data at x, y to the input data.
+	 * 
+	 * @param x - The X coordinate.
+	 * @param y - The Y coordinate.
+	 * @param id - The data of the Tile to set. */
+	public void setDataAt(int x, int y, byte data)
+	{
+		Chunk chunk = this.getChunk(x, y);
+		if (chunk != null) chunk.setDataAt(x % Chunk.SIZE, y % Chunk.SIZE, data);
 	}
 
 	/** Sets the Tile at x, y to the input Tile's id.

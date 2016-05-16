@@ -70,16 +70,16 @@ public class Controls {
 	{
 		/*Game.getGame().getInputManager().mapToKey(exit, KeyEvent.VK_ESCAPE);*/
 		
-		inputManager.mapToKey(p_left, KeyEvent.VK_Q);
-		inputManager.mapToKey(p_right, KeyEvent.VK_D);
-		inputManager.mapToKey(p_up, KeyEvent.VK_Z);
-		inputManager.mapToKey(p_down, KeyEvent.VK_S);
+		inputManager.mapToKey(p_left, KeyEvent.VK_J);
+		inputManager.mapToKey(p_right, KeyEvent.VK_L);
+		inputManager.mapToKey(p_up, KeyEvent.VK_I);
+		inputManager.mapToKey(p_down, KeyEvent.VK_K);
 		inputManager.mapToKey(p_jump, KeyEvent.VK_SPACE);
 		
-		inputManager.mapToKey(l_left, KeyEvent.VK_J);
-		inputManager.mapToKey(l_right, KeyEvent.VK_L);
-		inputManager.mapToKey(l_up, KeyEvent.VK_I);
-		inputManager.mapToKey(l_down, KeyEvent.VK_K);
+		inputManager.mapToKey(l_left, KeyEvent.VK_Q);
+		inputManager.mapToKey(l_right, KeyEvent.VK_D);
+		inputManager.mapToKey(l_up, KeyEvent.VK_Z);
+		inputManager.mapToKey(l_down, KeyEvent.VK_S);
 	}
 	
 	public void listControls()
