@@ -8,8 +8,6 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -18,10 +16,7 @@ import java.util.TreeMap;
 
 import javafx.geometry.Point2D;
 
-import javax.imageio.ImageIO;
-
 import net.watc4.game.entity.Entity;
-import net.watc4.game.entity.EntityLumi;
 import net.watc4.game.entity.ILightSource;
 import net.watc4.game.map.Chunk;
 import net.watc4.game.map.Map;
