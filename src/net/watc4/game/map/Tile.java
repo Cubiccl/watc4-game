@@ -1,6 +1,8 @@
 package net.watc4.game.map;
 
 import net.watc4.game.display.Animation;
+import net.watc4.game.utils.geometry.Hitbox;
+import net.watc4.game.utils.geometry.RectangleHitbox;
 
 /** A part of the Map. */
 public class Tile
@@ -25,6 +27,14 @@ public class Tile
 		this.isSolid = solid;
 		this.isOpaque = opaque;
 		TileRegistry.registerTile(this);
+	}
+
+	/** @param x - The X Position of this Tile (in tiles.)
+	 * @param y - The Y Position of this Tile (in tiles.)
+	 * @return The Hitbox of this Tile. */
+	public Hitbox hitbox(int x, int y)
+	{
+		return new RectangleHitbox(x * Map.TILESIZE, y * Map.TILESIZE, Map.TILESIZE, Map.TILESIZE);
 	}
 
 }

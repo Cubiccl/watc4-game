@@ -3,7 +3,6 @@ package net.watc4.game.map;
 import java.awt.Graphics;
 
 import net.watc4.game.display.LightManager;
-import net.watc4.game.entity.Entity;
 import net.watc4.game.entity.EntityLumi;
 import net.watc4.game.entity.EntityManager;
 import net.watc4.game.entity.EntityPattou;
@@ -115,24 +114,6 @@ public class Map implements IRender, IUpdate
 		for (int x = 0; x < this.chunks.length; x++)
 			for (int y = 0; y < this.chunks[x].length; y++)
 				this.chunks[x][y].createWalls();
-	}
-
-	/** @param entity - The Entity to test.
-	 * @param xPosition - Its x position.
-	 * @param yPosition - Its y position.
-	 * @return The coordinates of the Tile it collides with, if it does. null if it doesn't. */
-	public int[] detectCollision(Entity entity, float xPosition, float yPosition)
-	{
-		int tileXStart = (int) (xPosition / TILESIZE), tileYStart = (int) (yPosition / TILESIZE);
-		int tileXEnd = (int) ((xPosition + entity.getWidth() - 1) / TILESIZE + 1);
-		int tileYEnd = (int) ((yPosition + entity.getHeight() - 1) / TILESIZE + 1);
-		for (int x = tileXStart; x < tileXEnd; ++x)
-		{
-			for (int y = tileYStart; y < tileYEnd; ++y)
-				if (this.getTileAt(x, y).isSolid) return new int[]
-				{ x, y };
-		}
-		return null;
 	}
 
 	/** @param x - The X Coordinate (in pixels)

@@ -232,9 +232,10 @@ public abstract class Entity implements IRender, IUpdate
 		{
 			for (int y = tileYStart; y < tileYEnd; ++y)
 			{
-				if (this.game.getMap().getTileAt(x, y).isSolid) return false;
+				if (this.game.getMap().getTileAt(x, y).isSolid && this.game.getMap().getTileAt(x, y).hitbox(x, y).collidesWith(this.hitbox(dx, dy))) return false;
 			}
 		}
+
 		// Test if on top of ladder
 		if (dy > 0 && !this.onLadder && this.game.getMap().getTileAt((int) ((this.xPos + dx) / Map.TILESIZE), tileYEnd - 1) == TileRegistry.LADDER_TOP
 				&& (this.yPos + dy + this.height - 1) % Map.TILESIZE < Map.TILESIZE / 6) return false;

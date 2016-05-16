@@ -5,7 +5,9 @@ import java.awt.Point;
 import net.watc4.game.Game;
 import net.watc4.game.display.renderer.LumiRenderer;
 import net.watc4.game.map.Map;
+import net.watc4.game.map.TileRegistry;
 import net.watc4.game.states.GameState;
+import net.watc4.game.utils.GameUtils;
 import net.watc4.game.utils.geometry.CircleHitbox;
 import net.watc4.game.utils.geometry.Hitbox;
 
@@ -131,6 +133,12 @@ public class EntityLumi extends EntityPlayer
 		if (down) vMove++;
 		if (left) hMove--;
 		if (right) hMove++;
+		
+		if (down && this.getAdjacentTile(GameUtils.DOWN) == TileRegistry.LADDER_TOP)
+		{
+			this.onLadder = true;
+			if (!this.placeFree(0, 1)) this.onLadder = false;
+		}
 
 		boolean doubleInput = (up && right) || (up && left) || (down && right) || (down && left);
 		float multiplier = 1;
