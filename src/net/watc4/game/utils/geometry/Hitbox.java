@@ -1,5 +1,7 @@
 package net.watc4.game.utils.geometry;
 
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.geom.Point2D;
 
@@ -54,5 +56,11 @@ public abstract class Hitbox
 	/** @param point- The point.
 	 * @return True if this Hitbox contains the Point with he given coordinates. */
 	public abstract boolean contains(Point2D point);
+
+	/** Draws this Hitbox.
+	 * 
+	 * @param g - The Graphics required to draw.
+	 * @param color - The Color of the Hitbox. */
+	public abstract void render(Graphics g, Color color);
 
 }

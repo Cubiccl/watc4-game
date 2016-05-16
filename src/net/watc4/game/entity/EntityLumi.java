@@ -1,9 +1,13 @@
 package net.watc4.game.entity;
 
+import java.awt.Point;
+
 import net.watc4.game.Game;
 import net.watc4.game.display.renderer.LumiRenderer;
 import net.watc4.game.map.Map;
 import net.watc4.game.states.GameState;
+import net.watc4.game.utils.geometry.CircleHitbox;
+import net.watc4.game.utils.geometry.Hitbox;
 
 /** First Player : can fly and spreads light. */
 public class EntityLumi extends EntityPlayer
@@ -60,6 +64,12 @@ public class EntityLumi extends EntityPlayer
 		this.hasGravity = false;
 		this.setRenderer(new LumiRenderer(this));
 		this.ai = new AILumi(this);
+	}
+
+	@Override
+	public Hitbox hitbox(double dx, double dy)
+	{
+		return new CircleHitbox(new Point((int) (this.getX() + dx + 16), (int) (this.getY() + dy + 16)), 16);
 	}
 
 	/** @param entity - The Entity to test.

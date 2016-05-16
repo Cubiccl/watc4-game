@@ -2,7 +2,7 @@ package net.watc4.game.entity;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Rectangle;
+import java.awt.Point;
 
 import net.watc4.game.display.renderer.EntityRenderer;
 import net.watc4.game.entity.ai.AI;
@@ -11,11 +11,12 @@ import net.watc4.game.map.Tile;
 import net.watc4.game.map.TileRegistry;
 import net.watc4.game.map.tiles.TileLadder;
 import net.watc4.game.states.GameState;
-import net.watc4.game.utils.FileUtils;
 import net.watc4.game.utils.GameSettings;
 import net.watc4.game.utils.GameUtils;
 import net.watc4.game.utils.IRender;
 import net.watc4.game.utils.IUpdate;
+import net.watc4.game.utils.geometry.Hitbox;
+import net.watc4.game.utils.geometry.RectangleHitbox;
 
 /** Represents a moving object in the world. i.e. A monster, a moving block, etc. */
 public abstract class Entity implements IRender, IUpdate
@@ -97,8 +98,7 @@ public abstract class Entity implements IRender, IUpdate
 	 * @return True if the given Entity would collide with this Entity if it were to move to the given offsets.. */
 	public boolean collidesWith(Entity entity, float dx, float dy)
 	{
-		float x = entity.xPos + dx, y = entity.yPos + dy;
-		return this.hitbox().intersects(new Rectangle((int) x, (int) y, (int) entity.getWidth(), (int) entity.getHeight()));
+		return this.hitbox().collidesWith(entity.hitbox(dx, dy));
 	}
 
 	/** test if a point is contained by the hitbox
@@ -108,7 +108,7 @@ public abstract class Entity implements IRender, IUpdate
 	 * @return true if the point is contained, false if not */
 	public boolean contains(int x, int y)
 	{
-		return this.hitbox().contains(x, y);
+		return this.hitbox().contains(new Point(x, y));
 	}
 
 	/** @param entity - Another Entity.
@@ -190,9 +190,15 @@ public abstract class Entity implements IRender, IUpdate
 	}
 
 	/** @return This Entity's Hitbox. */
-	private Rectangle hitbox()
+	public Hitbox hitbox()
 	{
-		return new Rectangle((int) this.getX(), (int) this.getY(), (int) this.getWidth(), (int) this.getHeight());
+		return this.hitbox(0, 0);
+	}
+
+	/** @return This Entity's Hitbox, assuming that it had move by dx and dy. */
+	public Hitbox hitbox(double dx, double dy)
+	{
+		return new RectangleHitbox((int) (this.getX() + dx), (int) (this.getY() + dy), (int) this.getWidth(), (int) this.getHeight());
 	}
 
 	/** @return True if this Entity is standing on a Ladder. */
@@ -241,13 +247,8 @@ public abstract class Entity implements IRender, IUpdate
 		if (this.renderer != null) this.renderer.render(g);
 		if (GameSettings.drawHitboxes)
 		{
-			if (this instanceof EntityCutscene) g.setColor(Color.YELLOW);
-			else g.setColor(Color.BLUE);
-			g.drawRect((int) this.getX(), (int) this.getY(), (int) this.getWidth(), (int) this.getHeight());
-			g.drawLine(FileUtils.toInt(this.getX() + this.getWidth() / 2), FileUtils.toInt(this.getY()), FileUtils.toInt(this.getX() + this.getWidth() / 2),
-					FileUtils.toInt(this.getY() + this.getHeight()));
-			g.drawLine(FileUtils.toInt(this.getX()), FileUtils.toInt(this.getY() + this.getHeight() / 2), FileUtils.toInt(this.getX() + this.getWidth()),
-					FileUtils.toInt(this.getY() + this.getHeight() / 2));
+			if (this instanceof EntityCutscene) this.hitbox().render(g, Color.YELLOW);
+			else this.hitbox().render(g, Color.BLUE);
 		}
 	}
 

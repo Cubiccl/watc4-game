@@ -39,7 +39,7 @@ public class EntityManager implements IRender, IUpdate
 	{
 		Entity[] colliding = this.getCollisionsWith(entity, dx, dy);
 		for (Entity entity2 : colliding)
-			if (entity2.isSolid) return false;
+			if (entity2.isSolid|| entity.isSolid) return false;
 		return true;
 	}
 
