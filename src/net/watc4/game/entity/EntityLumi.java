@@ -12,7 +12,7 @@ import net.watc4.game.utils.geometry.CircleHitbox;
 import net.watc4.game.utils.geometry.Hitbox;
 
 /** First Player : can fly and spreads light. */
-public class EntityLumi extends EntityPlayer
+public class EntityLumi extends EntityPlayer implements ILightSource
 {
 
 	/** Lumi's AI. */
@@ -165,4 +165,9 @@ public class EntityLumi extends EntityPlayer
 		if (wasMoving || this.ySpeed != 0 || this.xSpeed != 0) this.game.getMap().lightManager.update();
 	}
 
+	@Override
+	public int getLightIntensity()
+	{
+		return LIGHT_INTENSITY;
+	}
 }

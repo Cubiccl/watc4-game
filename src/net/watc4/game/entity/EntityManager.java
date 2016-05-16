@@ -122,6 +122,7 @@ public class EntityManager implements IRender, IUpdate
 	public void registerEntity(Entity entity)
 	{
 		this.entities.add(entity);
+		if (entity instanceof ILightSource) map.lightManager.add(entity);
 		entity.hasMoved = true;
 		this.replaceEntity(entity);
 	}
