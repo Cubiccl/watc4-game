@@ -1,7 +1,7 @@
 package net.watc4.game.states.cutscene;
 
 import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 import net.watc4.game.display.Camera;
 import net.watc4.game.display.TextRenderer;
@@ -53,7 +53,7 @@ public class TextEvent extends CutsceneEvent
 	}
 
 	@Override
-	public void render(Graphics g)
+	public void render(Graphics2D g)
 	{
 		int width = Camera.WIDTH, height = Camera.HEIGHT;
 		int y = 5, boxHeight = y * 6;

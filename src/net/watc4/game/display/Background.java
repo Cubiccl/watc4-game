@@ -1,6 +1,6 @@
 package net.watc4.game.display;
 
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 import net.watc4.game.states.GameState;
 import net.watc4.game.utils.IRender;
@@ -23,7 +23,7 @@ public class Background implements IRender
 	}
 
 	@Override
-	public void render(Graphics g)
+	public void render(Graphics2D g)
 	{
 		int width = this.animation.getImage().getWidth(), height = this.animation.getImage().getHeight();
 		int xOffset = 0, yOffset = 0;

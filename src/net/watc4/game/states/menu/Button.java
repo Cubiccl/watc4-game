@@ -1,7 +1,7 @@
 package net.watc4.game.states.menu;
 
 import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 import net.watc4.game.display.TextRenderer;
 import net.watc4.game.utils.IRender;
@@ -44,7 +44,7 @@ public class Button implements IRender
 	
 
 	@Override
-	public void render(Graphics g)
+	public void render(Graphics2D g)
 	{
 		if (this.isSelected) g.setColor(Color.RED);
 		else g.setColor(Color.WHITE);

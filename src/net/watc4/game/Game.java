@@ -2,7 +2,6 @@ package net.watc4.game;
 
 import java.awt.Color;
 import java.awt.EventQueue;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
@@ -136,9 +135,9 @@ public class Game implements Runnable
 		if (this.window.canvas.getWidth() == 0) return;
 
 		BufferStrategy bufferStrategy = this.window.canvas.getBufferStrategy();
-		Graphics g = bufferStrategy.getDrawGraphics();
-		AffineTransform defaultTransform = ((Graphics2D) g).getTransform();
-		this.window.prepareGraphics((Graphics2D) g);
+		Graphics2D g = (Graphics2D) bufferStrategy.getDrawGraphics();
+		AffineTransform defaultTransform = (g).getTransform();
+		this.window.prepareGraphics(g);
 		this.state.render(g);
 
 		if (GameSettings.debugMode)
@@ -155,8 +154,8 @@ public class Game implements Runnable
 			g.fillRect(0, 0, this.window.canvas.getWidth(), this.window.canvas.getHeight());
 		}
 
-		((Graphics2D) g).setTransform(defaultTransform);
-		this.window.drawBorders((Graphics2D) g);
+		g.setTransform(defaultTransform);
+		this.window.drawBorders(g);
 		g.dispose();
 		bufferStrategy.show();
 	}

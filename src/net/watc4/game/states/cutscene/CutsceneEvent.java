@@ -1,6 +1,6 @@
 package net.watc4.game.states.cutscene;
 
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 
 import net.watc4.game.utils.IRender;
@@ -39,7 +39,7 @@ public abstract class CutsceneEvent implements IUpdate, IRender
 	{}
 
 	@Override
-	public void render(Graphics g)
+	public void render(Graphics2D g)
 	{}
 
 	@Override

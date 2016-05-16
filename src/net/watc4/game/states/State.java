@@ -1,6 +1,6 @@
 package net.watc4.game.states;
 
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 
 import net.watc4.game.display.Animation;
@@ -34,7 +34,7 @@ public abstract class State implements IRender, IUpdate
 	}
 
 	@Override
-	public void render(Graphics g)
+	public void render(Graphics2D g)
 	{
 		if (this.background != null) this.background.render(g);
 	}

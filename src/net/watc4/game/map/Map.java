@@ -1,6 +1,6 @@
 package net.watc4.game.map;
 
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 import net.watc4.game.display.LightManager;
 import net.watc4.game.entity.EntityLumi;
@@ -145,7 +145,7 @@ public class Map implements IRender, IUpdate
 	}
 
 	@Override
-	public void render(Graphics g)
+	public void render(Graphics2D g)
 	{
 		for (int x = 0; x < this.chunks.length; ++x)
 			for (int y = 0; y < this.chunks[x].length; ++y)

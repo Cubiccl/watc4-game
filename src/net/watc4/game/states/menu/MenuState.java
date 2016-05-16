@@ -1,7 +1,7 @@
 package net.watc4.game.states.menu;
 
 import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
@@ -80,7 +80,7 @@ public abstract class MenuState extends State
 	}
 
 	@Override
-	public void render(Graphics g)
+	public void render(Graphics2D g)
 	{
 		super.render(g);
 		

@@ -1,6 +1,6 @@
 package net.watc4.game.entity;
 
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -128,7 +128,7 @@ public class EntityManager implements IRender, IUpdate
 	}
 
 	@Override
-	public void render(Graphics g)
+	public void render(Graphics2D g)
 	{
 		for (Entity entity : this.entities)
 			if (this.shouldRender(entity)) entity.render(g);

@@ -1,7 +1,7 @@
 package net.watc4.game.entity;
 
 import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 
 import net.watc4.game.display.renderer.EntityRenderer;
@@ -243,7 +243,7 @@ public abstract class Entity implements IRender, IUpdate
 	}
 
 	@Override
-	public void render(Graphics g)
+	public void render(Graphics2D g)
 	{
 		if (this.renderer != null) this.renderer.render(g);
 		if (GameSettings.drawHitboxes)

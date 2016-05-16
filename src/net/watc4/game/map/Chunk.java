@@ -1,7 +1,7 @@
 package net.watc4.game.map;
 
 import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -119,7 +119,7 @@ public class Chunk implements IRender
 	}
 
 	@Override
-	public void render(Graphics g)
+	public void render(Graphics2D g)
 	{
 		for (int x = 0; x < this.size; x++)
 		{

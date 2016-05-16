@@ -1,6 +1,6 @@
 package net.watc4.game.display.renderer;
 
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import net.watc4.game.display.Animation;
@@ -29,7 +29,7 @@ public class PattouRenderer extends EntityRenderer
 	}
 
 	@Override
-	public void render(Graphics g)
+	public void render(Graphics2D g)
 	{
 		BufferedImage image = this.animation.getImage();
 		final int JUMP_ANIMATION_SPEED = 7;

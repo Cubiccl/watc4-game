@@ -1,6 +1,6 @@
 package net.watc4.game.display.renderer;
 
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 import net.watc4.game.display.Animation;
 import net.watc4.game.display.Sprite;
@@ -16,7 +16,7 @@ public class LumiRenderer extends EntityRenderer
 	}
 
 	@Override
-	public void render(Graphics g)
+	public void render(Graphics2D g)
 	{
 		super.render(g);
 		g.drawImage(Sprite.LUMI_EYE.getImage(), (int) (this.entity.getX() + 8 + this.entity.getXSpeed()),
