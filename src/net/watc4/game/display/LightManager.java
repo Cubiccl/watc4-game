@@ -67,24 +67,23 @@ public class LightManager implements IRender, IUpdate
 	@Override
 	public void render(Graphics2D g)
 	{
-		Graphics2D g2d = (Graphics2D) g;
-		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		Camera camera = GameState.getInstance().getCamera();
 
-		Area shadow = new Area(new Rectangle(FileUtils.toInt(camera.getXOffset()), FileUtils.toInt(camera.getYOffset()), FileUtils.toInt(camera.width
-				/ camera.getScale()), FileUtils.toInt(camera.height / camera.getScale())));
+		Area shadow = new Area(new Rectangle(FileUtils.toInt(camera.getXOffset()), FileUtils.toInt(camera.getYOffset()),
+				FileUtils.toInt(camera.width / camera.getScale()), FileUtils.toInt(camera.height / camera.getScale())));
 
 		if (!GameSettings.lightMode)
 		{
 			shadow.subtract(this.fieldOfView);
-			g2d.setColor(Color.BLACK);
-			g2d.fill(shadow);
+			g.setColor(Color.BLACK);
+			g.fill(shadow);
 
 		} else
 		{
 			shadow.subtract(this.fieldOfView);
-			g2d.setColor(Color.RED);
-			g2d.draw(shadow);
+			g.setColor(Color.RED);
+			g.draw(shadow);
 		}
 	}
 
@@ -96,24 +95,28 @@ public class LightManager implements IRender, IUpdate
 	@Override
 	public void update()
 	{
-		HashSet<Point2D> tmpEndPoints = new HashSet<>();
-		Vector[] viewWallSet = new Vector[4];
-		TreeMap<Double, Point2D> endPoints = new TreeMap<>();
 		this.fieldOfView = null;
 		for (int i = 0; i < lightSources.size(); i++)
 		{
+			HashSet<Point2D> tmpEndPoints = new HashSet<>();
+			Vector[] viewWallSet = new Vector[4];
+			TreeMap<Double, Point2D> endPoints = new TreeMap<>();
 			ILightSource lightSource = lightSources.get(i);
 			Point2D lightPosition = new Point2D(lightSource.getX() + lightSource.getWidth() / 2, lightSource.getY() + lightSource.getHeight() / 2);
 
 			// Create the fieldOfView Rectangle
-			viewWallSet[0] = new Vector(new Point2D(lightPosition.getX() - lightSource.getLightIntensity(), lightPosition.getY()
-					- lightSource.getLightIntensity()), new Point2D(2 * lightSource.getLightIntensity(), 0));
-			viewWallSet[1] = new Vector(new Point2D(lightPosition.getX() + lightSource.getLightIntensity(), lightPosition.getY()
-					- lightSource.getLightIntensity()), new Point2D(0.00001, 2 * lightSource.getLightIntensity()));
-			viewWallSet[2] = new Vector(new Point2D(lightPosition.getX() - lightSource.getLightIntensity(), lightPosition.getY()
-					+ lightSource.getLightIntensity()), new Point2D(0.00001, -2 * lightSource.getLightIntensity()));
-			viewWallSet[3] = new Vector(new Point2D(lightPosition.getX() + lightSource.getLightIntensity(), lightPosition.getY()
-					+ lightSource.getLightIntensity()), new Point2D(-2 * lightSource.getLightIntensity(), 0));
+			viewWallSet[0] = new Vector(
+					new Point2D(lightPosition.getX() - lightSource.getLightIntensity(), lightPosition.getY() - lightSource.getLightIntensity()),
+					new Point2D(2 * lightSource.getLightIntensity(), 0));
+			viewWallSet[1] = new Vector(
+					new Point2D(lightPosition.getX() + lightSource.getLightIntensity(), lightPosition.getY() - lightSource.getLightIntensity()),
+					new Point2D(0.00001, 2 * lightSource.getLightIntensity()));
+			viewWallSet[2] = new Vector(
+					new Point2D(lightPosition.getX() - lightSource.getLightIntensity(), lightPosition.getY() + lightSource.getLightIntensity()),
+					new Point2D(0.00001, -2 * lightSource.getLightIntensity()));
+			viewWallSet[3] = new Vector(
+					new Point2D(lightPosition.getX() + lightSource.getLightIntensity(), lightPosition.getY() + lightSource.getLightIntensity()),
+					new Point2D(-2 * lightSource.getLightIntensity(), 0));
 
 			// Add concerned walls
 			wallSet.clear();
@@ -139,7 +142,8 @@ public class LightManager implements IRender, IUpdate
 				if (endPoint.getPosition().getX() >= lightPosition.getX() - lightSource.getLightIntensity()
 						&& endPoint.getPosition().getX() <= lightPosition.getX() + lightSource.getLightIntensity()
 						&& endPoint.getPosition().getY() >= lightPosition.getY() - lightSource.getLightIntensity()
-						&& endPoint.getPosition().getY() <= lightPosition.getY() + lightSource.getLightIntensity()) tmpEndPoints.add(endPoint.getPosition());
+						&& endPoint.getPosition().getY() <= lightPosition.getY() + lightSource.getLightIntensity())
+					tmpEndPoints.add(endPoint.getPosition());
 
 			}
 
@@ -148,8 +152,9 @@ public class LightManager implements IRender, IUpdate
 				wallSet.add(viewWallSet[j]);
 			for (Point2D endPoint : tmpEndPoints)
 			{
-				double cos = ((endPoint.getX() - lightPosition.getX()) / (Math.sqrt((endPoint.getX() - lightPosition.getX())
-						* (endPoint.getX() - lightPosition.getX()) + (endPoint.getY() - lightPosition.getY()) * (endPoint.getY() - lightPosition.getY()))));
+				double cos = ((endPoint.getX() - lightPosition.getX())
+						/ (Math.sqrt((endPoint.getX() - lightPosition.getX()) * (endPoint.getX() - lightPosition.getX())
+								+ (endPoint.getY() - lightPosition.getY()) * (endPoint.getY() - lightPosition.getY()))));
 				double angle = (endPoint.getY() - lightPosition.getY() > 0) ? (float) Math.acos(cos) : (float) -Math.acos(cos);
 				Point2D tmpPoint1 = new Vector(lightPosition, new Point2D(Math.cos(angle - 0.00001), Math.sin(angle - 0.00001))).intersect(wallSet);
 				Point2D tmpPoint2 = new Vector(lightPosition, new Point2D(Math.cos(angle + 0.00001), Math.sin(angle + 0.00001))).intersect(wallSet);
@@ -172,10 +177,10 @@ public class LightManager implements IRender, IUpdate
 
 			Area tmpFieldOfView = new Area(new Polygon(triangleX, triangleY, triangleX.length));
 			tmpFieldOfView.intersect(new Area(new Ellipse2D.Float(lightSource.getX() + lightSource.getWidth() / 2 - lightSource.getLightIntensity(),
-					lightSource.getY() + lightSource.getHeight() / 2 - lightSource.getLightIntensity(), lightSource.getLightIntensity() * 2, lightSource
-							.getLightIntensity() * 2)));
+					lightSource.getY() + lightSource.getHeight() / 2 - lightSource.getLightIntensity(), lightSource.getLightIntensity() * 2,
+					lightSource.getLightIntensity() * 2)));
 			if (this.fieldOfView == null) this.fieldOfView = tmpFieldOfView;
-			else this.fieldOfView.intersect(tmpFieldOfView);
+			else this.fieldOfView.add(tmpFieldOfView);
 		}
 	}
 }
