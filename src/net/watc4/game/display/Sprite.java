@@ -58,7 +58,11 @@ public enum Sprite
 	TILE_MIRROR_RIGHT("res/textures/tileset.png", 224, 0, 32, 32),
 	TILE_MIRROR_TOP("res/textures/tileset.png", 0, 32, 32, 32),
 	TILE_WALL("res/textures/tileset.png", 64, 0, 32, 32),
-	UNKNOWN("res/textures/unknown.png", 0, 0, 32, 32);
+	UNKNOWN("res/textures/unknown.png", 0, 0, 32, 32),
+	ARROW_DOWN("res/textures/icons.png", 0, 0, 16, 16),
+	ARROW_UP("res/textures/icons.png", 16, 0, 16, 16),
+	CROSS("res/textures/icons.png", 32, 0, 16, 16),
+	PLUS("res/textures/icons.png", 48, 0, 16, 16);
 
 	/** The height of the Sprite. */
 	private int height;

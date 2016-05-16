@@ -9,6 +9,7 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.BufferedWriter;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.swing.ImageIcon;
@@ -57,14 +59,16 @@ public class MapEditor extends JFrame
 	private static final int MODE_TILES = 0;
 	private static final int MODE_ENTITY = 1;
 	private static final int MODE_CHARACTERS = 2;
+	private static final int MODE_CUTSCENE = 3;
 	private static int mode;
 	private static Game g;
 	private static JPanel contentPane;
 	private static GridBagConstraints gbc = new GridBagConstraints();
-	private static JPanel mapView = new JPanel();
-	private static JScrollPane scrollMap = new JScrollPane();
+	private static JPanel mapView = new JPanel(), cutsceneView = new JPanel();
+	private static JScrollPane scrollMap = new JScrollPane(), scrollCutscene = new JScrollPane();
 	private final static JMenuBar menuBar = new JMenuBar();
 	private final static JMenuItem createMapMenu = new JMenuItem("Nouveau");
+	private final static ArrayList<EventLabel> eventList = new ArrayList<EventLabel>();
 	private static TileLabel[][] tilemap;
 	private static TileLabel[] tileChoice, entityChoice;
 	private static int selectedTile, selectedEntity;
@@ -78,7 +82,8 @@ public class MapEditor extends JFrame
 	private static JLabel focusPattou, focusLumi, lumiEyes, lblSelected;
 	private static int lblSelectedTileIndex = -1, lblSelectedEntityIndex = -1;
 	private static JButton btnRemovePattou, btnRemoveLumi;
-	private final static JFileChooser fc = new JFileChooser();
+	private static JButton[] cutsceneOptions;
+	private final static JFileChooser fc = new JFileChooser(), sceneC = new JFileChooser();
 	private static boolean exists = false;
 	private static String[] fileHeader = new String[]
 	{ "width = ", "height = ", "lumiSpawnX = ", "lumiSpawnY = ", "pattouSpawnX = ", "pattouSpawnY = ", "tiles =" };
@@ -112,6 +117,55 @@ public class MapEditor extends JFrame
 				{
 					e.printStackTrace();
 				}
+			}
+		});
+	}
+
+	public void initCutsceneOptions()
+	{
+		cutsceneOptions = new JButton[]
+		{ new JButton("Cr\u00E9er"), new JButton("Ouvrir"), new JButton("Enregistrer"), new JButton("Enregistrer sous") };
+		for (int i = 0; i < cutsceneOptions.length; i++)
+		{
+			cutsceneOptions[i].setBounds(MapEditor.this.getWidth() - 280, 50 + i * 40, 160, 25);
+			cutsceneView.add(cutsceneOptions[i]);
+		}
+		cutsceneOptions[0].addMouseListener(new MouseAdapter() // Creer
+		{
+			@Override
+			public void mouseClicked(MouseEvent arg0)
+			{
+				
+			}
+		});
+		cutsceneOptions[1].addMouseListener(new MouseAdapter() // Ouvrir
+		{
+			@Override
+			public void mouseClicked(MouseEvent arg0)
+			{
+				int returnVal = sceneC.showOpenDialog(MapEditor.this);
+				if (returnVal == JFileChooser.APPROVE_OPTION)
+				{
+					File cutsceneFile = sceneC.getSelectedFile();
+//					openMapFile(mapFile);
+					MapEditor.this.setTitle("");
+				}
+			}
+		});
+		cutsceneOptions[2].addMouseListener(new MouseAdapter() // Enregistrer
+		{
+			@Override
+			public void mouseClicked(MouseEvent arg0)
+			{
+				
+			}
+		});
+		cutsceneOptions[3].addMouseListener(new MouseAdapter() // Enregistrer sous
+		{
+			@Override
+			public void mouseClicked(MouseEvent arg0)
+			{
+				
 			}
 		});
 	}
@@ -497,6 +551,9 @@ public class MapEditor extends JFrame
 		fc.addChoosableFileFilter(txtOnly);
 		fc.removeChoosableFileFilter(fc.getAcceptAllFileFilter());
 		fc.setCurrentDirectory(new File("res/maps/"));
+		sceneC.addChoosableFileFilter(txtOnly);
+		sceneC.removeChoosableFileFilter(sceneC.getAcceptAllFileFilter());
+		sceneC.setCurrentDirectory(new File("res/cutscene/"));
 
 		setJMenuBar(menuBar);
 		createMapMenu.setToolTipText("Choisissez les dimensions de votre nouvelle carte");
@@ -873,6 +930,31 @@ public class MapEditor extends JFrame
 		btnRemoveLumi.setBounds(508, 35, 73, 26);
 		characterMenu.add(btnRemoveLumi);
 
+		JPanel cutsceneMenu = new JPanel();
+		cutsceneMenu.setPreferredSize(new Dimension(620, 90));
+		cutsceneMenu.setMinimumSize(new Dimension(100, 10));
+		BorderLayout bl = new BorderLayout();
+		cutsceneMenu.setLayout(bl);
+		menu.add(cutsceneMenu, "Sc\u00E8nes");
+
+		cutsceneMenu.add(scrollCutscene, BorderLayout.CENTER);
+		cutsceneView.setLayout(null);
+		Toolkit tool = Toolkit.getDefaultToolkit();
+		cutsceneView.setMaximumSize(new Dimension(tool.getScreenSize().width - 80, tool.getScreenSize().height));
+		scrollCutscene.setViewportView(cutsceneView);
+
+		EventLabelText elt = new EventLabelText("lel");
+		EventLabelMove elm = new EventLabelMove(101,12,3);
+		eventList.add(elt);
+		eventList.add(elm);
+
+		for (int i = 0; i < eventList.size(); i++)
+		{
+			eventList.get(i).setBounds(20, eventList.get(i).getHeight() * i + 20, eventList.get(i).getWidth(), eventList.get(i).getHeight());
+			cutsceneView.add(eventList.get(i));
+			eventList.get(i).updatePosition(i+1);
+		}
+
 		menu.addMouseListener(new MouseAdapter()
 		{
 			public void mouseClicked(MouseEvent arg0)
@@ -881,6 +963,12 @@ public class MapEditor extends JFrame
 				if (selectedCmp == tilesMenu) mode = MapEditor.MODE_TILES;
 				else if (selectedCmp == entityMenu) mode = MapEditor.MODE_ENTITY;
 				else if (selectedCmp == characterMenu) mode = MapEditor.MODE_CHARACTERS;
+				else if (selectedCmp == cutsceneMenu)
+				{
+					mode = MapEditor.MODE_CUTSCENE;
+					menu.setSize(new Dimension(MapEditor.this.getWidth() - 26, MapEditor.this.getHeight() - 72));
+					initCutsceneOptions();
+				}
 			}
 		});
 
@@ -889,6 +977,8 @@ public class MapEditor extends JFrame
 		scrollMap.getVerticalScrollBar().setUnitIncrement(6);
 		scrollMap.getHorizontalScrollBar().setUnitIncrement(6);
 		GridBagLayout gbl_panel = new GridBagLayout();
+		gbl_panel.rowWeights = new double[] {};
+		gbl_panel.columnWeights = new double[] {};
 		mapView.setLayout(gbl_panel);
 		contentPane.setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]
 		{ tilesMenu, lblTiles, scrollTileRegistry, tileRegistry, menu, mapView, lblTileSelected, selectedTileLabel, entityMenu, lblEntity,
