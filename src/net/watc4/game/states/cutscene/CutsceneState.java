@@ -77,7 +77,6 @@ public class CutsceneState extends State
 	@Override
 	public void update()
 	{
-		if (this.events.size() > 0) System.out.println(this.events.peek());
 		while (!this.events.isEmpty() && this.events.peek().isOver())
 		{
 			this.events.pop().finish();

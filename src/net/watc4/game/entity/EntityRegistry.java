@@ -22,14 +22,14 @@ public final class EntityRegistry
 		entities = new HashMap<Integer, Class<? extends Entity>>();
 		arguments = new HashMap<Class<? extends Entity>, String[]>();
 		registerEntity(0, EntityLumi.class, new String[]
-		{ "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 000 - 099"  });
+		{ "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 000 - 099" });
 		registerEntity(1, EntityPattou.class, new String[]
 		{ "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 100 - 199" });
 		registerEntity(2, EntityBattery.class, new String[]
 		{ "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 200 - 299", "Buffer", "unsigned int", "Max Power", "unsigned int" });
 		registerEntity(3, EntityCutscene.class, new String[]
-		{ "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 300 - 399", "Tile Width", "unsigned int", "Tile Heigth", "unsigned int", "Cutscene Name",
-				"string" });
+		{ "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 300 - 399", "Tile Width", "unsigned int", "Tile Heigth", "unsigned int",
+				"Cutscene Name", "string" });
 	}
 
 	/** Creates the adequate arguments then spawns an Entity.
@@ -42,9 +42,9 @@ public final class EntityRegistry
 	{
 		Object[] arguments = new Object[values.length];
 		arguments[0] = map.game;
-		arguments[1] = Integer.parseInt(values[1]);
+		arguments[1] = Float.parseFloat(values[1]) * Map.TILESIZE;
 		arguments[2] = Float.parseFloat(values[2]) * Map.TILESIZE;
-		arguments[3] = Float.parseFloat(values[3]) * Map.TILESIZE;
+		arguments[3] = Integer.parseInt(values[3]);
 
 		Constructor<Entity> constructor = getConstructor(Integer.parseInt(values[0]));
 
