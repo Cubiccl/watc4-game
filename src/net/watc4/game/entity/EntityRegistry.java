@@ -4,6 +4,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
+import net.watc4.game.entity.lightEntity.EntityFluorescent;
 import net.watc4.game.map.Map;
 
 /** Registers all Entity types and spawns required Entities. */
@@ -26,13 +27,15 @@ public final class EntityRegistry
 		registerEntity(1, EntityPattou.class, new String[]
 		{ "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 100 - 199" });
 		registerEntity(2, EntityBattery.class, new String[]
-		{ "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 200 - 299", "ChargeSpeed", "float", "UnchargeSpeed", "float" });
+		{ "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 200 - 299", "ChargeTime", "float", "UnchargeTime", "float" });
 		registerEntity(3, EntityCutscene.class, new String[]
 		{ "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 300 - 399", "Tile Width", "unsigned int", "Tile Heigth", "unsigned int",
 				"Cutscene Name", "string" });
 		registerEntity(4, EntityDoor.class, "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 400 - 499", "Tile Width", "unsigned int",
 				"Tile Heigth", "unsigned int", "Map Name", "string", "Lumi X", "unsigned int", "Lumi Y", "unsigned int", "Pattou X", "unsigned int",
 				"Pattou Y", "unsigned int");
+		registerEntity(5, EntityFluorescent.class, new String[]
+				{ "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 200 - 299", "ChargeTime", "float", "UnchargeTime", "float", "Intensity max","int" });
 	}
 
 	/** Creates the adequate arguments then spawns an Entity.

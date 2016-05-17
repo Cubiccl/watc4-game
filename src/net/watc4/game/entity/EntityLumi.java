@@ -157,12 +157,11 @@ public class EntityLumi extends EntityPlayer implements ILightSource
 	@Override
 	public void update()
 	{
-		boolean wasMoving = this.ySpeed != 0 || this.xSpeed != 0;
 		super.update();
 		this.manageInput();
 		if (this.game.isInCutscene) this.ai.update();
 
-		if (wasMoving || this.ySpeed != 0 || this.xSpeed != 0) this.game.getMap().lightManager.update();
+		this.game.getMap().lightManager.update();
 	}
 
 	@Override
