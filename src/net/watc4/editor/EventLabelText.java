@@ -1,37 +1,41 @@
 package net.watc4.editor;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 @SuppressWarnings("serial")
 public class EventLabelText extends EventLabel
 {
-	private JTextArea text;
-	
+	private JScrollPane js;
+	private JTextArea textArea;
+
 	public String getText()
 	{
-		if (text != null) return text.getText();
+		if (textArea != null) return textArea.getText();
 		else return null;
 	}
 
-	public void init(){
-		if(text == null) text = new JTextArea();
-		JScrollPane scrollPane = new JScrollPane(text);
-		scrollPane.setBounds(20,45,200,40);
-		text.setBounds(20,45,200,90);
-		this.add(scrollPane);
+	public void init(String text)
+	{
+		this.textArea = new JTextArea(text);
+		this.textArea.setBounds(0, 0, 200, 90);
+		js = new JScrollPane(textArea);
+		js.setBounds(20, 45, 200, 40);
+		this.add(js);
 	}
-	
+
 	public EventLabelText()
 	{
 		super();
-		init();
+		init("");
 	}
 
 	public EventLabelText(String text)
 	{
 		super();
-		this.text = new JTextArea(text);
-		init();
+		init(text);
 	}
 }
