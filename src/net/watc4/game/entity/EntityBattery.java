@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 import net.watc4.game.states.GameState;
+import net.watc4.game.utils.GameSettings;
 
 /** An Entity that charges when in the light of Lumi. */
 public class EntityBattery extends Entity
@@ -38,10 +39,13 @@ public class EntityBattery extends Entity
 	public void render(Graphics2D g)
 	{
 		super.render(g);
-		g.setColor(Color.RED);
-		g.fillRect((int) getX() + 2, (int) getY() + 2, 28, 7);
-		g.setColor(Color.GREEN);
-		g.fillRect((int) getX() + 2, (int) getY() + 2, (int) (28 * this.power), 7);
+		if (GameSettings.lightMode)
+		{
+			g.setColor(Color.RED);
+			g.fillRect((int) getX() + 2, (int) getY() + 2, 28, 7);
+			g.setColor(Color.GREEN);
+			g.fillRect((int) getX() + 2, (int) getY() + 2, (int) (28 * this.power), 7);
+		}
 	}
 
 	@Override

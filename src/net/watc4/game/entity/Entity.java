@@ -232,15 +232,16 @@ public abstract class Entity implements IRender, IUpdate
 		{
 			for (int y = tileYStart; y < tileYEnd; ++y)
 			{
-				if (this.game.getMap().getTileAt(x, y).isSolid
-						&& this.game.getMap().getTileAt(x, y).hitbox(this.game.getMap(), x, y, this.game.getMap().getDataAt(x, y))
-								.collidesWith(this.hitbox(dx, dy))) return false;
+				if (this.game.getMap().getTileAt(x, y).isSolid && this.game.getMap().getTileAt(x, y)
+						.hitbox(this.game.getMap(), x, y, this.game.getMap().getDataAt(x, y)).collidesWith(this.hitbox(dx, dy)))
+					return false;
 			}
 		}
 
 		// Test if on top of ladder
 		if (dy > 0 && !this.onLadder && this.game.getMap().getTileAt((int) ((this.xPos + dx) / Map.TILESIZE), tileYEnd - 1) == TileRegistry.LADDER_TOP
-				&& (this.yPos + dy + this.height - 1) % Map.TILESIZE < Map.TILESIZE / 6) return false;
+				&& (this.yPos + dy + this.height - 1) % Map.TILESIZE < Map.TILESIZE / 6)
+			return false;
 		return this.game.getMap().entityManager.canEntityMove(this, dx, dy);
 	}
 
@@ -290,7 +291,8 @@ public abstract class Entity implements IRender, IUpdate
 
 		if (this.isOnLadder() && !(this.getOccupiedTile() instanceof TileLadder))
 		{
-			if (!(this.getAdjacentTile(GameUtils.DOWN) == TileRegistry.LADDER_TOP && this.getCenter()[1] % Map.TILESIZE > Map.TILESIZE / 2)) this.onLadder = false;
+			if (!(this.getAdjacentTile(GameUtils.DOWN) == TileRegistry.LADDER_TOP && this.getCenter()[1] % Map.TILESIZE > Map.TILESIZE / 2))
+				this.onLadder = false;
 		}
 
 		if (hasGravity && !this.onLadder)
@@ -298,29 +300,20 @@ public abstract class Entity implements IRender, IUpdate
 			ySpeed += GRAVITY;
 		}
 
+		if (!placeFree(xSpeed, 0))
+		{
+			while (placeFree(Math.signum(xSpeed), 0))
+				xPos += Math.signum(xSpeed);
+			xSpeed = 0;
+		}
+		xPos += xSpeed;
+
 		if (!placeFree(0, ySpeed))
 		{
 			while (placeFree(0, Math.signum(ySpeed)))
 				yPos += Math.signum(ySpeed);
 			ySpeed = 0;
 		}
-
-		if (!placeFree(xSpeed, 0))
-		{
-			if (placeFree(xSpeed, -Math.abs(xSpeed)))
-			{
-				xPos += xSpeed;
-				yPos += -Math.abs(xSpeed);
-				xSpeed = 0;
-			} else
-			{
-				while (placeFree(Math.signum(xSpeed), 0))
-					xPos += Math.signum(xSpeed);
-				xSpeed = 0;
-			}
-		}
-
-		xPos += xSpeed;
 		yPos += ySpeed;
 
 		if (xPrev != this.xPos || yPrev != this.yPos) this.hasMoved = true;
