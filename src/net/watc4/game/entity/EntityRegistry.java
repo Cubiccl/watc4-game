@@ -35,7 +35,7 @@ public final class EntityRegistry
 				"Tile Heigth", "unsigned int", "Map Name", "string", "Lumi X", "unsigned int", "Lumi Y", "unsigned int", "Pattou X", "unsigned int",
 				"Pattou Y", "unsigned int");
 		registerEntity(5, EntityFluorescent.class, new String[]
-				{ "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 200 - 299", "ChargeTime", "float", "UnchargeTime", "float", "Intensity max","int" });
+				{ "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 500 - 599", "ChargeTime", "float", "UnchargeTime", "float", "Intensity max","int" });
 	}
 
 	/** Creates the adequate arguments then spawns an Entity.
