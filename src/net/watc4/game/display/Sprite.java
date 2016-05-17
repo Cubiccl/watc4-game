@@ -48,6 +48,7 @@ public enum Sprite
 	PATTOU_LADDER3("res/textures/playerPattou.png", 160, 0, 32, 32, true),
 	PATTOU_LADDER4("res/textures/playerPattou.png", 128, 0, 32, 32, true),
 	TILE_DEFAULT("res/textures/tileset.png", 0, 0, 32, 32),
+	TILE_DOOR("res/textures/tileset.png", 160, 32, 32, 32),
 	TILE_GLASS("res/textures/tileset.png", 96, 0, 32, 32),
 	TILE_GROUND("res/textures/tileset.png", 32, 0, 32, 32),
 	TILE_LADDER_BACK("res/textures/tileset.png", 192, 0, 32, 32),

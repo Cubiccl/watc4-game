@@ -40,6 +40,7 @@ public class TileRegistry
 		new TileLadder(9, new Animation(Sprite.TILE_LADDER_BASE)); // Ladder
 		new TileLadder(10, new Animation(Sprite.TILE_LADDER_BACK)); // Bottom Ladder
 		new TileSlope(11, new Animation(Sprite.TILE_SLOPE_TL));
+		new TileAir(12, (byte) 0, new Animation(Sprite.TILE_DOOR));
 	}
 
 	/** @param id - A Tile identifier.

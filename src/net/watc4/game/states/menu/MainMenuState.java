@@ -30,6 +30,7 @@ public class MainMenuState extends MenuState
 		this.addButton(new Button(EXIT, "Exit Game"));
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void performAction(Button selected)
 	{

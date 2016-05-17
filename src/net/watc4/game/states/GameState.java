@@ -36,6 +36,7 @@ public class GameState extends State
 	}
 
 	/** @return The instance of the Game. */
+	@Deprecated
 	public static GameState getInstance()
 	{
 		return instance;

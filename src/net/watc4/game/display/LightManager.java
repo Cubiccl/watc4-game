@@ -7,18 +7,17 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import java.awt.geom.Point2D;
 import net.watc4.game.entity.Entity;
 import net.watc4.game.entity.ILightSource;
 import net.watc4.game.map.Chunk;
 import net.watc4.game.map.Map;
-import net.watc4.game.states.GameState;
 import net.watc4.game.utils.FileUtils;
 import net.watc4.game.utils.GameSettings;
 import net.watc4.game.utils.IRender;
@@ -68,7 +67,7 @@ public class LightManager implements IRender, IUpdate
 	public void render(Graphics2D g)
 	{
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		Camera camera = GameState.getInstance().getCamera();
+		Camera camera = this.map.game.getCamera();
 
 		Area shadow = new Area(new Rectangle(FileUtils.toInt(camera.getXOffset()), FileUtils.toInt(camera.getYOffset()),
 				FileUtils.toInt(camera.width / camera.getScale()), FileUtils.toInt(camera.height / camera.getScale())));

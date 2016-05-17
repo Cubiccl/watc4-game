@@ -30,6 +30,9 @@ public final class EntityRegistry
 		registerEntity(3, EntityCutscene.class, new String[]
 		{ "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 300 - 399", "Tile Width", "unsigned int", "Tile Heigth", "unsigned int",
 				"Cutscene Name", "string" });
+		registerEntity(4, EntityDoor.class, "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 400 - 499", "Tile Width", "unsigned int",
+				"Tile Heigth", "unsigned int", "Map Name", "string", "Lumi X", "unsigned int", "Lumi Y", "unsigned int", "Pattou X", "unsigned int",
+				"Pattou Y", "unsigned int");
 	}
 
 	/** Creates the adequate arguments then spawns an Entity.

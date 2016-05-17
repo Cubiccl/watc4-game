@@ -8,7 +8,6 @@ import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import net.watc4.game.display.Camera;
-import net.watc4.game.states.GameState;
 import net.watc4.game.utils.GameSettings;
 import net.watc4.game.utils.IRender;
 import net.watc4.game.utils.Vector;
@@ -188,7 +187,7 @@ public class Chunk implements IRender
 	/** @return True if this Chunk should Render onto the Screen. */
 	public boolean shouldRender()
 	{
-		Camera camera = GameState.getInstance().camera;
+		Camera camera = this.map.game.camera;
 		return new Rectangle(this.xPos * ACTUAL_SIZE, this.yPos * ACTUAL_SIZE, ACTUAL_SIZE, ACTUAL_SIZE).intersects(camera.rectangle());
 	}
 

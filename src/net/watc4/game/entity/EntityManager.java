@@ -39,7 +39,7 @@ public class EntityManager implements IRender, IUpdate
 	{
 		Entity[] colliding = this.getCollisionsWith(entity, dx, dy);
 		for (Entity entity2 : colliding)
-			if (entity2.isSolid|| entity.isSolid) return false;
+			if (entity2.isSolid || entity.isSolid) return false;
 		return true;
 	}
 
@@ -181,9 +181,13 @@ public class EntityManager implements IRender, IUpdate
 				if (entity == testing) continue;
 				if (testing.collidesWith(entity))
 				{
-					testing.onCollisionWith(entity);
+					if (!testing.colliding.contains(entity.UUID)) testing.onCollisionWith(entity);
 					this.colliding.add(entity);
-				} else this.colliding.remove(entity);
+				} else
+				{
+					if (testing.colliding.contains(entity.UUID)) testing.onCollisionEndWith(entity);
+					this.colliding.remove(entity);
+				}
 			}
 
 		for (Entity entity : toTest)

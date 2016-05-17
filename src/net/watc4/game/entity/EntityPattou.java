@@ -90,11 +90,12 @@ public class EntityPattou extends EntityPlayer
 	}
 
 	private static final float JUMP_SPEED = 8, LADDER_JUMP_SPEED = 6;
-
 	private static final float MOVE_SPEED = 3, LADDER_SPEED = 1.7f;
 
 	/** True if Pattou can jump */
 	private boolean canJump;
+	/** The Door Pattou is standing in. null if none. */
+	private EntityDoor door;
 	/** Time, in UPS, for the begin of the jump */
 	private int jumpingTime;
 
@@ -133,6 +134,12 @@ public class EntityPattou extends EntityPlayer
 		boolean jumpPressed = ((AIPattou) this.ai).jump(), up = ((AIPattou) this.ai).up(), down = ((AIPattou) this.ai).down(), left = ((AIPattou) this.ai)
 				.left(), right = ((AIPattou) this.ai).right();
 		boolean ladderMovement = up || down;
+
+		if (this.door != null && up && this.canJump)
+		{
+			this.door.activate();
+			return;
+		}
 		if (left) move--;
 		if (right) move++;
 		if (ladderMovement && this.getOccupiedTile() instanceof TileLadder) this.onLadder = true;
@@ -178,11 +185,25 @@ public class EntityPattou extends EntityPlayer
 	}
 
 	@Override
+	public void onCollisionEndWith(Entity entity)
+	{
+		super.onCollisionEndWith(entity);
+		if (entity instanceof EntityDoor) this.door = null;
+	}
+
+	@Override
+	public void onCollisionWith(Entity entity)
+	{
+		super.onCollisionWith(entity);
+		if (entity instanceof EntityDoor) this.door = (EntityDoor) entity;
+	}
+
+	@Override
 	public void update()
 	{
 		this.manageInput();
 
-		if (!GameSettings.godMode && GameState.getInstance().entityLumi.isInLight(this)) --this.health;
+		if (!GameSettings.godMode && this.game.entityLumi.isInLight(this)) --this.health;
 		else
 		{
 			++this.health;

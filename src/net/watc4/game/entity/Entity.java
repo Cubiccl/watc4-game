@@ -3,6 +3,7 @@ package net.watc4.game.entity;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.util.HashSet;
 
 import net.watc4.game.display.renderer.EntityRenderer;
 import net.watc4.game.entity.ai.AI;
@@ -26,6 +27,8 @@ public abstract class Entity implements IRender, IUpdate
 
 	/** Defines this Entity's behavior. */
 	public AI ai;
+	/** A list of the UUIDs this Entity is colliding with. */
+	protected HashSet<Integer> colliding;
 	/** The direction that the entity is facing 1:Right, -1:Left */
 	protected int direction;
 	/** Reference to the GameState. */
@@ -75,6 +78,7 @@ public abstract class Entity implements IRender, IUpdate
 		this.renderer = new EntityRenderer(this);
 		this.width = (int) DEFAULT_SIZE;
 		this.height = (int) DEFAULT_SIZE;
+		this.colliding = new HashSet<Integer>();
 	}
 
 	/** @param entity - The Entity to test.
@@ -213,12 +217,22 @@ public abstract class Entity implements IRender, IUpdate
 		this.game.getMap().entityManager.unregisterEntity(this);
 	}
 
-	/** Called when this Entity collides with the given Entity.
+	/** Called when this Entity stops colliding with the given Entity.
+	 * 
+	 * @param entity - The colliding entity. */
+	public void onCollisionEndWith(Entity entity)
+	{
+		this.colliding.remove(entity.UUID);
+	}
+
+	/** Called when this Entity starts colliding with the given Entity.
 	 * 
 	 * @param entity - The colliding entity.
 	 * @see Entity#angleTo(Entity) angleTo(Entity) for positionning */
 	public void onCollisionWith(Entity entity)
-	{}
+	{
+		this.colliding.add(entity.UUID);
+	}
 
 	/** @param dx - delta x
 	 * @param dy - delta y
@@ -232,16 +246,15 @@ public abstract class Entity implements IRender, IUpdate
 		{
 			for (int y = tileYStart; y < tileYEnd; ++y)
 			{
-				if (this.game.getMap().getTileAt(x, y).isSolid && this.game.getMap().getTileAt(x, y)
-						.hitbox(this.game.getMap(), x, y, this.game.getMap().getDataAt(x, y)).collidesWith(this.hitbox(dx, dy)))
-					return false;
+				if (this.game.getMap().getTileAt(x, y).isSolid
+						&& this.game.getMap().getTileAt(x, y).hitbox(this.game.getMap(), x, y, this.game.getMap().getDataAt(x, y))
+								.collidesWith(this.hitbox(dx, dy))) return false;
 			}
 		}
 
 		// Test if on top of ladder
 		if (dy > 0 && !this.onLadder && this.game.getMap().getTileAt((int) ((this.xPos + dx) / Map.TILESIZE), tileYEnd - 1) == TileRegistry.LADDER_TOP
-				&& (this.yPos + dy + this.height - 1) % Map.TILESIZE < Map.TILESIZE / 6)
-			return false;
+				&& (this.yPos + dy + this.height - 1) % Map.TILESIZE < Map.TILESIZE / 6) return false;
 		return this.game.getMap().entityManager.canEntityMove(this, dx, dy);
 	}
 
@@ -291,8 +304,7 @@ public abstract class Entity implements IRender, IUpdate
 
 		if (this.isOnLadder() && !(this.getOccupiedTile() instanceof TileLadder))
 		{
-			if (!(this.getAdjacentTile(GameUtils.DOWN) == TileRegistry.LADDER_TOP && this.getCenter()[1] % Map.TILESIZE > Map.TILESIZE / 2))
-				this.onLadder = false;
+			if (!(this.getAdjacentTile(GameUtils.DOWN) == TileRegistry.LADDER_TOP && this.getCenter()[1] % Map.TILESIZE > Map.TILESIZE / 2)) this.onLadder = false;
 		}
 
 		if (hasGravity && !this.onLadder)
