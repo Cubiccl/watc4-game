@@ -7,6 +7,7 @@ import net.watc4.game.entity.Entity;
 public class TileLabel extends JLabel
 {
 	private static final long serialVersionUID = 1L;
+	private byte data = 0;
 	private int id = 2;
 	private Entity en;
 	private int enId;
@@ -25,6 +26,16 @@ public class TileLabel extends JLabel
 			else if (en.getClass().getConstructors()[1].getParameters()[i].getType().toString().equals("float")) entityValues[i] = 0;
 			else entityValues[i] = "null";
 		}
+	}
+	
+	public byte getData()
+	{
+		return data;
+	}
+
+	public void setData(byte data)
+	{
+		this.data = data;
 	}
 
 	public Object[] getEntityValues()

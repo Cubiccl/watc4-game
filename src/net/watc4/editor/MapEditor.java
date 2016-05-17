@@ -73,6 +73,7 @@ public class MapEditor extends JFrame
 	private final static JMenuItem createMapMenu = new JMenuItem("Nouveau");
 	private static ArrayList<EventLabel> eventList = new ArrayList<EventLabel>();
 	private static TileLabel[][] tilemap;
+	private static byte[][] data;
 	private static TileLabel[] tileChoice, entityChoice;
 	private static int selectedTile, selectedEntity;
 	private static JPanel tilesMenu, entityMenu, characterMenu;
@@ -142,7 +143,7 @@ public class MapEditor extends JFrame
 
 	public static void putAddButtons()
 	{
-		ajoutCutscene = new JButton[eventList.size()+1];
+		ajoutCutscene = new JButton[eventList.size() + 1];
 		for (int i = 0; i < ajoutCutscene.length; i++)
 		{
 			ajoutCutscene[i] = new JButton(new ImageIcon(Sprite.PLUS.getImage()));
@@ -195,7 +196,7 @@ public class MapEditor extends JFrame
 	public static void initCutsceneOptions()
 	{
 		cutsceneOptions = new JButton[]
-		{ new JButton("Cr\u00E9er"), new JButton("Ouvrir"), new JButton("Enregistrer")};
+		{ new JButton("Cr\u00E9er"), new JButton("Ouvrir"), new JButton("Enregistrer") };
 		for (int i = 0; i < cutsceneOptions.length; i++)
 		{
 			cutsceneOptions[i].setBounds(MapEditor.getFrames()[0].getWidth() - 280, 50 + i * 40, 160, 25);
@@ -245,7 +246,8 @@ public class MapEditor extends JFrame
 							{
 								createCutsceneFile(sceneC.getSelectedFile());
 								Date d = new Date();
-								MapEditor.getFrames()[0].setTitle("Sc\u00E8ne enregistr\u00E9e \u00E0 " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds());
+								MapEditor.getFrames()[0].setTitle("Sc\u00E8ne enregistr\u00E9e \u00E0 " + d.getHours() + ":" + d.getMinutes() + ":"
+										+ d.getSeconds());
 							} catch (IOException e1)
 							{
 								e1.printStackTrace();
@@ -473,9 +475,9 @@ public class MapEditor extends JFrame
 
 	public static boolean openCutsceneFile(File cutsceneFile)
 	{
-		if(!(cutsceneFile.getAbsolutePath().endsWith(".txt") || cutsceneFile.getAbsolutePath().endsWith(".TXT")))
-		cutsceneFile = new File(cutsceneFile.getAbsolutePath()+".txt");
-		
+		if (!(cutsceneFile.getAbsolutePath().endsWith(".txt") || cutsceneFile.getAbsolutePath().endsWith(".TXT"))) cutsceneFile = new File(
+				cutsceneFile.getAbsolutePath() + ".txt");
+
 		String[] lines = FileUtils.readFileAsStringArray(cutsceneFile.getAbsolutePath());
 
 		for (int i = 0; i < lines.length; i++)
@@ -506,7 +508,8 @@ public class MapEditor extends JFrame
 				}
 				case "Move":
 				{
-					fileEventList.add(new EventLabelMove(Integer.valueOf(split[1]),Boolean.valueOf(split[2]), Integer.valueOf(split[3]), Integer.valueOf(split[4])));
+					fileEventList.add(new EventLabelMove(Integer.valueOf(split[1]), Boolean.valueOf(split[2]), Integer.valueOf(split[3]), Integer
+							.valueOf(split[4])));
 					break;
 				}
 				default:
@@ -538,13 +541,13 @@ public class MapEditor extends JFrame
 			info[i] = Integer.valueOf(lines[i].split(" = ")[1]);
 		}
 		String[] values;
-		int[][] ids = new int[info[0]][info[1]];
+		String[][] ids = new String[info[0]][info[1]];
 		for (int y = 0; y < info[1]; y++)
 		{
 			values = lines[y + 7].split("\t");
 			for (int x = 0; x < info[0]; x++)
 			{
-				ids[x][y] = Integer.valueOf(values[x]);
+				ids[x][y] = values[x];
 			}
 		}
 
@@ -557,7 +560,11 @@ public class MapEditor extends JFrame
 				tilemap[i][j] = new TileLabel();
 				tilemap[i][j].setLayout(null);
 				tilemap[i][j].setPreferredSize(new Dimension(32, 32));
-				tilemap[i][j].setId(ids[i][j]);
+				if (ids[i][j].indexOf(",") > 0)
+				{
+					tilemap[i][j].setId(Integer.valueOf(ids[i][j].split(",")[0]));
+					tilemap[i][j].setData(Byte.valueOf(ids[i][j].split(",")[1]));
+				} else tilemap[i][j].setId(Integer.valueOf(ids[i][j]));
 				if (TileRegistry.getTileFromId(tilemap[i][j].getId()).sprite == null)
 				{
 					tilemap[i][j].setIcon(new ImageIcon(Sprite.TILE_WALL.getImage()));
@@ -633,17 +640,20 @@ public class MapEditor extends JFrame
 			{
 				case "Cutscene":
 				{
-					pw.println("Cutscene=\t"+((EventLabelCutscene)eventList.get(i)).getCutsceneText()+"\t"+((EventLabelCutscene)eventList.get(i)).getMapText());
+					pw.println("Cutscene=\t" + ((EventLabelCutscene) eventList.get(i)).getCutsceneText() + "\t"
+							+ ((EventLabelCutscene) eventList.get(i)).getMapText());
 					break;
 				}
 				case "Text":
 				{
-					pw.println("Text=\t"+((EventLabelText)eventList.get(i)).getTextArea());
+					pw.println("Text=\t" + ((EventLabelText) eventList.get(i)).getTextArea());
 					break;
 				}
 				case "Move":
 				{
-					pw.println("Move=\t"+((EventLabelMove)eventList.get(i)).getValueFromWhichField(0)+"\t"+((EventLabelMove)eventList.get(i)).getRelativeValue()+"\t"+((EventLabelMove)eventList.get(i)).getValueFromWhichField(1)+"\t"+((EventLabelMove)eventList.get(i)).getValueFromWhichField(2));
+					pw.println("Move=\t" + ((EventLabelMove) eventList.get(i)).getValueFromWhichField(0) + "\t"
+							+ ((EventLabelMove) eventList.get(i)).getRelativeValue() + "\t" + ((EventLabelMove) eventList.get(i)).getValueFromWhichField(1)
+							+ "\t" + ((EventLabelMove) eventList.get(i)).getValueFromWhichField(2));
 					break;
 				}
 				default:
@@ -673,7 +683,10 @@ public class MapEditor extends JFrame
 
 			for (int j = 0; j < tilemap.length - 1; j++)
 			{
-				pw.print(tilemap[j][i].getId() + "\t");
+				if (tilemap[j][i].getData() != 0)
+				{
+					pw.print(tilemap[j][i].getId() + "," + tilemap[j][i].getData() + "\t");
+				} else pw.print(tilemap[j][i].getId() + "\t");
 			}
 			pw.println(tilemap[i][tilemap[i].length - 1].getId());
 		}
