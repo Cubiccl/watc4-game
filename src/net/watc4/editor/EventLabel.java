@@ -1,6 +1,9 @@
 package net.watc4.editor;
 
 import java.awt.Dimension;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -13,33 +16,109 @@ import net.watc4.game.display.Sprite;
 @SuppressWarnings("serial")
 public abstract class EventLabel extends JLabel
 {
-	protected static JLabel type;
-	protected static JButton[] options;
-	protected static TitledBorder tb;
+	protected JLabel type;
+	protected JButton[] options;
+	protected TitledBorder tb;
 	protected int position;
 
 	public void initBase()
 	{
 		this.setSize(new Dimension(300, 100));
 		this.setLayout(null);
+
 		type = new JLabel(translate(this.getClass().getSimpleName().replace("EventLabel", "")));
 		type.setBounds(10, 20, 60, 20);
 		this.add(type);
+
 		options = new JButton[]
 		{ new JButton(new ImageIcon(Sprite.ARROW_UP.getImage())), new JButton(new ImageIcon(Sprite.ARROW_DOWN.getImage())),
 				new JButton(new ImageIcon(Sprite.CROSS.getImage())) };
 		options[0].setBounds(245, 20, 20, 25);
 		options[1].setBounds(245, 55, 20, 25);
 		options[2].setBounds(270, 37, 20, 25);
+
 		for (int i = 0; i < options.length; i++)
 			this.add(options[i]);
+
 		tb = BorderFactory.createTitledBorder(String.valueOf(position));
 		this.setBorder(tb);
+
+		options[0].addMouseListener(new MouseAdapter()
+		{
+			@Override
+			public void mouseClicked(MouseEvent arg0)
+			{
+				ArrayList<EventLabel> list = MapEditor.getEventlist();
+				EventLabel temp = list.get(position - 2);
+				list.set(position - 2, EventLabel.this);
+				list.set(position - 1, temp);
+				MapEditor.updateEventList();
+				temp.updateButtons();
+				EventLabel.this.updateButtons();
+			}
+		});
+		options[1].addMouseListener(new MouseAdapter()
+		{
+			@Override
+			public void mouseClicked(MouseEvent arg0)
+			{
+				ArrayList<EventLabel> list = MapEditor.getEventlist();
+				EventLabel temp = list.get(position);
+				list.set(position, EventLabel.this);
+				list.set(position - 1, temp);
+				MapEditor.updateEventList();
+				temp.updateButtons();
+				EventLabel.this.updateButtons();
+			}
+		});
+		options[2].addMouseListener(new MouseAdapter()
+		{
+			@Override
+			public void mouseClicked(MouseEvent arg0)
+			{
+				MapEditor.getEventlist().remove(EventLabel.this);
+				MapEditor.updateEventList();
+				for (int i = 0; i < MapEditor.getEventlist().size(); i++)
+				{
+					MapEditor.getEventlist().get(i).updateButtons();
+				}
+			}
+		});
 	}
-	
-	public void updatePosition(int i){
+
+	public void updatePosition(int i)
+	{
 		this.position = i;
 		tb.setTitle(String.valueOf(i));
+	}
+
+	public void updateButtons()
+	{
+		if (position == 1 && position == MapEditor.getEventlist().size())
+		{
+			options[0].setVisible(false);
+			options[1].setVisible(false);
+		}
+		else if (position == 1)
+		{
+			options[0].setVisible(false);
+			options[1].setVisible(true);
+			options[1].setBounds(245, 37, 20, 25);
+		}
+		else if (position == MapEditor.getEventlist().size())
+		{
+			options[1].setVisible(false);
+			options[0].setVisible(true);
+			options[0].setBounds(245, 37, 20, 25);
+		}
+		else
+		{
+			options[0].setVisible(true);
+			options[1].setVisible(true);
+			options[0].setBounds(245, 20, 20, 25);
+			options[1].setBounds(245, 55, 20, 25);
+		}
+		updateUI();
 	}
 
 	public static String translate(String s)

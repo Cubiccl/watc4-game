@@ -3,9 +3,10 @@ package net.watc4.editor;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+@SuppressWarnings("serial")
 public class EventLabelText extends EventLabel
 {
-	private static JTextArea text;
+	private JTextArea text;
 
 	public void init(){
 		if(text == null) text = new JTextArea();
