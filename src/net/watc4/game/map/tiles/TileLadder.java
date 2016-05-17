@@ -12,7 +12,7 @@ public class TileLadder extends TileAir
 	 * @param animation - Its Animation. */
 	public TileLadder(int id, Animation animation)
 	{
-		super(id, animation);
+		super(id, (byte) 0, animation);
 	}
 
 }

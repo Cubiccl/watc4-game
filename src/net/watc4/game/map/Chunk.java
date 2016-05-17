@@ -65,18 +65,16 @@ public class Chunk implements IRender
 				if (this.getTileAt(x, y).isOpaque)
 				{
 					Point2D[] vertices = ((PolygonHitbox) this.getTileAt(x, y).hitbox(map, x, y, this.getDataAt(x, y))).vertices;
-				
+
 					for (int i = 0; i < vertices.length - 1; i++)
 					{
 						Vector wall = new Vector(new Point2D.Double(xPos * ACTUAL_SIZE + vertices[i].getX(), yPos * ACTUAL_SIZE + vertices[i].getY()),
 								new Point2D.Double(vertices[i + 1].getX() - vertices[i].getX(), vertices[i + 1].getY() - vertices[i].getY()));
 						wallSet.add(wall);
 					}
-					Vector wall = new Vector(
-							new Point2D.Double(xPos * ACTUAL_SIZE + vertices[vertices.length - 1].getX(),
-									yPos * ACTUAL_SIZE + vertices[vertices.length - 1].getY()),
-							new Point2D.Double(vertices[0].getX() - vertices[vertices.length - 1].getX(),
-									vertices[0].getY() - vertices[vertices.length - 1].getY()));
+					Vector wall = new Vector(new Point2D.Double(xPos * ACTUAL_SIZE + vertices[vertices.length - 1].getX(), yPos * ACTUAL_SIZE
+							+ vertices[vertices.length - 1].getY()), new Point2D.Double(vertices[0].getX() - vertices[vertices.length - 1].getX(),
+							vertices[0].getY() - vertices[vertices.length - 1].getY()));
 					wallSet.add(wall);
 				}
 			}
@@ -117,11 +115,12 @@ public class Chunk implements IRender
 					}
 				}
 				if (vectorFound == null) manyVectorFound = true;
-				if (!manyVectorFound && targetVector.getDirection().getX() * vectorFound.getDirection().getY()
-						- targetVector.getDirection().getY() * vectorFound.getDirection().getX() == 0)
+				if (!manyVectorFound
+						&& targetVector.getDirection().getX() * vectorFound.getDirection().getY() - targetVector.getDirection().getY()
+								* vectorFound.getDirection().getX() == 0)
 				{
-					vectorFound.setDirection(new Point2D.Double(vectorFound.getDirection().getX() + targetVector.getDirection().getX(),
-							vectorFound.getDirection().getY() + targetVector.getDirection().getY()));
+					vectorFound.setDirection(new Point2D.Double(vectorFound.getDirection().getX() + targetVector.getDirection().getX(), vectorFound
+							.getDirection().getY() + targetVector.getDirection().getY()));
 					this.wallSet.remove(targetVector);
 					done = false;
 				}
@@ -173,7 +172,7 @@ public class Chunk implements IRender
 	 * @param data - The Tile Data to set. */
 	public void setDataAt(int x, int y, byte data)
 	{
-		if (x >= 0 && x < this.size && y >= 0 && y < this.size) this.data[x][y] = data;
+		if (x >= 0 && x < this.size && y >= 0 && y < this.size) if (data >= 0 && this.getTileAt(x, y).maxData > data) this.data[x][y] = data;
 	}
 
 	/** Sets the Tile at x, y to the input Tile.

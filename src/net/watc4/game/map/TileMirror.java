@@ -18,7 +18,7 @@ public class TileMirror extends Tile
 	 * @see GameUtils#UP */
 	public TileMirror(int id, Animation animation, int direction)
 	{
-		super(id, animation, true, false);
+		super(id, (byte) 0, animation, true, false);
 		this.direction = direction;
 	}
 

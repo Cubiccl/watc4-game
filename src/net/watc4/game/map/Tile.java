@@ -16,6 +16,8 @@ public class Tile
 	public final boolean isOpaque;
 	/** True if this Tile is solid ; i.e. it stops entities. */
 	public final boolean isSolid;
+	/** The maximum Data this Tile can have. */
+	public final byte maxData;
 	/** Its sprite. */
 	public final Animation sprite;
 
@@ -23,9 +25,10 @@ public class Tile
 	 * 
 	 * @param id - Its identifier.
 	 * @param sprite - Its Sprite. */
-	public Tile(int id, Animation sprite, boolean solid, boolean opaque)
+	public Tile(int id, byte maxData, Animation sprite, boolean solid, boolean opaque)
 	{
 		this.id = id;
+		this.maxData = maxData;
 		this.sprite = sprite;
 		this.isSolid = solid;
 		this.isOpaque = opaque;

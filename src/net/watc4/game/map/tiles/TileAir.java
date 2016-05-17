@@ -11,9 +11,9 @@ public class TileAir extends Tile
 	 * 
 	 * @param id - Its ID.
 	 * @param animation - Its Animation. */
-	public TileAir(int id, Animation animation)
+	public TileAir(int id, byte maxData, Animation animation)
 	{
-		super(id, animation, false, false);
+		super(id, maxData, animation, false, false);
 	}
 
 }

@@ -18,7 +18,7 @@ public class TileSlope extends TileGround
 
 	public TileSlope(int id, Animation animation)
 	{
-		super(id, animation);
+		super(id, (byte) 3, animation);
 	}
 
 	@Override

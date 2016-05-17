@@ -11,9 +11,9 @@ public class TileGround extends Tile
 	 * 
 	 * @param id - Its ID
 	 * @param sprite - Its Animation. */
-	public TileGround(int id, Animation sprite)
+	public TileGround(int id, byte maxData, Animation sprite)
 	{
-		super(id, sprite, true, true);
+		super(id, maxData, sprite, true, true);
 	}
 
 }
