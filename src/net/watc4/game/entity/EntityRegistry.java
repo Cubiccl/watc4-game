@@ -26,7 +26,7 @@ public final class EntityRegistry
 		registerEntity(1, EntityPattou.class, new String[]
 		{ "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 100 - 199" });
 		registerEntity(2, EntityBattery.class, new String[]
-		{ "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 200 - 299", "Buffer", "unsigned int", "Max Power", "unsigned int" });
+		{ "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 200 - 299", "ChargeSpeed", "float", "UnchargeSpeed", "float" });
 		registerEntity(3, EntityCutscene.class, new String[]
 		{ "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 300 - 399", "Tile Width", "unsigned int", "Tile Heigth", "unsigned int",
 				"Cutscene Name", "string" });
