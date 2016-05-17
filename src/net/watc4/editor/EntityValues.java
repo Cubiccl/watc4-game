@@ -4,20 +4,16 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 
-import javax.swing.AbstractButton;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-import javax.swing.text.JTextComponent;
 
 import net.watc4.game.entity.Entity;
 import net.watc4.game.entity.EntityRegistry;
@@ -33,17 +29,6 @@ public class EntityValues extends JDialog
 	private static JComboBox<String> cutsceneField;
 	private static JLabel[] fieldsName;
 	private static TileLabel tl;
-
-	public static String[] getCutsceneList()
-	{
-		File direc = new File("res/cutscene/");
-		String[] res = direc.list();
-		for (int i = 0; i < res.length; i++)
-		{
-			res[i] = res[i].split(".txt")[0];
-		}
-		return res;
-	}
 	
 	public static String getText(int i){
 		if(tl.getEnId() == 3 && i == 5)
@@ -120,11 +105,11 @@ public class EntityValues extends JDialog
 	private final JPanel contentPanel = new JPanel();
 
 	/** Create the dialog. */
-	public EntityValues(TileLabel tl)
+	public EntityValues(TileLabel tile)
 	{
+		tl = tile;
 		enId = tl.getEnId();
 		en = tl.getEn();
-		this.tl = tl;
 		setModal(true);
 		definitions = EntityRegistry.getDefinitions().get(en.getClass());
 		setBounds(100, 100, 400, 40 * (en.getClass().getConstructors()[1].getParameterCount() - 1));
@@ -215,7 +200,7 @@ public class EntityValues extends JDialog
 		{
 			if (tl.getEnId() == 3 && i == 5)
 			{
-				cutsceneField = new JComboBox<String>(getCutsceneList());
+				cutsceneField = new JComboBox<String>(EventLabelCutscene.getCutsceneList());
 				cutsceneField.setBounds(250, currentY + 3, 100, 20);
 				contentPanel.add(cutsceneField);
 				fieldsName[i] = new JLabel(definitions[i * 2] + " (" + definitions[1 + i * 2] + ") : ");

@@ -12,6 +12,8 @@ import java.awt.GridBagLayout;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -63,12 +65,13 @@ public class MapEditor extends JFrame
 	private static int mode;
 	private static Game g;
 	private static JPanel contentPane;
+	private static Toolkit tool = Toolkit.getDefaultToolkit();
 	private static GridBagConstraints gbc = new GridBagConstraints();
 	private static JPanel mapView = new JPanel(), cutsceneView = new JPanel();
-	private static JScrollPane scrollMap = new JScrollPane(), scrollCutscene = new JScrollPane();
+	private static JScrollPane scrollMap = new JScrollPane(), scrollCutscene;
 	private final static JMenuBar menuBar = new JMenuBar();
 	private final static JMenuItem createMapMenu = new JMenuItem("Nouveau");
-	private final static ArrayList<EventLabel> eventList = new ArrayList<EventLabel>();
+	private static ArrayList<EventLabel> eventList = new ArrayList<EventLabel>();
 	private static TileLabel[][] tilemap;
 	private static TileLabel[] tileChoice, entityChoice;
 	private static int selectedTile, selectedEntity;
@@ -83,6 +86,7 @@ public class MapEditor extends JFrame
 	private static int lblSelectedTileIndex = -1, lblSelectedEntityIndex = -1;
 	private static JButton btnRemovePattou, btnRemoveLumi;
 	private static JButton[] cutsceneOptions;
+	private static JButton[] ajoutCutscene;
 	private final static JFileChooser fc = new JFileChooser(), sceneC = new JFileChooser();
 	private static boolean exists = false;
 	private static String[] fileHeader = new String[]
@@ -121,53 +125,134 @@ public class MapEditor extends JFrame
 		});
 	}
 
-	public void initCutsceneOptions()
+	public static void updateScrollCutscene()
+	{
+		cutsceneView.setPreferredSize(new Dimension(tool.getScreenSize().width - 80, eventList.size() * 110));
+		scrollCutscene.updateUI();
+	}
+
+	public static int detectButtonSource(Object o)
+	{
+		for (int i = 0; i < ajoutCutscene.length; i++)
+		{
+			if (o.equals(ajoutCutscene[i])) return i;
+		}
+		return -1;
+	}
+
+	public static void putAddButtons()
+	{
+		ajoutCutscene = new JButton[eventList.size()+1];
+		for (int i = 0; i < ajoutCutscene.length; i++)
+		{
+			ajoutCutscene[i] = new JButton(new ImageIcon(Sprite.PLUS.getImage()));
+			ajoutCutscene[i].setBounds(160, 100 * i + 13, 20, 20);
+			cutsceneView.add(ajoutCutscene[i]);
+			ajoutCutscene[i].addMouseListener(new MouseAdapter()
+			{
+				@Override
+				public void mouseClicked(MouseEvent e)
+				{
+					int i = detectButtonSource(e.getSource());
+					try
+					{
+						EventChooser dialog = new EventChooser(i);
+						dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+						dialog.setVisible(true);
+					} catch (Exception ex)
+					{
+						ex.printStackTrace();
+					}
+				}
+			});
+		}
+	}
+
+	public static ArrayList<EventLabel> getEventlist()
+	{
+		return eventList;
+	}
+
+	public static void setEventList(ArrayList<EventLabel> list)
+	{
+		eventList = list;
+	}
+
+	public static void updateEventList()
+	{
+		cutsceneView.removeAll();
+		MapEditor.initCutsceneOptions();
+		for (int i = 0; i < eventList.size(); i++)
+		{
+			eventList.get(i).setBounds(20, eventList.get(i).getHeight() * i + 20, eventList.get(i).getWidth(), eventList.get(i).getHeight());
+			cutsceneView.add(eventList.get(i));
+			eventList.get(i).updatePosition(i + 1);
+		}
+		putAddButtons();
+		cutsceneView.updateUI();
+	}
+
+	public static void initCutsceneOptions()
 	{
 		cutsceneOptions = new JButton[]
-		{ new JButton("Cr\u00E9er"), new JButton("Ouvrir"), new JButton("Enregistrer"), new JButton("Enregistrer sous") };
+		{ new JButton("Cr\u00E9er"), new JButton("Ouvrir"), new JButton("Enregistrer")};
 		for (int i = 0; i < cutsceneOptions.length; i++)
 		{
-			cutsceneOptions[i].setBounds(MapEditor.this.getWidth() - 280, 50 + i * 40, 160, 25);
+			cutsceneOptions[i].setBounds(MapEditor.getFrames()[0].getWidth() - 280, 50 + i * 40, 160, 25);
 			cutsceneView.add(cutsceneOptions[i]);
 		}
 		cutsceneOptions[0].addMouseListener(new MouseAdapter() // Creer
-		{
-			@Override
-			public void mouseClicked(MouseEvent arg0)
-			{
-				
-			}
-		});
-		cutsceneOptions[1].addMouseListener(new MouseAdapter() // Ouvrir
-		{
-			@Override
-			public void mouseClicked(MouseEvent arg0)
-			{
-				int returnVal = sceneC.showOpenDialog(MapEditor.this);
-				if (returnVal == JFileChooser.APPROVE_OPTION)
 				{
-					File cutsceneFile = sceneC.getSelectedFile();
-//					openMapFile(mapFile);
-					MapEditor.this.setTitle("");
-				}
-			}
-		});
+					@Override
+					public void mouseClicked(MouseEvent e)
+					{
+						try
+						{
+							eventList.clear();
+							EventChooser dialog = new EventChooser(0);
+							dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+							dialog.setVisible(true);
+						} catch (Exception ex)
+						{
+							ex.printStackTrace();
+						}
+					}
+				});
+		cutsceneOptions[1].addMouseListener(new MouseAdapter() // Ouvrir
+				{
+					@Override
+					public void mouseClicked(MouseEvent arg0)
+					{
+						int returnVal = sceneC.showOpenDialog(MapEditor.getFrames()[0]);
+						if (returnVal == JFileChooser.APPROVE_OPTION)
+						{
+							File cutsceneFile = sceneC.getSelectedFile();
+							openCutsceneFile(cutsceneFile);
+							MapEditor.getFrames()[0].setTitle("");
+						}
+					}
+				});
 		cutsceneOptions[2].addMouseListener(new MouseAdapter() // Enregistrer
-		{
-			@Override
-			public void mouseClicked(MouseEvent arg0)
-			{
-				
-			}
-		});
-		cutsceneOptions[3].addMouseListener(new MouseAdapter() // Enregistrer sous
-		{
-			@Override
-			public void mouseClicked(MouseEvent arg0)
-			{
-				
-			}
-		});
+				{
+					@SuppressWarnings("deprecation")
+					@Override
+					public void mouseClicked(MouseEvent arg0)
+					{
+						int returnVal = sceneC.showSaveDialog(MapEditor.getFrames()[0]);
+						if (returnVal == JFileChooser.APPROVE_OPTION)
+						{
+							try
+							{
+								createCutsceneFile(sceneC.getSelectedFile());
+								Date d = new Date();
+								MapEditor.getFrames()[0].setTitle("Sc\u00E8ne enregistr\u00E9e \u00E0 " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds());
+							} catch (IOException e1)
+							{
+								e1.printStackTrace();
+							}
+						}
+					}
+				});
 	}
 
 	public static void removeCharacters()
@@ -386,6 +471,55 @@ public class MapEditor extends JFrame
 		});
 	}
 
+	public static boolean openCutsceneFile(File cutsceneFile)
+	{
+		if(!(cutsceneFile.getAbsolutePath().endsWith(".txt") || cutsceneFile.getAbsolutePath().endsWith(".TXT")))
+		cutsceneFile = new File(cutsceneFile.getAbsolutePath()+".txt");
+		
+		String[] lines = FileUtils.readFileAsStringArray(cutsceneFile.getAbsolutePath());
+
+		for (int i = 0; i < lines.length; i++)
+		{
+			if (!(lines[i].startsWith("Text=") || lines[i].startsWith("Cutscene=") || lines[i].startsWith("Move=")))
+			{
+				System.err.println("Fichier incompatible.");
+				return false;
+			}
+		}
+
+		ArrayList<EventLabel> fileEventList = new ArrayList<EventLabel>();
+
+		for (int i = 0; i < lines.length; i++)
+		{
+			String[] split = lines[i].split("\t");
+			switch (lines[i].split("=")[0])
+			{
+				case "Cutscene":
+				{
+					fileEventList.add(new EventLabelCutscene(split[1], split[2]));
+					break;
+				}
+				case "Text":
+				{
+					fileEventList.add(new EventLabelText(split[1]));
+					break;
+				}
+				case "Move":
+				{
+					fileEventList.add(new EventLabelMove(Integer.valueOf(split[1]),Boolean.valueOf(split[2]), Integer.valueOf(split[3]), Integer.valueOf(split[4])));
+					break;
+				}
+				default:
+					break;
+			}
+		}
+
+		eventList = fileEventList;
+		updateEventList();
+		updateScrollCutscene();
+		return true;
+	}
+
 	public static boolean openMapFile(File mapFile)
 	{
 		String[] lines = FileUtils.readFileAsStringArray(mapFile.getAbsolutePath());
@@ -485,6 +619,38 @@ public class MapEditor extends JFrame
 		tilemap[info[4]][info[5]].updateUI();
 
 		exists = true;
+		return true;
+	}
+
+	public static boolean createCutsceneFile(File cutsceneFile) throws IOException
+	{
+		String path = cutsceneFile.getAbsolutePath();
+		if (!(path.endsWith(".txt") || path.endsWith(".TXT"))) path += ".txt";
+		PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(path)));
+		for (int i = 0; i < eventList.size(); i++)
+		{
+			switch (eventList.get(i).getClass().getSimpleName().replace("EventLabel", ""))
+			{
+				case "Cutscene":
+				{
+					pw.println("Cutscene=\t"+((EventLabelCutscene)eventList.get(i)).getCutsceneText()+"\t"+((EventLabelCutscene)eventList.get(i)).getMapText());
+					break;
+				}
+				case "Text":
+				{
+					pw.println("Text=\t"+((EventLabelText)eventList.get(i)).getTextArea());
+					break;
+				}
+				case "Move":
+				{
+					pw.println("Move=\t"+((EventLabelMove)eventList.get(i)).getValueFromWhichField(0)+"\t"+((EventLabelMove)eventList.get(i)).getRelativeValue()+"\t"+((EventLabelMove)eventList.get(i)).getValueFromWhichField(1)+"\t"+((EventLabelMove)eventList.get(i)).getValueFromWhichField(2));
+					break;
+				}
+				default:
+					break;
+			}
+		}
+		pw.close();
 		return true;
 	}
 
@@ -933,27 +1099,16 @@ public class MapEditor extends JFrame
 		JPanel cutsceneMenu = new JPanel();
 		cutsceneMenu.setPreferredSize(new Dimension(620, 90));
 		cutsceneMenu.setMinimumSize(new Dimension(100, 10));
+		cutsceneMenu.setLayout(null);
 		BorderLayout bl = new BorderLayout();
 		cutsceneMenu.setLayout(bl);
 		menu.add(cutsceneMenu, "Sc\u00E8nes");
 
+		scrollCutscene = new JScrollPane(cutsceneView);
 		cutsceneMenu.add(scrollCutscene, BorderLayout.CENTER);
 		cutsceneView.setLayout(null);
-		Toolkit tool = Toolkit.getDefaultToolkit();
-		cutsceneView.setMaximumSize(new Dimension(tool.getScreenSize().width - 80, tool.getScreenSize().height));
-		scrollCutscene.setViewportView(cutsceneView);
-
-		EventLabelText elt = new EventLabelText("lel");
-		EventLabelMove elm = new EventLabelMove(101,12,3);
-		eventList.add(elt);
-		eventList.add(elm);
-
-		for (int i = 0; i < eventList.size(); i++)
-		{
-			eventList.get(i).setBounds(20, eventList.get(i).getHeight() * i + 20, eventList.get(i).getWidth(), eventList.get(i).getHeight());
-			cutsceneView.add(eventList.get(i));
-			eventList.get(i).updatePosition(i+1);
-		}
+		scrollCutscene.getVerticalScrollBar().setUnitIncrement(6);
+		scrollCutscene.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
 		menu.addMouseListener(new MouseAdapter()
 		{
@@ -967,6 +1122,7 @@ public class MapEditor extends JFrame
 				{
 					mode = MapEditor.MODE_CUTSCENE;
 					menu.setSize(new Dimension(MapEditor.this.getWidth() - 26, MapEditor.this.getHeight() - 72));
+					updateEventList();
 					initCutsceneOptions();
 				}
 			}
@@ -984,6 +1140,5 @@ public class MapEditor extends JFrame
 		{ tilesMenu, lblTiles, scrollTileRegistry, tileRegistry, menu, mapView, lblTileSelected, selectedTileLabel, entityMenu, lblEntity,
 				scrollEntityRegistry, lblSelectedEntity, label_2, characterMenu, radioPattou, lblPattouX, fieldPattouX, lblPattouY, fieldPattouY, separator,
 				radioLumi, lblLumiX, fieldLumiX, lblLumiY, fieldLumiY, btnRemovePattou, btnRemoveLumi, scrollMap }));
-
 	}
 }
