@@ -12,6 +12,8 @@ import java.awt.GridBagLayout;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -193,7 +195,7 @@ public class MapEditor extends JFrame
 	public static void initCutsceneOptions()
 	{
 		cutsceneOptions = new JButton[]
-		{ new JButton("Cr\u00E9er"), new JButton("Ouvrir"), new JButton("Enregistrer"), new JButton("Enregistrer sous") };
+		{ new JButton("Cr\u00E9er"), new JButton("Ouvrir"), new JButton("Enregistrer")};
 		for (int i = 0; i < cutsceneOptions.length; i++)
 		{
 			cutsceneOptions[i].setBounds(MapEditor.getFrames()[0].getWidth() - 280, 50 + i * 40, 160, 25);
@@ -249,14 +251,6 @@ public class MapEditor extends JFrame
 								e1.printStackTrace();
 							}
 						}
-					}
-				});
-		cutsceneOptions[3].addMouseListener(new MouseAdapter() // Enregistrer sous
-				{
-					@Override
-					public void mouseClicked(MouseEvent arg0)
-					{
-
 					}
 				});
 	}
@@ -1116,34 +1110,6 @@ public class MapEditor extends JFrame
 		scrollCutscene.getVerticalScrollBar().setUnitIncrement(6);
 		scrollCutscene.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-		// TODO debut du test cutscene
-
-		EventLabelText elt = new EventLabelText("lel"), elt2 = new EventLabelText("lel"), elt3 = new EventLabelText("lel"), elt4 = new EventLabelText("lel"), elt5 = new EventLabelText(
-				"lel"), elt6 = new EventLabelText("lel");
-		EventLabelMove elm = new EventLabelMove(101,true, 12, 3);
-		EventLabelCutscene els = new EventLabelCutscene("cutscene1", "map2");
-		eventList.add(elt);
-		eventList.add(elm);
-		eventList.add(els);
-		eventList.add(elt2);
-		eventList.add(elt3);
-		eventList.add(elt4);
-		eventList.add(elt5);
-		eventList.add(elt6);
-
-		for (int i = 0; i < eventList.size(); i++)
-		{
-			eventList.get(i).setBounds(20, eventList.get(i).getHeight() * i + 20, eventList.get(i).getWidth(), eventList.get(i).getHeight());
-			cutsceneView.add(eventList.get(i));
-			eventList.get(i).updatePosition(i + 1);
-			eventList.get(i).updateButtons();
-		}
-
-		putAddButtons();
-		updateScrollCutscene();
-
-		// TODO fin du test cutscene
-
 		menu.addMouseListener(new MouseAdapter()
 		{
 			public void mouseClicked(MouseEvent arg0)
@@ -1174,6 +1140,5 @@ public class MapEditor extends JFrame
 		{ tilesMenu, lblTiles, scrollTileRegistry, tileRegistry, menu, mapView, lblTileSelected, selectedTileLabel, entityMenu, lblEntity,
 				scrollEntityRegistry, lblSelectedEntity, label_2, characterMenu, radioPattou, lblPattouX, fieldPattouX, lblPattouY, fieldPattouY, separator,
 				radioLumi, lblLumiX, fieldLumiX, lblLumiY, fieldLumiY, btnRemovePattou, btnRemoveLumi, scrollMap }));
-
 	}
 }
