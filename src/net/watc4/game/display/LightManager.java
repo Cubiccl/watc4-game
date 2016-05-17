@@ -18,8 +18,8 @@ import net.watc4.game.entity.Entity;
 import net.watc4.game.entity.ILightSource;
 import net.watc4.game.map.Chunk;
 import net.watc4.game.map.Map;
-import net.watc4.game.utils.FileUtils;
 import net.watc4.game.utils.GameSettings;
+import net.watc4.game.utils.GameUtils;
 import net.watc4.game.utils.IRender;
 import net.watc4.game.utils.IUpdate;
 import net.watc4.game.utils.Vector;
@@ -69,8 +69,8 @@ public class LightManager implements IRender, IUpdate
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		Camera camera = this.map.game.getCamera();
 
-		Area shadow = new Area(new Rectangle(FileUtils.toInt(camera.getXOffset()), FileUtils.toInt(camera.getYOffset()),
-				FileUtils.toInt(camera.width / camera.getScale()), FileUtils.toInt(camera.height / camera.getScale())));
+		Area shadow = new Area(new Rectangle(GameUtils.toInt(camera.getXOffset()), GameUtils.toInt(camera.getYOffset()),
+				GameUtils.toInt(camera.width / camera.getScale()), GameUtils.toInt(camera.height / camera.getScale())));
 
 		if (!GameSettings.lightMode)
 		{
@@ -166,8 +166,8 @@ public class LightManager implements IRender, IUpdate
 			List<Integer> stockTriangleY = new ArrayList<Integer>();
 			for (Entry<Double, Point2D> entry : endPoints.entrySet())
 			{
-				stockTriangleX.add(FileUtils.toInt(entry.getValue().getX()));
-				stockTriangleY.add(FileUtils.toInt(entry.getValue().getY()));
+				stockTriangleX.add(GameUtils.toInt(entry.getValue().getX()));
+				stockTriangleY.add(GameUtils.toInt(entry.getValue().getY()));
 			}
 			int[] triangleX = new int[stockTriangleX.size()];
 			triangleX = toIntArray(stockTriangleX);

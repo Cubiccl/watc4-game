@@ -3,7 +3,6 @@ package net.watc4.game.states.menu;
 import java.awt.Graphics2D;
 
 import net.watc4.game.Game;
-import net.watc4.game.states.GameState;
 
 /** The Main Menu. */
 public class MainMenuState extends MenuState
@@ -30,11 +29,10 @@ public class MainMenuState extends MenuState
 		this.addButton(new Button(EXIT, "Exit Game"));
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	protected void performAction(Button selected)
 	{
-		if (selected.id == PLAY) Game.getGame().setCurrentState(GameState.getInstance());
+		if (selected.id == PLAY) Game.getGame().setCurrentState(new FileSelectState());
 		if (selected.id == SETTINGS) Game.getGame().setCurrentState(new SettingsMenuState());
 		if (selected.id == EXIT) Game.getGame().stop();
 	}

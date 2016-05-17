@@ -15,6 +15,7 @@ import net.watc4.game.states.GameState;
 import net.watc4.game.states.State;
 import net.watc4.game.states.menu.MainMenuState;
 import net.watc4.game.utils.Controls;
+import net.watc4.game.utils.FileUtils;
 import net.watc4.game.utils.GameUtils;
 import net.watc4.game.utils.InputManager;
 
@@ -34,6 +35,7 @@ public class Game implements Runnable
 
 	public static void main(String[] args)
 	{
+		FileUtils.loadSaves();
 		AnimationManager.create();
 		TileRegistry.createTiles();
 		EntityRegistry.createEntities();
@@ -139,14 +141,15 @@ public class Game implements Runnable
 		this.state.render(g);
 
 		g.setTransform(defaultTransform);
+
+		int[] dimensions = this.window.getGameDimensions();
+		this.state.renderHud(g, dimensions[0], dimensions[1], dimensions[2], dimensions[3]);
+		
 		if (this.transition != 0)
 		{
 			g.setColor(new Color(0, 0, 0, Math.abs(this.transition) * 255 / TRANSITION));
 			g.fillRect(0, 0, this.window.canvas.getWidth(), this.window.canvas.getHeight());
 		}
-
-		int[] dimensions = this.window.getGameDimensions();
-		this.state.renderHud(g, dimensions[0], dimensions[1], dimensions[2], dimensions[3]);
 		this.window.drawBorders(g);
 		g.dispose();
 		bufferStrategy.show();

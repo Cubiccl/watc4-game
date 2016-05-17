@@ -1,6 +1,8 @@
 package net.watc4.game.utils;
 
+import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
+import java.awt.geom.AffineTransform;
 
 /** Contains various constants and methods useful for the game. */
 public final class GameUtils
@@ -52,5 +54,29 @@ public final class GameUtils
 	 * <li>RIGHT = 3</li>
 	 * </ul> */
 	public static final int UP = 0, DOWN = 1, LEFT = 2, RIGHT = 3;
+
+	/** Convert a double into an int */
+	public static int toInt(double f)
+	{
+		return (f - (double) ((int) f) < 0.5) ? (int) f : (int) f + 1;
+	}
+
+	/** Draw an arrow, useful for debug */
+	void drawArrow(Graphics2D g, int x1, int y1, int x2, int y2)
+	{
+
+		double dx = x2 - x1, dy = y2 - y1;
+		double angle = Math.atan2(dy, dx);
+		int len = (int) Math.sqrt(dx * dx + dy * dy);
+		AffineTransform at = AffineTransform.getTranslateInstance(x1, y1);
+		at.concatenate(AffineTransform.getRotateInstance(angle));
+		g.transform(at);
+
+		// Draw horizontal arrow starting in (0, 0)
+		g.drawLine(0, 0, len, 0);
+		g.fillPolygon(new int[]
+		{ len, len - 6, len - 6, len }, new int[]
+		{ 0, -6, 6, 0 }, 4);
+	}
 
 }

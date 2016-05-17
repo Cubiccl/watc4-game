@@ -1,16 +1,54 @@
 package net.watc4.game.utils;
 
-import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 public class FileUtils
 {
+
+	/** Contains the Save Files. */
+	public static String[] saves;
+
+	/** Deletes a Save.
+	 * 
+	 * @param index - The Index of the Save. */
+	public static void deleteSave(int index)
+	{
+		if (saves.length == 0) return;
+		String[] newSaves = new String[saves.length - 1];
+		int i = 0;
+		for (int j = 0; j < newSaves.length; j++)
+		{
+			if (index == i) continue;
+			newSaves[j] = saves[i];
+			++i;
+		}
+		saves = newSaves;
+		saveSaves();
+	}
+
+	/** Loads the Save Files. */
+	public static void loadSaves()
+	{
+		saves = readFileAsStringArray("res/saves.txt");
+	}
+
+	/** Creates a new Save. */
+	public static void newSave()
+	{
+		String[] newSaves = new String[saves.length + 1];
+		System.arraycopy(saves, 0, newSaves, 0, saves.length);
+		newSaves[saves.length] = "map2";
+		saves = newSaves;
+	}
+
 	/** @param url Path to the map file.
 	 * @return <b>String[]</b> containing the file line per line. */
 	public static String[] readFileAsStringArray(String url)
@@ -50,27 +88,22 @@ public class FileUtils
 		return list.toArray(new String[0]);
 
 	}
-	
-	
-	/** Convert a double into an int */
-	public static int toInt(double f)
-	{
-		return (f - (double) ((int) f) < 0.5) ? (int) f : (int) f + 1;
-	}
-	
-	/** Draw an arrow, useful for debug */
-	void drawArrow(Graphics2D g, int x1, int y1, int x2, int y2) {
-      
-        double dx = x2 - x1, dy = y2 - y1;
-        double angle = Math.atan2(dy, dx);
-        int len = (int) Math.sqrt(dx*dx + dy*dy);
-        AffineTransform at = AffineTransform.getTranslateInstance(x1, y1);
-        at.concatenate(AffineTransform.getRotateInstance(angle));
-        g.transform(at);
 
-        // Draw horizontal arrow starting in (0, 0)
-        g.drawLine(0, 0, len, 0);
-        g.fillPolygon(new int[] {len, len-6, len-6, len},
-                      new int[] {0, -6, 6, 0}, 4);
-    }
+	/** Saves the Save Files. */
+	public static void saveSaves()
+	{
+		File file = new File("res/saves.txt");
+		file.delete();
+		try
+		{
+			PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(file)));
+			for (String save : saves)
+				pw.println(save);
+			pw.close();
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
 }

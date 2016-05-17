@@ -21,8 +21,6 @@ import net.watc4.game.utils.GameSettings;
 /** Represents the main game engine. */
 public class GameState extends State
 {
-	/** The instance of the Game State. */
-	private static GameState instance;
 
 	/** Creates the GameState.
 	 * 
@@ -30,15 +28,8 @@ public class GameState extends State
 	 * @return The created GameState. */
 	public static GameState createNew(String mapName)
 	{
-		instance = new GameState(mapName);
+		GameState instance = new GameState(mapName);
 		instance.getMap().lightManager.update();
-		return instance;
-	}
-
-	/** @return The instance of the Game. */
-	@Deprecated
-	public static GameState getInstance()
-	{
 		return instance;
 	}
 

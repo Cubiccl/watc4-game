@@ -17,7 +17,6 @@ public abstract class MenuState extends State
 	protected int offset = 0;
 	/** The id of the currently selected button. */
 	private int selected;
-
 	/** The Title of this Menu. */
 	protected String title;
 
@@ -43,6 +42,12 @@ public abstract class MenuState extends State
 
 	/** Creates the Buttons of this Menu. */
 	protected abstract void createButtons();
+
+	/** Removes all buttons. */
+	protected void empty()
+	{
+		this.buttons.clear();
+	}
 
 	public ArrayList<Button> getButtons()
 	{
@@ -83,6 +88,7 @@ public abstract class MenuState extends State
 	public void removeButton(Button button)
 	{
 		if (this.buttons.contains(button)) this.buttons.remove(button);
+		if (this.selected == this.buttons.size()) --this.selected;
 		this.replaceButtons();
 	}
 
