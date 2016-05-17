@@ -2,16 +2,19 @@ package net.watc4.game.map;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Polygon;
 import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
 import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import javafx.geometry.Point2D;
 import net.watc4.game.display.Camera;
 import net.watc4.game.states.GameState;
 import net.watc4.game.utils.GameSettings;
 import net.watc4.game.utils.IRender;
 import net.watc4.game.utils.Vector;
+import net.watc4.game.utils.geometry.PolygonHitbox;
 
 public class Chunk implements IRender
 {
@@ -56,26 +59,43 @@ public class Chunk implements IRender
 		this.wallSet = new CopyOnWriteArraySet<Vector>();
 
 		// Add vectors
-		for (int y = -1; y < this.size; y++)
+		for (int y = 0; y < this.size; y++)
 		{
-			for (int x = -1; x < this.size; x++)
+			for (int x = 0; x < this.size; x++)
 			{
-				// Add the vertical ones
+				// Create walls from hitbot
+				if (this.getTileAt(x, y).isOpaque)
 				{
-					if (this.getTileAt(x, y).isOpaque && !this.getTileAt(x + 1, y).isOpaque) this.wallSet.add(new Vector((this.xPos * this.size + x + 1)
-							* Map.TILESIZE, (this.yPos * this.size + y) * Map.TILESIZE, 0, Map.TILESIZE));
-					else if (!this.getTileAt(x, y).isOpaque && this.getTileAt(x + 1, y).isOpaque) this.wallSet.add(new Vector((this.xPos * this.size + x + 1)
-							* Map.TILESIZE, (this.yPos * this.size + y + 1) * Map.TILESIZE, 0, -Map.TILESIZE));
-				}
-				// Add the horizontal ones
-				{
-					if (this.getTileAt(x, y).isOpaque && !this.getTileAt(x, y + 1).isOpaque) this.wallSet.add(new Vector((this.xPos * this.size + x + 1)
-							* Map.TILESIZE, (this.yPos * this.size + y + 1) * Map.TILESIZE, -Map.TILESIZE, 0));
-					else if (!this.getTileAt(x, y).isOpaque && this.getTileAt(x, y + 1).isOpaque) this.wallSet.add(new Vector((this.xPos * this.size + x)
-							* Map.TILESIZE, (this.yPos * this.size + y + 1) * Map.TILESIZE, Map.TILESIZE, 0));
+					Point2D[] vertices = ((PolygonHitbox) this.getTileAt(x, y).hitbox(map, x, y, this.getDataAt(x, y))).vertices;
+				
+					for (int i = 0; i < vertices.length - 1; i++)
+					{
+						Vector wall = new Vector(new Point2D.Double(xPos * ACTUAL_SIZE + vertices[i].getX(), yPos * ACTUAL_SIZE + vertices[i].getY()),
+								new Point2D.Double(vertices[i + 1].getX() - vertices[i].getX(), vertices[i + 1].getY() - vertices[i].getY()));
+						wallSet.add(wall);
+					}
+					Vector wall = new Vector(
+							new Point2D.Double(xPos * ACTUAL_SIZE + vertices[vertices.length - 1].getX(),
+									yPos * ACTUAL_SIZE + vertices[vertices.length - 1].getY()),
+							new Point2D.Double(vertices[0].getX() - vertices[vertices.length - 1].getX(),
+									vertices[0].getY() - vertices[vertices.length - 1].getY()));
+					wallSet.add(wall);
 				}
 			}
 		}
+		// Delete dulpicates walls
+		for (Vector wall1 : wallSet)
+			for (Vector wall2 : wallSet)
+			{
+				if (wall1.getPosition().getX() == wall2.getPosition().getX() + wall2.getDirection().getX()
+						&& wall1.getPosition().getY() == wall2.getPosition().getY() + wall2.getDirection().getY()
+						&& wall2.getPosition().getX() == wall1.getPosition().getX() + wall1.getDirection().getX()
+						&& wall2.getPosition().getY() == wall1.getPosition().getY() + wall1.getDirection().getY())
+				{
+					wallSet.remove(wall1);
+					wallSet.remove(wall2);
+				}
+			}
 
 		// Merges adjacent segments into single ones
 		boolean done = false;
@@ -99,12 +119,11 @@ public class Chunk implements IRender
 					}
 				}
 				if (vectorFound == null) manyVectorFound = true;
-				if (!manyVectorFound
-						&& targetVector.getDirection().getX() * vectorFound.getDirection().getY() - targetVector.getDirection().getY()
-								* vectorFound.getDirection().getX() == 0)
+				if (!manyVectorFound && targetVector.getDirection().getX() * vectorFound.getDirection().getY()
+						- targetVector.getDirection().getY() * vectorFound.getDirection().getX() == 0)
 				{
-					vectorFound.setDirection(new Point2D(vectorFound.getDirection().getX() + targetVector.getDirection().getX(), vectorFound.getDirection()
-							.getY() + targetVector.getDirection().getY()));
+					vectorFound.setDirection(new Point2D.Double(vectorFound.getDirection().getX() + targetVector.getDirection().getX(),
+							vectorFound.getDirection().getY() + targetVector.getDirection().getY()));
 					this.wallSet.remove(targetVector);
 					done = false;
 				}

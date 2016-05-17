@@ -10,8 +10,8 @@ public class RectangleHitbox extends PolygonHitbox
 	public RectangleHitbox(double x, double y, double width, double height)
 	{
 		super(new Point2D[]
-		{ new Point((int) x, (int) y), new Point((int) (x), (int) (y + height)), new Point((int) (x + width), (int) (y + height)),
-				new Point((int) (x + width), (int) (y)) });
+		{ new Point((int) x, (int) y), new Point((int) (x + width), (int) (y)), new Point((int) (x + width), (int) (y + height)),
+				new Point((int) (x), (int) (y + height)) });
 	}
 
 	@Override

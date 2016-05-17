@@ -1,8 +1,8 @@
 package net.watc4.game.utils;
 
+import java.awt.geom.Point2D;
 import java.util.HashSet;
 
-import javafx.geometry.Point2D;
 
 /** Represents a Segment. */
 public class Vector
@@ -20,7 +20,7 @@ public class Vector
 	 * @param dirY - Its y direction (height). */
 	public Vector(double posX, double posY, double dirX, double dirY)
 	{
-		this(new Point2D(posX, posY), new Point2D(dirX, dirY));
+		this(new Point2D.Double(posX, posY), new Point2D.Double(dirX, dirY));
 	}
 
 	/** Creates a new Vector.
@@ -64,7 +64,7 @@ public class Vector
 				}
 			}
 		}
-		if (tr != Double.MAX_VALUE) return new Point2D(this.position.getX() + tr * this.direction.getX(), this.position.getY() + tr * this.direction.getY());
+		if (tr != Double.MAX_VALUE) return new Point2D.Double(this.position.getX() + tr * this.direction.getX(), this.position.getY() + tr * this.direction.getY());
 		return null;
 	}
 
@@ -84,7 +84,7 @@ public class Vector
 				{
 					tr = (vector.position.getX() + vector.direction.getX() * ts - this.position.getX()) / this.direction.getX();
 					if (tr >= 0 && tr <= 1)
-						res.add(new Point2D(this.position.getX() + tr * this.direction.getX(), this.position.getY() + tr * this.direction.getY()));
+						res.add(new Point2D.Double(this.position.getX() + tr * this.direction.getX(), this.position.getY() + tr * this.direction.getY()));
 				}
 			}
 		}

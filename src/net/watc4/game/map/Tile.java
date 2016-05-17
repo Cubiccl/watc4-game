@@ -45,7 +45,7 @@ public class Tile
 	 * @return The Hitbox of this Tile. */
 	public Hitbox hitbox(Map map, int x, int y, int data)
 	{
-		return new RectangleHitbox(x * Map.TILESIZE, y * Map.TILESIZE, Map.TILESIZE - 1, Map.TILESIZE - 1);
+		return new RectangleHitbox(x * Map.TILESIZE, y * Map.TILESIZE, Map.TILESIZE, Map.TILESIZE);
 	}
 
 	/** Renders this Tile.

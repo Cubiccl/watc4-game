@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import javafx.geometry.Point2D;
+import java.awt.geom.Point2D;
 import net.watc4.game.entity.Entity;
 import net.watc4.game.entity.ILightSource;
 import net.watc4.game.map.Chunk;
@@ -102,21 +102,21 @@ public class LightManager implements IRender, IUpdate
 			Vector[] viewWallSet = new Vector[4];
 			TreeMap<Double, Point2D> endPoints = new TreeMap<>();
 			ILightSource lightSource = lightSources.get(i);
-			Point2D lightPosition = new Point2D(lightSource.getX() + lightSource.getWidth() / 2, lightSource.getY() + lightSource.getHeight() / 2);
+			Point2D lightPosition = new Point2D.Double(lightSource.getX() + lightSource.getWidth() / 2, lightSource.getY() + lightSource.getHeight() / 2);
 
 			// Create the fieldOfView Rectangle
 			viewWallSet[0] = new Vector(
-					new Point2D(lightPosition.getX() - lightSource.getLightIntensity(), lightPosition.getY() - lightSource.getLightIntensity()),
-					new Point2D(2 * lightSource.getLightIntensity(), 0));
+					new Point2D.Double(lightPosition.getX() - lightSource.getLightIntensity(), lightPosition.getY() - lightSource.getLightIntensity()),
+					new Point2D.Double(2 * lightSource.getLightIntensity(), 0));
 			viewWallSet[1] = new Vector(
-					new Point2D(lightPosition.getX() + lightSource.getLightIntensity(), lightPosition.getY() - lightSource.getLightIntensity()),
-					new Point2D(0.00001, 2 * lightSource.getLightIntensity()));
+					new Point2D.Double(lightPosition.getX() + lightSource.getLightIntensity(), lightPosition.getY() - lightSource.getLightIntensity()),
+					new Point2D.Double(0.00001, 2 * lightSource.getLightIntensity()));
 			viewWallSet[2] = new Vector(
-					new Point2D(lightPosition.getX() - lightSource.getLightIntensity(), lightPosition.getY() + lightSource.getLightIntensity()),
-					new Point2D(0.00001, -2 * lightSource.getLightIntensity()));
+					new Point2D.Double(lightPosition.getX() - lightSource.getLightIntensity(), lightPosition.getY() + lightSource.getLightIntensity()),
+					new Point2D.Double(0.00001, -2 * lightSource.getLightIntensity()));
 			viewWallSet[3] = new Vector(
-					new Point2D(lightPosition.getX() + lightSource.getLightIntensity(), lightPosition.getY() + lightSource.getLightIntensity()),
-					new Point2D(-2 * lightSource.getLightIntensity(), 0));
+					new Point2D.Double(lightPosition.getX() + lightSource.getLightIntensity(), lightPosition.getY() + lightSource.getLightIntensity()),
+					new Point2D.Double(-2 * lightSource.getLightIntensity(), 0));
 
 			// Add concerned walls
 			wallSet.clear();
@@ -156,8 +156,8 @@ public class LightManager implements IRender, IUpdate
 						/ (Math.sqrt((endPoint.getX() - lightPosition.getX()) * (endPoint.getX() - lightPosition.getX())
 								+ (endPoint.getY() - lightPosition.getY()) * (endPoint.getY() - lightPosition.getY()))));
 				double angle = (endPoint.getY() - lightPosition.getY() > 0) ? (float) Math.acos(cos) : (float) -Math.acos(cos);
-				Point2D tmpPoint1 = new Vector(lightPosition, new Point2D(Math.cos(angle - 0.00001), Math.sin(angle - 0.00001))).intersect(wallSet);
-				Point2D tmpPoint2 = new Vector(lightPosition, new Point2D(Math.cos(angle + 0.00001), Math.sin(angle + 0.00001))).intersect(wallSet);
+				Point2D tmpPoint1 = new Vector(lightPosition, new Point2D.Double(Math.cos(angle - 0.00001), Math.sin(angle - 0.00001))).intersect(wallSet);
+				Point2D tmpPoint2 = new Vector(lightPosition, new Point2D.Double(Math.cos(angle + 0.00001), Math.sin(angle + 0.00001))).intersect(wallSet);
 				if (tmpPoint1 != null) endPoints.put(angle - 0.00001, tmpPoint1);
 				if (tmpPoint2 != null) endPoints.put(angle + 0.00001, tmpPoint2);
 			}
