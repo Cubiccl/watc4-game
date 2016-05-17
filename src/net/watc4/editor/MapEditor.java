@@ -479,6 +479,9 @@ public class MapEditor extends JFrame
 
 	public static boolean openCutsceneFile(File cutsceneFile)
 	{
+		if(!(cutsceneFile.getAbsolutePath().endsWith(".txt") || cutsceneFile.getAbsolutePath().endsWith(".TXT")))
+		cutsceneFile = new File(cutsceneFile.getAbsolutePath()+".txt");
+		
 		String[] lines = FileUtils.readFileAsStringArray(cutsceneFile.getAbsolutePath());
 
 		for (int i = 0; i < lines.length; i++)
@@ -509,7 +512,7 @@ public class MapEditor extends JFrame
 				}
 				case "Move":
 				{
-					fileEventList.add(new EventLabelMove(Integer.valueOf(split[1]), Integer.valueOf(split[2]), Integer.valueOf(split[3])));
+					fileEventList.add(new EventLabelMove(Integer.valueOf(split[1]),Boolean.valueOf(split[2]), Integer.valueOf(split[3]), Integer.valueOf(split[4])));
 					break;
 				}
 				default:
@@ -641,12 +644,12 @@ public class MapEditor extends JFrame
 				}
 				case "Text":
 				{
-					pw.println("Text=\t"+((EventLabelText)eventList.get(i)).getText());
+					pw.println("Text=\t"+((EventLabelText)eventList.get(i)).getTextArea());
 					break;
 				}
 				case "Move":
 				{
-					pw.println("Move=\t"+((EventLabelMove)eventList.get(i)).getValueFromWhichField(0)+"\t"+((EventLabelMove)eventList.get(i)).getValueFromWhichField(1)+"\t"+((EventLabelMove)eventList.get(i)).getValueFromWhichField(2));
+					pw.println("Move=\t"+((EventLabelMove)eventList.get(i)).getValueFromWhichField(0)+"\t"+((EventLabelMove)eventList.get(i)).getRelativeValue()+"\t"+((EventLabelMove)eventList.get(i)).getValueFromWhichField(1)+"\t"+((EventLabelMove)eventList.get(i)).getValueFromWhichField(2));
 					break;
 				}
 				default:
@@ -1117,7 +1120,7 @@ public class MapEditor extends JFrame
 
 		EventLabelText elt = new EventLabelText("lel"), elt2 = new EventLabelText("lel"), elt3 = new EventLabelText("lel"), elt4 = new EventLabelText("lel"), elt5 = new EventLabelText(
 				"lel"), elt6 = new EventLabelText("lel");
-		EventLabelMove elm = new EventLabelMove(101, 12, 3);
+		EventLabelMove elm = new EventLabelMove(101,true, 12, 3);
 		EventLabelCutscene els = new EventLabelCutscene("cutscene1", "map2");
 		eventList.add(elt);
 		eventList.add(elm);

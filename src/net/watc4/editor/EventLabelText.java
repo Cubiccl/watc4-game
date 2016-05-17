@@ -1,8 +1,5 @@
 package net.watc4.editor;
 
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
@@ -12,10 +9,10 @@ public class EventLabelText extends EventLabel
 	private JScrollPane js;
 	private JTextArea textArea;
 
-	public String getText()
+	public String getTextArea()
 	{
-		if (textArea != null) return textArea.getText();
-		else return null;
+		if (textArea.getText().equals("")) return textArea.getText();
+		else return "null";
 	}
 
 	public void init(String text)

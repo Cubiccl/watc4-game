@@ -1,2 +1,2 @@
 Text=	Pattou will now try to move to the end left of the Map.
-Move=	1	14	39
+Move=	1	false	14	39
