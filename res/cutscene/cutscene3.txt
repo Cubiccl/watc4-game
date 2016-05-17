@@ -1,2 +1,3 @@
-Text=Pattou will now try to move to the end left of the Map.
-Move= 1 14 39
+Text=Pattou will now try to move to the end right of the Map.
+Move= 0 true -2 -2
+Move= 1 false 39 14

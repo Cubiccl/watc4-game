@@ -5,7 +5,6 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
-import net.watc4.game.display.Camera;
 import net.watc4.game.display.TextRenderer;
 import net.watc4.game.states.State;
 
@@ -15,12 +14,12 @@ public abstract class MenuState extends State
 
 	/** Contains all the buttons of this Menu. */
 	private ArrayList<Button> buttons;
+	protected int offset = 0;
 	/** The id of the currently selected button. */
 	private int selected;
+
 	/** The Title of this Menu. */
 	protected String title;
-	
-	protected int offset = 0;
 
 	/** Creates a new MenuState.
 	 * 
@@ -45,23 +44,31 @@ public abstract class MenuState extends State
 	/** Creates the Buttons of this Menu. */
 	protected abstract void createButtons();
 
+	public ArrayList<Button> getButtons()
+	{
+		return this.buttons;
+	}
+
 	/** @return The id of the currently selected Button. */
 	public int getSelected()
 	{
 		return this.selected;
-	}
-	
-	public ArrayList<Button> getButtons()
-	{
-		return this.buttons;
 	}
 
 	@Override
 	public void onKeyPressed(int keyID)
 	{
 		super.onKeyPressed(keyID);
-		if (keyID == KeyEvent.VK_UP) { this.setSelected(this.selected - 1); this.offset = Math.max(0, this.selected-3); }
-		if (keyID == KeyEvent.VK_DOWN) { this.setSelected(this.selected + 1); this.offset = Math.max(0, this.selected-3); }
+		if (keyID == KeyEvent.VK_UP)
+		{
+			this.setSelected(this.selected - 1);
+			this.offset = Math.max(0, this.selected - 3);
+		}
+		if (keyID == KeyEvent.VK_DOWN)
+		{
+			this.setSelected(this.selected + 1);
+			this.offset = Math.max(0, this.selected - 3);
+		}
 		if (keyID == KeyEvent.VK_ENTER) this.performAction(this.buttons.get(this.selected));
 	}
 
@@ -80,31 +87,28 @@ public abstract class MenuState extends State
 	}
 
 	@Override
-	public void render(Graphics2D g)
+	public void renderHud(Graphics2D g, int x, int y, int width, int height)
 	{
-		super.render(g);
-		
-		TextRenderer.setFontSize(40);
-		g.setColor(Color.DARK_GRAY);
-		TextRenderer.drawStringCentered(g, this.title, Camera.WIDTH / 2, Camera.HEIGHT / 4);
-		TextRenderer.setFontSize(30);
+		super.renderHud(g, x, y, width, height);
 
-		for(int i = offset; i < this.buttons.size(); i++)
+		TextRenderer.setFontSize(60);
+		g.setColor(Color.DARK_GRAY);
+		TextRenderer.drawStringCentered(g, this.title, x + width / 2, y + height / 4);
+		TextRenderer.setFontSize(45);
+
+		for (int i = offset; i < this.buttons.size(); i++)
 		{
-			buttons.get(i).render(g);
+			buttons.get(i).renderHud(g, x, y, width, height);
 		}
-		
-		replaceButtons();
 	}
 
 	/** Places the buttons correctly on the Screen. Called when a Button is added or removed. */
-	private void replaceButtons()
+	protected void replaceButtons()
 	{
 		int m = 0;
 		for (int i = offset; i < this.buttons.size(); i++)
 		{
-			this.buttons.get(i).xPosition = Camera.WIDTH / 2;
-			this.buttons.get(i).yPosition = Camera.HEIGHT / 2 + m * (TextRenderer.getFontHeight() + 10);
+			this.buttons.get(i).yPosition = m * (TextRenderer.getFontHeight() + 10);
 			m++;
 		}
 	}

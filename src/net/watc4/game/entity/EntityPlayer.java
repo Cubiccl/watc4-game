@@ -23,14 +23,14 @@ public abstract class EntityPlayer extends Entity
 		/** @return True if this Player is moving left. */
 		public boolean left()
 		{
-			if (this.destination != null) return this.destination[0] < this.entity.getY() && Math.abs(this.entity.getX() - this.destination[0]) > EPSILON;
+			if (this.destination != null) return this.destination[0] < this.entity.getX() && Math.abs(this.entity.getX() - this.destination[0]) > EPSILON;
 			return false;
 		}
 
 		/** @return True if this Player is moving right. */
 		public boolean right()
 		{
-			if (this.destination != null) return this.destination[0] > this.entity.getY() && Math.abs(this.entity.getX() - this.destination[0]) > EPSILON;
+			if (this.destination != null) return this.destination[0] > this.entity.getX() && Math.abs(this.entity.getX() - this.destination[0]) > EPSILON;
 			return false;
 		}
 

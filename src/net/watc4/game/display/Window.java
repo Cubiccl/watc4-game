@@ -96,6 +96,12 @@ public class Window extends JFrame
 		g.fillRect(this.offset + this.width, 0, this.offset, this.height);
 	}
 
+	public int[] getGameDimensions()
+	{
+		return new int[]
+		{ this.offset, 0, this.width, this.height };
+	}
+
 	/** Prepares the Graphics to draw the Game. Scales and places the Graphics depending on this Window's dimensions.
 	 * 
 	 * @param g - The Graphics to use. */

@@ -1,5 +1,7 @@
 package net.watc4.game.states.menu;
 
+import java.awt.Graphics2D;
+
 import net.watc4.game.Game;
 import net.watc4.game.states.GameState;
 
@@ -11,6 +13,13 @@ public class MainMenuState extends MenuState
 	public MainMenuState()
 	{
 		super("WATC4");
+	}
+	
+	@Override
+	public void renderHud(Graphics2D g, int x, int y, int width, int height)
+	{
+		this.replaceButtons();
+		super.renderHud(g, x, y, width, height);
 	}
 
 	@Override

@@ -4,10 +4,11 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 
 import net.watc4.game.utils.IRender;
+import net.watc4.game.utils.IRenderHud;
 import net.watc4.game.utils.IUpdate;
 
 /** Represents a part of a Cutscene. */
-public abstract class CutsceneEvent implements IUpdate, IRender
+public abstract class CutsceneEvent implements IUpdate, IRender, IRenderHud
 {
 	/** The Cutscene this is a part of. */
 	protected CutsceneState cutscene;
@@ -40,6 +41,10 @@ public abstract class CutsceneEvent implements IUpdate, IRender
 
 	@Override
 	public void render(Graphics2D g)
+	{}
+
+	@Override
+	public void renderHud(Graphics2D g, int x, int y, int width, int height)
 	{}
 
 	@Override

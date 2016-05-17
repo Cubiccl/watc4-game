@@ -31,6 +31,7 @@ public abstract class AI implements IUpdate
 	/** @return True if this Entity has reached its destination. (+- Epsilon, because an exact destination is almost impossible to reach. */
 	public boolean destinationReached()
 	{
+		if (this.destination == null) return true;
 		return Math.abs(this.entity.getX() - this.destination[0]) < EPSILON && Math.abs(this.entity.getY() - this.destination[1]) < EPSILON;
 	}
 

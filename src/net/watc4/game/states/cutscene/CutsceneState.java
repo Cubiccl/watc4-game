@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.util.Stack;
 
 import net.watc4.game.Game;
+import net.watc4.game.entity.EntityCutscene;
 import net.watc4.game.states.GameState;
 import net.watc4.game.states.State;
 import net.watc4.game.utils.FileUtils;
@@ -11,10 +12,19 @@ import net.watc4.game.utils.FileUtils;
 /** Used when the Game displays a cutscene, thus explaining the game lore without gameplay. */
 public class CutsceneState extends State
 {
+	/** @param entityCutscene - The Entity that started this Cutscene.
+	 * @return The created Cutscene. */
+	public static CutsceneState createFrom(EntityCutscene entity)
+	{
+		CutsceneState cutscene = createFrom(entity.game, entity.cutsceneName);
+		cutscene.entity = entity;
+		return cutscene;
+	}
+
 	/** @param game - The GameState to use for this Cutscene.
 	 * @param cutsceneName - The path to the Cutscene file.
 	 * @return The Cutscene created from the file. */
-	public static State createFrom(GameState game, String cutsceneName)
+	public static CutsceneState createFrom(GameState game, String cutsceneName)
 	{
 		CutsceneState cutscene = new CutsceneState(game);
 		String[] data = FileUtils.readFileAsStringArray("res/cutscene/" + cutsceneName + ".txt");
@@ -29,16 +39,18 @@ public class CutsceneState extends State
 			if (line.startsWith("Move"))
 			{
 				String[] values = line.split(" ");
-				cutscene.addEvent(new EntityMovementEvent(cutscene, Integer.parseInt(values[1]), Float.parseFloat(values[2]), Float.parseFloat(values[3])));
+				cutscene.addEvent(new EntityMovementEvent(cutscene, Integer.parseInt(values[1]), Boolean.parseBoolean(values[2]), Float.parseFloat(values[3]),
+						Float.parseFloat(values[4])));
 			}
 		}
 		if (cutscene.events.size() > 0) cutscene.events.peek().begin();
 		return cutscene;
 	}
 
+	/** The Entity that started this Cutscene. */
+	private EntityCutscene entity;
 	/** Contains all events to execute during this Cutscene. */
 	protected Stack<CutsceneEvent> events;
-
 	/** The GameState used to render the environment. */
 	public GameState gameState;
 
@@ -75,8 +87,21 @@ public class CutsceneState extends State
 	}
 
 	@Override
+	public void renderHud(Graphics2D g, int x, int y, int width, int height)
+	{
+		super.renderHud(g, x, y, width, height);
+		this.gameState.renderHud(g, x, y, width, height);
+		if (!this.events.isEmpty()) this.events.peek().renderHud(g, x, y, width, height);
+	}
+
+	@Override
 	public void update()
 	{
+		if (this.entity != null)
+		{
+			this.entity.kill();
+			this.entity = null;
+		}
 		while (!this.events.isEmpty() && this.events.peek().isOver())
 		{
 			this.events.pop().finish();

@@ -39,6 +39,6 @@ public class EntityCutscene extends Entity
 	{
 		super.onCollisionWith(entity);
 		if (entity instanceof EntityPattou || entity instanceof EntityLumi) Game.getGame().setCurrentState(
-				CutsceneState.createFrom(this.game, this.cutsceneName), false);
+				CutsceneState.createFrom(this), false);
 	}
 }

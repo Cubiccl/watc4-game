@@ -4,10 +4,10 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 import net.watc4.game.display.TextRenderer;
-import net.watc4.game.utils.IRender;
+import net.watc4.game.utils.IRenderHud;
 
 /** Represents a choice in a MenuState. */
-public class Button implements IRender
+public class Button implements IRenderHud
 {
 
 	/** The Identifier of this button. Used to determine which button was selected. */
@@ -41,14 +41,13 @@ public class Button implements IRender
 		this.xPosition = xPosition;
 		this.yPosition = yPosition;
 	}
-	
 
 	@Override
-	public void render(Graphics2D g)
+	public void renderHud(Graphics2D g, int x, int y, int width, int height)
 	{
 		if (this.isSelected) g.setColor(Color.RED);
 		else g.setColor(Color.WHITE);
-		TextRenderer.drawStringCentered(g, this.text, this.xPosition, this.yPosition);
+		TextRenderer.drawStringCentered(g, this.text, x + this.xPosition + width / 2, y + this.yPosition + height / 2);
 	}
 
 }

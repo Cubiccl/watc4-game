@@ -1,17 +1,21 @@
 package net.watc4.game.states;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 
 import net.watc4.game.display.Animation;
 import net.watc4.game.display.Background;
 import net.watc4.game.display.Sprite;
+import net.watc4.game.display.TextRenderer;
 import net.watc4.game.utils.GameSettings;
+import net.watc4.game.utils.GameUtils;
 import net.watc4.game.utils.IRender;
+import net.watc4.game.utils.IRenderHud;
 import net.watc4.game.utils.IUpdate;
 
 /** Represents a state of the Game, i.e. what is currently happening. */
-public abstract class State implements IRender, IUpdate
+public abstract class State implements IRender, IUpdate, IRenderHud
 {
 	/** The background : drawn behind the menu. */
 	private IRender background;
@@ -37,6 +41,18 @@ public abstract class State implements IRender, IUpdate
 	public void render(Graphics2D g)
 	{
 		if (this.background != null) this.background.render(g);
+	}
+
+	@Override
+	public void renderHud(Graphics2D g, int x, int y, int width, int height)
+	{
+		if (GameSettings.debugMode)
+		{
+			g.setColor(Color.DARK_GRAY);
+			TextRenderer.setFontSize(25);
+			TextRenderer.drawString(g, "Debug mode (F1)", x, y);
+			TextRenderer.drawString(g, "FPS=" + GameUtils.currentFPS + ", UPS=" + GameUtils.currentUPS, x, y + 30);
+		}
 	}
 
 	/** Changes this State's Background.

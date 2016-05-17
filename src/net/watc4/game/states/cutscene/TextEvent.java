@@ -3,7 +3,6 @@ package net.watc4.game.states.cutscene;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
-import net.watc4.game.display.Camera;
 import net.watc4.game.display.TextRenderer;
 import net.watc4.game.utils.GameUtils;
 
@@ -53,19 +52,21 @@ public class TextEvent extends CutsceneEvent
 	}
 
 	@Override
-	public void render(Graphics2D g)
+	public void renderHud(Graphics2D g, int x, int y, int width, int height)
 	{
-		int width = Camera.WIDTH, height = Camera.HEIGHT;
-		int y = 5, boxHeight = y * 6;
-		if (this.bottom) y = height - boxHeight - y;
+		super.renderHud(g, x, y, width, height);
+		final int offset = 5;
+		y += offset;
+		int boxHeight = offset * 6;
+		if (this.bottom) y += height - boxHeight - offset * 2;
 
 		g.setColor(new Color(50, 0, 50));
-		g.fillRect(5, y, width - 10, boxHeight);
+		g.fillRect(x + offset, y, width - offset * 4, boxHeight);
 		g.setColor(new Color(150, 100, 150));
-		g.drawRect(5, y, width - 10, boxHeight);
+		g.drawRect(x + offset, y, width - offset * 4, boxHeight);
 
 		TextRenderer.setFontSize(20);
-		TextRenderer.drawStringCentered(g, this.text, width / 2, y + boxHeight / 3);
+		TextRenderer.drawStringCentered(g, this.text, x + width / 2, y + boxHeight / 3);
 	}
 
 }

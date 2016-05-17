@@ -7,6 +7,8 @@ import java.awt.Graphics;
 public final class TextRenderer
 {
 
+	/** Reference to the Camera, if in a GameState. */
+	public static Camera camera;
 	/** The Font to use to draw text. Defaults to bold Consolas 30. */
 	public static Font font = new Font("Calibri", Font.BOLD, 30);
 
@@ -19,6 +21,11 @@ public final class TextRenderer
 	public static void drawString(Graphics g, String text, int x, int y)
 	{
 		g.setFont(font);
+		if (camera != null)
+		{
+			x -= camera.getXOffset();
+			y -= camera.getYOffset();
+		}
 		g.drawString(text, x, y + getFontHeight());
 	}
 
@@ -31,6 +38,11 @@ public final class TextRenderer
 	public static void drawStringCentered(Graphics g, String text, int x, int y)
 	{
 		g.setFont(font);
+		if (camera != null)
+		{
+			x -= camera.getXOffset();
+			y -= camera.getYOffset();
+		}
 		g.drawString(text, x - getStringWidth(g, text) / 2, y + getFontHeight() / 2);
 	}
 

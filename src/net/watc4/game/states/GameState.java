@@ -121,29 +121,35 @@ public class GameState extends State
 		((Graphics2D) g).scale(1 / this.camera.getScale(), 1 / this.camera.getScale());
 		g.translate(xOffset, yOffset);
 		this.drawDamage(g);
+	}
+
+	@Override
+	public void renderHud(Graphics2D g, int x, int y, int width, int height)
+	{
+		super.renderHud(g, x, y, width, height);
 
 		if (GameSettings.debugMode)
 		{
 			g.setColor(Color.DARK_GRAY);
-			TextRenderer.setFontSize(15);
-			int size = 20;
-			int y = 2;
-			TextRenderer.drawString(g, "Lumi: " + this.entityLumi.getX() + ", " + this.entityLumi.getY(), 0, y * size);
+			TextRenderer.setFontSize(25);
+			int size = 30;
+			y += 2;
+			TextRenderer.drawString(g, "Lumi: " + this.entityLumi.getX() + ", " + this.entityLumi.getY(), x, y * size);
 			++y;
-			TextRenderer.drawString(g, "Pattou: " + this.entityPattou.getX() + ", " + this.entityPattou.getY(), 0, y * size);
+			TextRenderer.drawString(g, "Pattou: " + this.entityPattou.getX() + ", " + this.entityPattou.getY(), x, y * size);
 			++y;
-			TextRenderer.drawString(g, "Lumi HP: " + this.entityLumi.getHealth() + "/" + EntityPlayer.MAX_HEALTH, 0, y * size);
+			TextRenderer.drawString(g, "Lumi HP: " + this.entityLumi.getHealth() + "/" + EntityPlayer.MAX_HEALTH, x, y * size);
 			++y;
-			TextRenderer.drawString(g, "Pattou HP: " + this.entityPattou.getHealth() + "/" + EntityPlayer.MAX_HEALTH, 0, y * size);
+			TextRenderer.drawString(g, "Pattou HP: " + this.entityPattou.getHealth() + "/" + EntityPlayer.MAX_HEALTH, x, y * size);
 			++y;
-			if (GameSettings.godMode) TextRenderer.drawString(g, "God mode (F2) ON", 0, y * size);
-			else TextRenderer.drawString(g, "God mode (F2) OFF", 0, y * size);
+			if (GameSettings.godMode) TextRenderer.drawString(g, "God mode (F2) ON", x, y * size);
+			else TextRenderer.drawString(g, "God mode (F2) OFF", x, y * size);
 			++y;
-			if (GameSettings.lightMode) TextRenderer.drawString(g, "Light mode (F3) ON", 0, y * size);
-			else TextRenderer.drawString(g, "Light mode (F3) OFF", 0, y * size);
+			if (GameSettings.lightMode) TextRenderer.drawString(g, "Light mode (F3) ON", x, y * size);
+			else TextRenderer.drawString(g, "Light mode (F3) OFF", x, y * size);
 			++y;
-			if (GameSettings.drawHitboxes) TextRenderer.drawString(g, "Hitbox mode (F4) ON", 0, y * size);
-			else TextRenderer.drawString(g, "Hitbox mode (F4) OFF", 0, y * size);
+			if (GameSettings.drawHitboxes) TextRenderer.drawString(g, "Hitbox mode (F4) ON", x, y * size);
+			else TextRenderer.drawString(g, "Hitbox mode (F4) OFF", x, y * size);
 
 		}
 	}

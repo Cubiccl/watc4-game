@@ -8,7 +8,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferStrategy;
 
 import net.watc4.game.display.AnimationManager;
-import net.watc4.game.display.TextRenderer;
 import net.watc4.game.display.Window;
 import net.watc4.game.entity.EntityRegistry;
 import net.watc4.game.map.TileRegistry;
@@ -16,7 +15,6 @@ import net.watc4.game.states.GameState;
 import net.watc4.game.states.State;
 import net.watc4.game.states.menu.MainMenuState;
 import net.watc4.game.utils.Controls;
-import net.watc4.game.utils.GameSettings;
 import net.watc4.game.utils.GameUtils;
 import net.watc4.game.utils.InputManager;
 
@@ -82,7 +80,7 @@ public class Game implements Runnable
 
 	public Game()
 	{
-		this("map2");
+		this("bigmap2");
 	}
 
 	public Game(String map)
@@ -140,21 +138,15 @@ public class Game implements Runnable
 		this.window.prepareGraphics(g);
 		this.state.render(g);
 
-		if (GameSettings.debugMode)
-		{
-			g.setColor(Color.DARK_GRAY);
-			TextRenderer.setFontSize(15);
-			TextRenderer.drawString(g, "Debug mode (F1)", 0, 0);
-			TextRenderer.drawString(g, "FPS=" + GameUtils.currentFPS + ", UPS=" + GameUtils.currentUPS, 0, TextRenderer.getFontHeight());
-		}
-
+		g.setTransform(defaultTransform);
 		if (this.transition != 0)
 		{
 			g.setColor(new Color(0, 0, 0, Math.abs(this.transition) * 255 / TRANSITION));
 			g.fillRect(0, 0, this.window.canvas.getWidth(), this.window.canvas.getHeight());
 		}
 
-		g.setTransform(defaultTransform);
+		int[] dimensions = this.window.getGameDimensions();
+		this.state.renderHud(g, dimensions[0], dimensions[1], dimensions[2], dimensions[3]);
 		this.window.drawBorders(g);
 		g.dispose();
 		bufferStrategy.show();
