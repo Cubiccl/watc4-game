@@ -133,18 +133,18 @@ public class MapEditor extends JFrame
 	{
 		for (int i = 0; i < ajoutCutscene.length; i++)
 		{
-			if (o.equals(ajoutCutscene[i])) return i + 1;
+			if (o.equals(ajoutCutscene[i])) return i;
 		}
 		return -1;
 	}
 
 	public static void putAddButtons()
 	{
-		ajoutCutscene = new JButton[eventList.size()];
+		ajoutCutscene = new JButton[eventList.size()+1];
 		for (int i = 0; i < ajoutCutscene.length; i++)
 		{
 			ajoutCutscene[i] = new JButton(new ImageIcon(Sprite.PLUS.getImage()));
-			ajoutCutscene[i].setBounds(160, eventList.get(i).getHeight() * i + 113, 20, 20);
+			ajoutCutscene[i].setBounds(160, 100 * i + 13, 20, 20);
 			cutsceneView.add(ajoutCutscene[i]);
 			ajoutCutscene[i].addMouseListener(new MouseAdapter()
 			{

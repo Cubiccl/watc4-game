@@ -23,7 +23,7 @@ public class TileLabel extends JLabel
 		{
 			if (en.getClass().getConstructors()[1].getParameters()[i].getType().toString().equals("int")) entityValues[i] = 0;
 			else if (en.getClass().getConstructors()[1].getParameters()[i].getType().toString().equals("float")) entityValues[i] = 0;
-			else entityValues[i] = null;
+			else entityValues[i] = "null";
 		}
 	}
 

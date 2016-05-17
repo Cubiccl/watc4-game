@@ -20,22 +20,6 @@ public class EventChooser extends JDialog
 
 	private final JPanel contentPanel = new JPanel();
 	private static JComboBox<String> eventComboBox;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args)
-	{
-		try
-		{
-			EventChooser dialog = new EventChooser(0);
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
 	
 	public static String[] getEventList()
 	{

@@ -23,12 +23,12 @@ public class CutsceneState extends State
 			if (line.startsWith("Text")) cutscene.addEvent(new TextEvent(cutscene, line.substring("Text=".length())));
 			if (line.startsWith("Cutscene"))
 			{
-				String[] values = line.split(" ");
+				String[] values = line.split("\t");
 				cutscene.addEvent(new ChangeCutsceneEvent(cutscene, values[1], values[2]));
 			}
 			if (line.startsWith("Move"))
 			{
-				String[] values = line.split(" ");
+				String[] values = line.split("\t");
 				cutscene.addEvent(new EntityMovementEvent(cutscene, Integer.parseInt(values[1]), Float.parseFloat(values[2]), Float.parseFloat(values[3])));
 			}
 		}
