@@ -32,7 +32,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
@@ -72,7 +71,6 @@ public class MapEditor extends JFrame
 	private final static JMenuItem createMapMenu = new JMenuItem("Nouveau");
 	private static ArrayList<EventLabel> eventList = new ArrayList<EventLabel>();
 	private static TileLabel[][] tilemap;
-	private static byte[][] data;
 	private static TileLabel[] tileChoice, entityChoice;
 	private static int selectedTile, selectedEntity;
 	private static JPanel tilesMenu, entityMenu, characterMenu;
@@ -628,16 +626,21 @@ public class MapEditor extends JFrame
 		}
 		mapView.updateUI();
 
-		fieldLumiX.setText(String.valueOf(info[2]));
-		fieldLumiY.setText(String.valueOf(info[3]));
-		fieldPattouX.setText(String.valueOf(info[4]));
-		fieldPattouY.setText(String.valueOf(info[5]));
-		focusLumi.add(lumiEyes);
-		tilemap[info[2]][info[3]].add(focusLumi);
-		tilemap[info[2]][info[3]].updateUI();
-		tilemap[info[4]][info[5]].add(focusPattou);
-		tilemap[info[4]][info[5]].updateUI();
-
+		if (info[2] >= 0 && info[3] >= 0)
+		{
+			fieldLumiX.setText(String.valueOf(info[2]));
+			fieldLumiY.setText(String.valueOf(info[3]));
+			focusLumi.add(lumiEyes);
+			tilemap[info[2]][info[3]].add(focusLumi);
+			tilemap[info[2]][info[3]].updateUI();
+		}
+		if (info[4] >= 0 && info[5] >= 0)
+		{
+			fieldPattouX.setText(String.valueOf(info[4]));
+			fieldPattouY.setText(String.valueOf(info[5]));
+			tilemap[info[4]][info[5]].add(focusPattou);
+			tilemap[info[4]][info[5]].updateUI();
+		}
 		exists = true;
 		return true;
 	}
@@ -682,9 +685,17 @@ public class MapEditor extends JFrame
 		String path = mapFile.getAbsolutePath();
 		if (!(path.endsWith(".txt") || path.endsWith(".TXT"))) path += ".txt";
 		PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(path)));
-		int[] info = new int[]
-		{ tilemap.length, tilemap[0].length, Integer.valueOf(fieldLumiX.getText()), Integer.valueOf(fieldLumiY.getText()),
-				Integer.valueOf(fieldPattouX.getText()), Integer.valueOf(fieldPattouY.getText()) };
+		int[] info = new int[6];
+		info[0] = tilemap.length;
+		info[1] = tilemap[0].length;
+		if (fieldLumiX.getText().equals("")) info[2] = -1;
+		else info[2] = Integer.valueOf(fieldLumiX.getText());
+		if (fieldLumiY.getText().equals("")) info[3] = -1;
+		else info[3] = Integer.valueOf(fieldLumiY.getText());
+		if (fieldPattouX.getText().equals("")) info[4] = -1;
+		else info[4] = Integer.valueOf(fieldPattouX.getText());
+		if (fieldPattouY.getText().equals("")) info[5] = -1;
+		else info[5] = Integer.valueOf(fieldPattouY.getText());
 		for (int i = 0; i < fileHeader.length - 1; i++)
 		{
 			pw.println(new String(fileHeader[i] + info[i]));
@@ -779,16 +790,10 @@ public class MapEditor extends JFrame
 			@Override
 			public void mouseClicked(MouseEvent arg0)
 			{
-				if (tilemap == null || fieldLumiX.getText().equals("") || fieldLumiY.getText().equals("") || fieldPattouX.getText().equals("")
-						|| fieldPattouY.getText().equals(""))
+
+				if (tilemap == null)
 				{
-					if (tilemap == null)
-					{
-						JOptionPane.showMessageDialog(null, "Veuillez cr\u00E9er une carte.", null, JOptionPane.ERROR_MESSAGE);
-					} else if (tilemap != null)
-					{
-						JOptionPane.showMessageDialog(null, "Veuillez placer Lumi et Pattou sur la carte.", null, JOptionPane.ERROR_MESSAGE);
-					}
+					JOptionPane.showMessageDialog(null, "Veuillez cr\u00E9er une carte.", null, JOptionPane.ERROR_MESSAGE);
 				} else
 				{
 					try
@@ -846,16 +851,9 @@ public class MapEditor extends JFrame
 			@Override
 			public void mouseClicked(MouseEvent e)
 			{
-				if (tilemap == null || fieldLumiX.getText().equals("") || fieldLumiY.getText().equals("") || fieldPattouX.getText().equals("")
-						|| fieldPattouY.getText().equals(""))
+				if (tilemap == null)
 				{
-					if (tilemap == null)
-					{
-						JOptionPane.showMessageDialog(null, "Veuillez cr\u00E9er une carte.", null, JOptionPane.ERROR_MESSAGE);
-					} else if (tilemap != null)
-					{
-						JOptionPane.showMessageDialog(null, "Veuillez placer Lumi et Pattou sur la carte.", null, JOptionPane.ERROR_MESSAGE);
-					}
+					JOptionPane.showMessageDialog(null, "Veuillez cr\u00E9er une carte.", null, JOptionPane.ERROR_MESSAGE);
 				} else if (!exists)
 				{
 					int returnVal = fc.showSaveDialog(MapEditor.this);
@@ -896,16 +894,9 @@ public class MapEditor extends JFrame
 			@Override
 			public void mouseClicked(MouseEvent e)
 			{
-				if (tilemap == null || fieldLumiX.getText().equals("") || fieldLumiY.getText().equals("") || fieldPattouX.getText().equals("")
-						|| fieldPattouY.getText().equals(""))
+				if (tilemap == null)
 				{
-					if (tilemap == null)
-					{
-						JOptionPane.showMessageDialog(null, "Veuillez cr\u00E9er une carte.", null, JOptionPane.ERROR_MESSAGE);
-					} else if (tilemap != null)
-					{
-						JOptionPane.showMessageDialog(null, "Veuillez placer Lumi et Pattou sur la carte.", null, JOptionPane.ERROR_MESSAGE);
-					}
+					JOptionPane.showMessageDialog(null, "Veuillez cr\u00E9er une carte.", null, JOptionPane.ERROR_MESSAGE);
 				} else
 				{
 					int returnVal = fc.showSaveDialog(MapEditor.this);
