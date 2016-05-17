@@ -10,6 +10,13 @@ public class EventLabelMove extends EventLabel
 	private String[] infoStr = new String[]
 	{ "UUID :", "X :", "Y :" };
 	private JTextField[] fields = new JTextField[3];
+	
+	public int getValueFromWhichField(int index)
+	{
+		if(index < 0 || index > 2)
+			return -1;
+		else return Integer.valueOf(fields[index].getText());
+	}
 
 	public void init()
 	{

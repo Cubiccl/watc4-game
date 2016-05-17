@@ -131,9 +131,9 @@ public class MapEditor extends JFrame
 
 	public static int detectButtonSource(Object o)
 	{
-		for(int i = 0; i < ajoutCutscene.length; i++)
+		for (int i = 0; i < ajoutCutscene.length; i++)
 		{
-			if(o.equals(ajoutCutscene[i])) return i+1;
+			if (o.equals(ajoutCutscene[i])) return i + 1;
 		}
 		return -1;
 	}
@@ -170,7 +170,7 @@ public class MapEditor extends JFrame
 	{
 		return eventList;
 	}
-	
+
 	public static void setEventList(ArrayList<EventLabel> list)
 	{
 		eventList = list;
@@ -204,16 +204,16 @@ public class MapEditor extends JFrame
 					@Override
 					public void mouseClicked(MouseEvent e)
 					{
-							try
-							{
-								eventList.clear();
-								EventChooser dialog = new EventChooser(0);
-								dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-								dialog.setVisible(true);
-							} catch (Exception ex)
-							{
-								ex.printStackTrace();
-							}
+						try
+						{
+							eventList.clear();
+							EventChooser dialog = new EventChooser(0);
+							dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+							dialog.setVisible(true);
+						} catch (Exception ex)
+						{
+							ex.printStackTrace();
+						}
 					}
 				});
 		cutsceneOptions[1].addMouseListener(new MouseAdapter() // Ouvrir
@@ -224,18 +224,31 @@ public class MapEditor extends JFrame
 						int returnVal = sceneC.showOpenDialog(MapEditor.getFrames()[0]);
 						if (returnVal == JFileChooser.APPROVE_OPTION)
 						{
-							// File cutsceneFile = sceneC.getSelectedFile();
-							// openMapFile(mapFile);
+							File cutsceneFile = sceneC.getSelectedFile();
+							openCutsceneFile(cutsceneFile);
 							MapEditor.getFrames()[0].setTitle("");
 						}
 					}
 				});
 		cutsceneOptions[2].addMouseListener(new MouseAdapter() // Enregistrer
 				{
+					@SuppressWarnings("deprecation")
 					@Override
 					public void mouseClicked(MouseEvent arg0)
 					{
-
+						int returnVal = sceneC.showSaveDialog(MapEditor.getFrames()[0]);
+						if (returnVal == JFileChooser.APPROVE_OPTION)
+						{
+							try
+							{
+								createCutsceneFile(sceneC.getSelectedFile());
+								Date d = new Date();
+								MapEditor.getFrames()[0].setTitle("Sc\u00E8ne enregistr\u00E9e \u00E0 " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds());
+							} catch (IOException e1)
+							{
+								e1.printStackTrace();
+							}
+						}
 					}
 				});
 		cutsceneOptions[3].addMouseListener(new MouseAdapter() // Enregistrer sous
@@ -464,6 +477,52 @@ public class MapEditor extends JFrame
 		});
 	}
 
+	public static boolean openCutsceneFile(File cutsceneFile)
+	{
+		String[] lines = FileUtils.readFileAsStringArray(cutsceneFile.getAbsolutePath());
+
+		for (int i = 0; i < lines.length; i++)
+		{
+			if (!(lines[i].startsWith("Text=") || lines[i].startsWith("Cutscene=") || lines[i].startsWith("Move=")))
+			{
+				System.err.println("Fichier incompatible.");
+				return false;
+			}
+		}
+
+		ArrayList<EventLabel> fileEventList = new ArrayList<EventLabel>();
+
+		for (int i = 0; i < lines.length; i++)
+		{
+			String[] split = lines[i].split("\t");
+			switch (lines[i].split("=")[0])
+			{
+				case "Cutscene":
+				{
+					fileEventList.add(new EventLabelCutscene(split[1], split[2]));
+					break;
+				}
+				case "Text":
+				{
+					fileEventList.add(new EventLabelText(split[1]));
+					break;
+				}
+				case "Move":
+				{
+					fileEventList.add(new EventLabelMove(Integer.valueOf(split[1]), Integer.valueOf(split[2]), Integer.valueOf(split[3])));
+					break;
+				}
+				default:
+					break;
+			}
+		}
+
+		eventList = fileEventList;
+		updateEventList();
+		updateScrollCutscene();
+		return true;
+	}
+
 	public static boolean openMapFile(File mapFile)
 	{
 		String[] lines = FileUtils.readFileAsStringArray(mapFile.getAbsolutePath());
@@ -563,6 +622,38 @@ public class MapEditor extends JFrame
 		tilemap[info[4]][info[5]].updateUI();
 
 		exists = true;
+		return true;
+	}
+
+	public static boolean createCutsceneFile(File cutsceneFile) throws IOException
+	{
+		String path = cutsceneFile.getAbsolutePath();
+		if (!(path.endsWith(".txt") || path.endsWith(".TXT"))) path += ".txt";
+		PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(path)));
+		for (int i = 0; i < eventList.size(); i++)
+		{
+			switch (eventList.get(i).getClass().getSimpleName().replace("EventLabel", ""))
+			{
+				case "Cutscene":
+				{
+					pw.println("Cutscene=\t"+((EventLabelCutscene)eventList.get(i)).getCutsceneText()+"\t"+((EventLabelCutscene)eventList.get(i)).getMapText());
+					break;
+				}
+				case "Text":
+				{
+					pw.println("Text=\t"+((EventLabelText)eventList.get(i)).getText());
+					break;
+				}
+				case "Move":
+				{
+					pw.println("Move=\t"+((EventLabelMove)eventList.get(i)).getValueFromWhichField(0)+"\t"+((EventLabelMove)eventList.get(i)).getValueFromWhichField(1)+"\t"+((EventLabelMove)eventList.get(i)).getValueFromWhichField(2));
+					break;
+				}
+				default:
+					break;
+			}
+		}
+		pw.close();
 		return true;
 	}
 

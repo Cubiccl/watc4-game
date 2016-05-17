@@ -105,11 +105,11 @@ public class EntityValues extends JDialog
 	private final JPanel contentPanel = new JPanel();
 
 	/** Create the dialog. */
-	public EntityValues(TileLabel tl)
+	public EntityValues(TileLabel tile)
 	{
+		tl = tile;
 		enId = tl.getEnId();
 		en = tl.getEn();
-		this.tl = tl;
 		setModal(true);
 		definitions = EntityRegistry.getDefinitions().get(en.getClass());
 		setBounds(100, 100, 400, 40 * (en.getClass().getConstructors()[1].getParameterCount() - 1));

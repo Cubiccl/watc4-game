@@ -7,6 +7,12 @@ import javax.swing.JTextArea;
 public class EventLabelText extends EventLabel
 {
 	private JTextArea text;
+	
+	public String getText()
+	{
+		if (text != null) return text.getText();
+		else return null;
+	}
 
 	public void init(){
 		if(text == null) text = new JTextArea();

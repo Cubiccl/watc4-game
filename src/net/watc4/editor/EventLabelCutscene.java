@@ -9,6 +9,16 @@ public class EventLabelCutscene extends EventLabel
 {
 	private JComboBox<String> cutscene, map;
 
+	public String getCutsceneText()
+	{
+		return (String)cutscene.getSelectedItem();
+	}
+
+	public String getMapText()
+	{
+		return (String)map.getSelectedItem();
+	}
+
 	public void init()
 	{
 		cutscene = new JComboBox<String>(getCutsceneList());
