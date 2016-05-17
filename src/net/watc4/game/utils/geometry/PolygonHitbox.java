@@ -36,8 +36,20 @@ public class PolygonHitbox extends Hitbox
 	{
 		if (this.vertices.length > hitbox.vertices.length) return hitbox.collidesWith(this);
 
-		for (Point2D point : this.vertices)
-			if (hitbox.contains(point)) return true;
+		Point2D a, b, c, d;
+		for (int i = 0; i < this.vertices.length; ++i)
+		{
+			a = this.vertices[i];
+			if (i == this.vertices.length - 1) b = this.vertices[0];
+			else b = this.vertices[i + 1];
+			for (int j = 0; j < hitbox.vertices.length; ++j)
+			{
+				c = hitbox.vertices[j];
+				if (j == hitbox.vertices.length - 1) d = hitbox.vertices[0];
+				else d = hitbox.vertices[j + 1];
+				if (segmentsCross(a, b, c, d)) return true;
+			}
+		}
 
 		return false;
 	}
@@ -51,7 +63,7 @@ public class PolygonHitbox extends Hitbox
 			a = this.vertices[i];
 			if (i == this.vertices.length - 1) b = this.vertices[0];
 			else b = this.vertices[i + 1];
-			if ((b.getX() - a.getX()) * (point.getY() - a.getY()) - (b.getY() - a.getY()) * (point.getX() - a.getX()) < 0) return false;
+			if ((b.getX() - a.getX()) * (point.getY() - a.getY()) - (b.getY() - a.getY()) * (point.getX() - a.getX()) > 0) return false;
 		}
 		return true;
 	}

@@ -7,6 +7,7 @@ import net.watc4.game.display.Sprite;
 import net.watc4.game.map.tiles.TileAir;
 import net.watc4.game.map.tiles.TileGround;
 import net.watc4.game.map.tiles.TileLadder;
+import net.watc4.game.map.tiles.TileSlope;
 import net.watc4.game.utils.GameUtils;
 
 /** Registers all Tiles. */
@@ -38,7 +39,7 @@ public class TileRegistry
 		LADDER_TOP = new TileLadder(8, new Animation(Sprite.TILE_LADDER_TOP)); // Top Ladder
 		new TileLadder(9, new Animation(Sprite.TILE_LADDER_BASE)); // Ladder
 		new TileLadder(10, new Animation(Sprite.TILE_LADDER_BACK)); // Bottom Ladder
-
+		new TileSlope(11, new Animation(Sprite.TILE_SLOPE_TL));
 	}
 
 	/** @param id - A Tile identifier.

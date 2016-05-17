@@ -1,6 +1,7 @@
 package net.watc4.game.map;
 
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 
 import net.watc4.game.display.Animation;
 import net.watc4.game.utils.geometry.Hitbox;
@@ -31,12 +32,20 @@ public class Tile
 		TileRegistry.registerTile(this);
 	}
 
-	/** @param x - The X Position of this Tile (in tiles.)
-	 * @param y - The Y Position of this Tile (in tiles.)
-	 * @return The Hitbox of this Tile. */
-	public Hitbox hitbox(int x, int y)
+	/** @return The Image of this Tile. */
+	public BufferedImage getSprite(Map map, int x, int y, int data)
 	{
-		return new RectangleHitbox(x * Map.TILESIZE, y * Map.TILESIZE, Map.TILESIZE, Map.TILESIZE);
+		return this.sprite.getImage();
+	}
+
+	/** @param map - The Map.
+	 * @param x - The X Position of this Tile (in tiles.)
+	 * @param y - The Y Position of this Tile (in tiles.)
+	 * @param data- The Tile data.
+	 * @return The Hitbox of this Tile. */
+	public Hitbox hitbox(Map map, int x, int y, int data)
+	{
+		return new RectangleHitbox(x * Map.TILESIZE, y * Map.TILESIZE, Map.TILESIZE - 1, Map.TILESIZE - 1);
 	}
 
 	/** Renders this Tile.
@@ -48,7 +57,7 @@ public class Tile
 	 * @param data - This Tile's Data. */
 	public void renderAt(Graphics2D g, Map map, int x, int y, int data)
 	{
-		if (this.sprite != null) g.drawImage(this.sprite.getImage(), x * Map.TILESIZE, y * Map.TILESIZE, null);
+		if (this.sprite != null) g.drawImage(this.getSprite(map, x, y, data), x * Map.TILESIZE, y * Map.TILESIZE, null);
 	}
 
 }

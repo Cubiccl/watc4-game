@@ -232,7 +232,9 @@ public abstract class Entity implements IRender, IUpdate
 		{
 			for (int y = tileYStart; y < tileYEnd; ++y)
 			{
-				if (this.game.getMap().getTileAt(x, y).isSolid && this.game.getMap().getTileAt(x, y).hitbox(x, y).collidesWith(this.hitbox(dx, dy))) return false;
+				if (this.game.getMap().getTileAt(x, y).isSolid
+						&& this.game.getMap().getTileAt(x, y).hitbox(this.game.getMap(), x, y, this.game.getMap().getDataAt(x, y))
+								.collidesWith(this.hitbox(dx, dy))) return false;
 			}
 		}
 
@@ -296,19 +298,28 @@ public abstract class Entity implements IRender, IUpdate
 			ySpeed += GRAVITY;
 		}
 
-		if (!placeFree(xSpeed, 0))
-		{
-			while (placeFree(Math.signum(xSpeed), 0))
-				xPos += Math.signum(xSpeed);
-			xSpeed = 0;
-		}
-
 		if (!placeFree(0, ySpeed))
 		{
 			while (placeFree(0, Math.signum(ySpeed)))
 				yPos += Math.signum(ySpeed);
 			ySpeed = 0;
 		}
+
+		if (!placeFree(xSpeed, 0))
+		{
+			if (placeFree(xSpeed, -Math.abs(xSpeed)))
+			{
+				xPos += xSpeed;
+				yPos += -Math.abs(xSpeed);
+				xSpeed = 0;
+			} else
+			{
+				while (placeFree(Math.signum(xSpeed), 0))
+					xPos += Math.signum(xSpeed);
+				xSpeed = 0;
+			}
+		}
+
 		xPos += xSpeed;
 		yPos += ySpeed;
 
