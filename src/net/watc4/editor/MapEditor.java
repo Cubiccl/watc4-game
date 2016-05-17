@@ -12,8 +12,6 @@ import java.awt.GridBagLayout;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -34,6 +32,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
@@ -346,9 +345,23 @@ public class MapEditor extends JFrame
 				TileLabel tl = tilemap[i][j];
 				if (mode == MapEditor.MODE_TILES)
 				{
-					if (TileRegistry.getTileFromId(selectedTile).sprite == null) tl.setIcon(new ImageIcon(Sprite.TILE_WALL.getImage()));
-					else tl.setIcon(new ImageIcon(TileRegistry.getTileFromId(selectedTile).sprite.getImage()));
-					tl.setId(selectedTile);
+					if (ev.getButton() == MouseEvent.BUTTON3)
+					{
+						if (TileRegistry.getTileFromId(tl.getId()).maxData > 0)
+						{
+							byte d;
+							if (tl.getData() == TileRegistry.getTileFromId(tl.getId()).maxData) d = 0;
+							else d = (byte) (tl.getData() + 1);
+							tl.setData(d);
+							tl.setIcon(new ImageIcon(TileRegistry.getTileFromId(selectedTile).getSprite(null, 0, 0, tl.getData())));
+							tl.updateUI();
+						}
+					} else
+					{
+						if (TileRegistry.getTileFromId(selectedTile).sprite == null) tl.setIcon(new ImageIcon(Sprite.TILE_WALL.getImage()));
+						else tl.setIcon(new ImageIcon(TileRegistry.getTileFromId(selectedTile).getSprite(null, 0, 0, tl.getData())));
+						tl.setId(selectedTile);
+					}
 				} else if (mode == MapEditor.MODE_ENTITY)
 				{
 					if (ev.getButton() == MouseEvent.BUTTON3 && tl.getEn() != null && tl.getEntityValues().length <= 3)
@@ -568,7 +581,7 @@ public class MapEditor extends JFrame
 				if (TileRegistry.getTileFromId(tilemap[i][j].getId()).sprite == null)
 				{
 					tilemap[i][j].setIcon(new ImageIcon(Sprite.TILE_WALL.getImage()));
-				} else tilemap[i][j].setIcon(new ImageIcon(TileRegistry.getTileFromId(tilemap[i][j].getId()).sprite.getImage()));
+				} else tilemap[i][j].setIcon(new ImageIcon(TileRegistry.getTileFromId(tilemap[i][j].getId()).getSprite(null, 0, 0, tilemap[i][j].getData())));
 				tilemap[i][j].setVisible(true);
 				gbc.gridx = i;
 				gbc.gridy = j;
@@ -991,7 +1004,7 @@ public class MapEditor extends JFrame
 		label_2.setBounds(555, 15, 32, 32);
 		entityMenu.add(label_2);
 
-		lblEntityName.setBounds(459, 49, 55, 16);
+		lblEntityName.setBounds(459, 49, 100, 16);
 		entityMenu.add(lblEntityName);
 
 		characterMenu = new JPanel();

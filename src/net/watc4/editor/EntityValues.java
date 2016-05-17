@@ -26,13 +26,13 @@ public class EntityValues extends JDialog
 	private static Entity en;
 	private static int enId;
 	private static JTextField[] fields;
-	private static JComboBox<String> cutsceneField;
+	private static JComboBox<String> cutsceneField, mapField;
 	private static JLabel[] fieldsName;
 	private static TileLabel tl;
-	
-	public static String getText(int i){
-		if(tl.getEnId() == 3 && i == 5)
-			return ((String)cutsceneField.getSelectedItem());
+
+	public static String getText(int i)
+	{
+		if (tl.getEnId() == 3 && i == 5) return ((String) cutsceneField.getSelectedItem());
 		else return fields[i].getText();
 	}
 
@@ -198,19 +198,36 @@ public class EntityValues extends JDialog
 		int currentY = 10;
 		for (int i = 0; i < fields.length; i++)
 		{
-			if (tl.getEnId() == 3 && i == 5)
+			if (i == 5)
 			{
-				cutsceneField = new JComboBox<String>(EventLabelCutscene.getCutsceneList());
-				cutsceneField.setBounds(250, currentY + 3, 100, 20);
-				contentPanel.add(cutsceneField);
-				fieldsName[i] = new JLabel(definitions[i * 2] + " (" + definitions[1 + i * 2] + ") : ");
-				fieldsName[i].setBounds(30, currentY, 200, 20);
-				contentPanel.add(fieldsName[i]);
-				if(!tl.getEntityValues()[6].equals("null")){
-					cutsceneField.setSelectedItem(tl.getEntityValues()[6]);
+				if (tl.getEnId() == 3)
+				{
+					cutsceneField = new JComboBox<String>(EventLabelCutscene.getCutsceneList());
+					cutsceneField.setBounds(250, currentY + 3, 100, 20);
+					contentPanel.add(cutsceneField);
+					fieldsName[i] = new JLabel(definitions[i * 2] + " (" + definitions[1 + i * 2] + ") : ");
+					fieldsName[i].setBounds(30, currentY, 200, 20);
+					contentPanel.add(fieldsName[i]);
+					if (!tl.getEntityValues()[6].equals("null"))
+					{
+						cutsceneField.setSelectedItem(tl.getEntityValues()[6]);
+					}
+				} else if (tl.getEnId() == 4)
+				{
+					mapField = new JComboBox<String>(EventLabelCutscene.getMapList());
+					mapField.setBounds(250, currentY + 3, 100, 20);
+					contentPanel.add(mapField);
+					fieldsName[i] = new JLabel(definitions[i * 2] + " (" + definitions[1 + i * 2] + ") : ");
+					fieldsName[i].setBounds(30, currentY, 200, 20);
+					contentPanel.add(fieldsName[i]);
+					if (!tl.getEntityValues()[6].equals("null"))
+					{
+						mapField.setSelectedItem(tl.getEntityValues()[6]);
+					}
 				}
+				currentY += 40;
 			} else fields[i] = new JTextField(String.valueOf(tl.getEntityValues()[i + 1]));
-			if (i >= 2 &! (tl.getEnId() == 3 && i == 5))
+			if (i >= 2 && !(tl.getEnId() == 3 && i == 5) && !(tl.getEnId() == 4 && i == 5))
 			{
 				fieldsName[i] = new JLabel(definitions[i * 2] + " (" + definitions[1 + i * 2] + ") : ");
 				fieldsName[i].setBounds(30, currentY, 200, 20);
