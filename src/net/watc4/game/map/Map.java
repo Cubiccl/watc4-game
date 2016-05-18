@@ -31,7 +31,7 @@ public class Map implements IRender, IUpdate
 		for (int i = 0; i < info.length; i++)
 			info[i] = Integer.valueOf(mapText[i].split(" = ")[1]);
 
-		Map map = new Map(game, info[0], info[1], info[2] * Map.TILESIZE, info[3] * Map.TILESIZE, info[4] * Map.TILESIZE, info[5] * Map.TILESIZE);
+		Map map = new Map(game, mapName, info[0], info[1], info[2] * Map.TILESIZE, info[3] * Map.TILESIZE, info[4] * Map.TILESIZE, info[5] * Map.TILESIZE);
 
 		String[] values; // Tiles values temporarily stored per line from the map file
 		for (int y = 0; y < info[1]; y++)
@@ -76,6 +76,8 @@ public class Map implements IRender, IUpdate
 	public final LightManager lightManager;
 	/** Pattou's spawn point. */
 	public final int lumiSpawnX, lumiSpawnY;
+	/** This map's Name. */
+	public final String name;
 	/** Pattou's spawn point. */
 	public final int pattouSpawnX, pattouSpawnY;
 	/** Height of the map in tiles. */
@@ -88,9 +90,10 @@ public class Map implements IRender, IUpdate
 	 * @param lumiSpawnX
 	 * @param height
 	 * @param width */
-	public Map(GameState game, int width, int height, int lumiSpawnX, int lumiSpawnY, int pattouSpawnX, int pattouSpawnY)
+	public Map(GameState game, String name, int width, int height, int lumiSpawnX, int lumiSpawnY, int pattouSpawnX, int pattouSpawnY)
 	{
 		this.game = game;
+		this.name = name;
 		this.width = width;
 		this.height = height;
 		this.lumiSpawnX = lumiSpawnX;

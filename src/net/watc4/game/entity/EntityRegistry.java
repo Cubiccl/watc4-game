@@ -32,7 +32,7 @@ public final class EntityRegistry
 		{ "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 300 - 399", "Tile Width", "unsigned int", "Tile Heigth", "unsigned int",
 				"Cutscene Name", "string" });
 		registerEntity(4, EntityDoor.class, "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 400 - 499", "Tile Width", "unsigned int",
-				"Tile Heigth", "unsigned int", "Map Name", "string", "Lumi X", "int", "Lumi Y", "int", "Pattou X", "int", "Pattou Y", "int");
+				"Tile Heigth", "unsigned int");
 		registerEntity(5, EntityFluorescent.class, new String[]
 		{ "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 500 - 599", "ChargeTime", "float", "UnchargeTime", "float", "Intensity max", "int" });
 	}

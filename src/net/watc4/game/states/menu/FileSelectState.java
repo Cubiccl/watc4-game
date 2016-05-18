@@ -3,6 +3,7 @@ package net.watc4.game.states.menu;
 import net.watc4.game.Game;
 import net.watc4.game.states.GameState;
 import net.watc4.game.utils.FileUtils;
+import net.watc4.game.utils.lore.LoreManager;
 
 public class FileSelectState extends MenuState
 {
@@ -20,8 +21,8 @@ public class FileSelectState extends MenuState
 	@Override
 	protected void createButtons()
 	{
-		for (int i = 0; i < FileUtils.saves.length; ++i)
-			this.addButton(new Button(i + 2, "File " + (i + 1) + " : " + FileUtils.saves[i]));
+		for (int i = 0; i < LoreManager.saves.length; ++i)
+			this.addButton(new Button(i + 2, "File " + (i + 1) + " : " + LoreManager.saves[i]));
 		this.addButton(this.newFile = new Button(NEW, "New File"));
 		this.addButton(this.deleteFile = new Button(DELETE, "Delete"));
 	}
@@ -31,9 +32,9 @@ public class FileSelectState extends MenuState
 	{
 		if (selected.id == NEW)
 		{
-			FileUtils.newSave();
+			LoreManager.newSave();
 			FileUtils.saveSaves();
-			Game.getGame().setCurrentState(GameState.createNew("map2"));
+			Game.getGame().setCurrentState(GameState.createNew(LoreManager.firstMap));
 		}
 		if (selected.id == DELETE)
 		{
@@ -45,12 +46,12 @@ public class FileSelectState extends MenuState
 		{
 			if (this.deleting)
 			{
-				FileUtils.deleteSave(selected.id - 2);
+				LoreManager.deleteSave(selected.id - 2);
 				this.empty();
 				this.createButtons();
 				this.deleting = false;
 				this.updateMode();
-			} else Game.getGame().setCurrentState(GameState.createNew(FileUtils.saves[selected.id - 2]));
+			} else Game.getGame().setCurrentState(GameState.createNew(LoreManager.saves[selected.id - 2]));
 		}
 	}
 

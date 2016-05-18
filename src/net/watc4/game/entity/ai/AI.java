@@ -32,7 +32,7 @@ public abstract class AI implements IUpdate
 	public boolean destinationReached()
 	{
 		if (this.destination == null) return true;
-		return Math.abs(this.entity.getX() - this.destination[0]) < EPSILON && Math.abs(this.entity.getY() - this.destination[1]) < EPSILON;
+		return Math.abs(this.entity.getX() - this.destination[0]) <= EPSILON && Math.abs(this.entity.getY() - this.destination[1]) <= EPSILON;
 	}
 
 	/** Changes this Entity's destination.

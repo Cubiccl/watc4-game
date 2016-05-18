@@ -3,11 +3,11 @@ package net.watc4.game.states.cutscene;
 import java.awt.Graphics2D;
 import java.util.Stack;
 
-import net.watc4.game.Game;
 import net.watc4.game.entity.EntityCutscene;
 import net.watc4.game.states.GameState;
 import net.watc4.game.states.State;
 import net.watc4.game.utils.FileUtils;
+import net.watc4.game.utils.lore.LoreManager;
 
 /** Used when the Game displays a cutscene, thus explaining the game lore without gameplay. */
 public class CutsceneState extends State
@@ -26,7 +26,7 @@ public class CutsceneState extends State
 	 * @return The Cutscene created from the file. */
 	public static CutsceneState createFrom(GameState game, String cutsceneName)
 	{
-		CutsceneState cutscene = new CutsceneState(game);
+		CutsceneState cutscene = new CutsceneState(game, cutsceneName);
 		String[] data = FileUtils.readFileAsStringArray("res/cutscene/" + cutsceneName + ".txt");
 		for (String line : data)
 		{
@@ -53,13 +53,16 @@ public class CutsceneState extends State
 	protected Stack<CutsceneEvent> events;
 	/** The GameState used to render the environment. */
 	public GameState gameState;
+	/** This Cutscene's name. */
+	public final String name;
 
 	/** Creates a new Cutscene.
 	 * 
 	 * @param gameState - The GameState used to render the environment. */
-	public CutsceneState(GameState gameState)
+	public CutsceneState(GameState gameState, String name)
 	{
 		this.gameState = gameState;
+		this.name = name;
 		this.gameState.isInCutscene = true;
 		this.events = new Stack<CutsceneEvent>();
 	}
@@ -110,8 +113,8 @@ public class CutsceneState extends State
 
 		if (this.events.isEmpty())
 		{
-			Game.getGame().setCurrentState(this.gameState, false);
 			this.gameState.isInCutscene = false;
+			LoreManager.activateEnding(this.name, this.gameState);
 		} else this.events.peek().update();
 
 		this.gameState.update();

@@ -1,2 +1,1 @@
 Text=	Hi, I am a Cutscene!
-Cutscene=	cutscene2	bigmap2

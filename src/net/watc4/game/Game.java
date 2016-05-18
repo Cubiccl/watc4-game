@@ -17,9 +17,9 @@ import net.watc4.game.states.GameState;
 import net.watc4.game.states.State;
 import net.watc4.game.states.menu.MainMenuState;
 import net.watc4.game.utils.Controls;
-import net.watc4.game.utils.FileUtils;
 import net.watc4.game.utils.GameUtils;
 import net.watc4.game.utils.InputManager;
+import net.watc4.game.utils.lore.LoreManager;
 
 /** Main object. Contains a thread to run the game. */
 public class Game implements Runnable
@@ -37,7 +37,7 @@ public class Game implements Runnable
 
 	public static void main(String[] args)
 	{
-		FileUtils.loadSaves();
+		LoreManager.createLore();
 		AnimationManager.create();
 		TileRegistry.createTiles();
 		EntityRegistry.createEntities();

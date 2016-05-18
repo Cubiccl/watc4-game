@@ -10,43 +10,15 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
+import net.watc4.game.utils.lore.LoreManager;
+
 public class FileUtils
 {
-
-	/** Contains the Save Files. */
-	public static String[] saves;
-
-	/** Deletes a Save.
-	 * 
-	 * @param index - The Index of the Save. */
-	public static void deleteSave(int index)
-	{
-		if (saves.length == 0) return;
-		String[] newSaves = new String[saves.length - 1];
-		int i = 0;
-		for (int j = 0; j < newSaves.length; j++)
-		{
-			if (index == i) continue;
-			newSaves[j] = saves[i];
-			++i;
-		}
-		saves = newSaves;
-		saveSaves();
-	}
 
 	/** Loads the Save Files. */
 	public static void loadSaves()
 	{
-		saves = readFileAsStringArray("res/saves.txt");
-	}
-
-	/** Creates a new Save. */
-	public static void newSave()
-	{
-		String[] newSaves = new String[saves.length + 1];
-		System.arraycopy(saves, 0, newSaves, 0, saves.length);
-		newSaves[saves.length] = "map2";
-		saves = newSaves;
+		LoreManager.saves = readFileAsStringArray("res/saves.txt");
 	}
 
 	/** @param url Path to the map file.
@@ -67,7 +39,7 @@ public class FileUtils
 
 				while (line != null)
 				{
-					list.add(line);
+					if (!line.startsWith("//")) list.add(line);
 					line = br.readLine();
 				}
 
@@ -97,7 +69,7 @@ public class FileUtils
 		try
 		{
 			PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(file)));
-			for (String save : saves)
+			for (String save : LoreManager.saves)
 				pw.println(save);
 			pw.close();
 		} catch (IOException e)
