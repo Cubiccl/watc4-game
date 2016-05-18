@@ -61,33 +61,33 @@ public class MapEditor extends JFrame
 	private static final int MODE_ENTITY = 1;
 	private static final int MODE_CHARACTERS = 2;
 	private static final int MODE_CUTSCENE = 3;
-	private static int mode;
-	private static Game g;
-	private static JPanel contentPane;
-	private static Toolkit tool = Toolkit.getDefaultToolkit();
-	private static GridBagConstraints gbc = new GridBagConstraints();
-	private static JPanel mapView = new JPanel(), cutsceneView = new JPanel();
-	private static JScrollPane scrollMap = new JScrollPane(), scrollCutscene;
-	private final static JMenuBar menuBar = new JMenuBar();
-	private final static JMenuItem createMapMenu = new JMenuItem("Nouveau");
-	private static ArrayList<EventLabel> eventList = new ArrayList<EventLabel>();
-	private static TileLabel[][] tilemap;
-	private static TileLabel[] tileChoice, entityChoice;
-	private static int selectedTile, selectedEntity;
-	private static JPanel tilesMenu, entityMenu, characterMenu;
-	private static JLabel lblTiles = new JLabel("Tuiles :"), lblEntityName = new JLabel();
-	private static JPanel tileRegistry = new JPanel(), entityRegistry = new JPanel();
-	private static JLabel lblTileSelected = new JLabel("Tuile s\u00E9lectionn\u00E9e :");
-	private static JLabel selectedTileLabel = new JLabel(), selectedEntityLabel = new JLabel();
-	private static JTextField fieldPattouX, fieldPattouY, fieldLumiX, fieldLumiY;
-	private static JRadioButton radioPattou, radioLumi;
-	private static JLabel focusPattou, focusLumi, lumiEyes, lblSelected;
-	private static int lblSelectedTileIndex = -1, lblSelectedEntityIndex = -1;
-	private static JButton btnRemovePattou, btnRemoveLumi;
-	private static JButton[] cutsceneOptions;
-	private static JButton[] ajoutCutscene;
+	private int mode;
+	private Game g;
+	private JPanel contentPane;
+	private Toolkit tool = Toolkit.getDefaultToolkit();
+	private GridBagConstraints gbc = new GridBagConstraints();
+	private JPanel mapView = new JPanel(), cutsceneView = new JPanel();
+	private JScrollPane scrollMap = new JScrollPane(), scrollCutscene;
+	private final JMenuBar menuBar = new JMenuBar();
+	private final JMenuItem createMapMenu = new JMenuItem("Nouveau");
+	private ArrayList<EventLabel> eventList = new ArrayList<EventLabel>();
+	private TileLabel[][] tilemap;
+	private TileLabel[] tileChoice, entityChoice;
+	private int selectedTile, selectedEntity;
+	private JPanel tilesMenu, entityMenu, characterMenu;
+	private JLabel lblTiles = new JLabel("Tuiles :"), lblEntityName = new JLabel();
+	private JPanel tileRegistry = new JPanel(), entityRegistry = new JPanel();
+	private JLabel lblTileSelected = new JLabel("Tuile s\u00E9lectionn\u00E9e :");
+	private JLabel selectedTileLabel = new JLabel(), selectedEntityLabel = new JLabel();
+	private JTextField fieldPattouX, fieldPattouY, fieldLumiX, fieldLumiY;
+	private JRadioButton radioPattou, radioLumi;
+	private JLabel focusPattou, focusLumi, lumiEyes, lblSelected;
+	private int lblSelectedTileIndex = -1, lblSelectedEntityIndex = -1;
+	private JButton btnRemovePattou, btnRemoveLumi;
+	private JButton[] cutsceneOptions;
+	private JButton[] ajoutCutscene;
 	private final static JFileChooser fc = new JFileChooser(), sceneC = new JFileChooser();
-	private static boolean exists = false;
+	private boolean exists = false;
 	private static String[] fileHeader = new String[]
 	{ "width = ", "height = ", "lumiSpawnX = ", "lumiSpawnY = ", "pattouSpawnX = ", "pattouSpawnY = ", "tiles =" };
 	{
@@ -124,13 +124,13 @@ public class MapEditor extends JFrame
 		});
 	}
 
-	public static void updateScrollCutscene()
+	public void updateScrollCutscene()
 	{
 		cutsceneView.setPreferredSize(new Dimension(tool.getScreenSize().width - 80, eventList.size() * 110));
 		scrollCutscene.updateUI();
 	}
 
-	public static int detectButtonSource(Object o)
+	public int detectButtonSource(Object o)
 	{
 		for (int i = 0; i < ajoutCutscene.length; i++)
 		{
@@ -139,7 +139,7 @@ public class MapEditor extends JFrame
 		return -1;
 	}
 
-	public static void putAddButtons()
+	public void putAddButtons()
 	{
 		ajoutCutscene = new JButton[eventList.size() + 1];
 		for (int i = 0; i < ajoutCutscene.length; i++)
@@ -167,20 +167,20 @@ public class MapEditor extends JFrame
 		}
 	}
 
-	public static ArrayList<EventLabel> getEventlist()
+	public ArrayList<EventLabel> getEventlist()
 	{
 		return eventList;
 	}
 
-	public static void setEventList(ArrayList<EventLabel> list)
+	public void setEventList(ArrayList<EventLabel> list)
 	{
 		eventList = list;
 	}
 
-	public static void updateEventList()
+	public void updateEventList()
 	{
 		cutsceneView.removeAll();
-		MapEditor.initCutsceneOptions();
+		initCutsceneOptions();
 		for (int i = 0; i < eventList.size(); i++)
 		{
 			eventList.get(i).setBounds(20, eventList.get(i).getHeight() * i + 20, eventList.get(i).getWidth(), eventList.get(i).getHeight());
@@ -192,7 +192,7 @@ public class MapEditor extends JFrame
 		cutsceneView.updateUI();
 	}
 
-	public static void initCutsceneOptions()
+	public void initCutsceneOptions()
 	{
 		cutsceneOptions = new JButton[]
 		{ new JButton("Cr\u00E9er"), new JButton("Ouvrir"), new JButton("Enregistrer") };
@@ -256,7 +256,7 @@ public class MapEditor extends JFrame
 				});
 	}
 
-	public static void removeCharacters()
+	public void removeCharacters()
 	{
 		fieldPattouX.setText("");
 		fieldPattouY.setText("");
@@ -264,7 +264,7 @@ public class MapEditor extends JFrame
 		fieldLumiY.setText("");
 	}
 
-	public static void createTiles(int width, int height)
+	public  void createTiles(int width, int height)
 	{
 		tilemap = new TileLabel[width][height];
 		mapView.removeAll();
@@ -287,7 +287,7 @@ public class MapEditor extends JFrame
 		mapView.updateUI();
 	}
 
-	public static void getTilesFromRegistry()
+	public void getTilesFromRegistry()
 	{
 
 		tileChoice = new TileLabel[TileRegistry.getTiles().size()];
@@ -308,7 +308,7 @@ public class MapEditor extends JFrame
 		}
 	}
 
-	public static void getEntityFromRegistry()
+	public void getEntityFromRegistry()
 	{
 		entityChoice = new TileLabel[EntityRegistry.getEntities().size()];
 		for (int i = 0; i < entityChoice.length; i++)
@@ -339,7 +339,7 @@ public class MapEditor extends JFrame
 		}
 	}
 
-	public static void addTileUpdater(int i, int j)
+	public  void addTileUpdater(int i, int j)
 	{
 		tilemap[i][j].addMouseListener(new MouseAdapter()
 		{
@@ -444,7 +444,7 @@ public class MapEditor extends JFrame
 		});
 	}
 
-	public static void addTileSelector(int i)
+	public void addTileSelector(int i)
 	{
 		tileChoice[i].addMouseListener(new MouseAdapter()
 		{
@@ -466,7 +466,7 @@ public class MapEditor extends JFrame
 		});
 	}
 
-	public static void addEntitySelector(int i)
+	public void addEntitySelector(int i)
 	{
 		entityChoice[i].addMouseListener(new MouseAdapter()
 		{
@@ -492,7 +492,7 @@ public class MapEditor extends JFrame
 		});
 	}
 
-	public static boolean openCutsceneFile(File cutsceneFile)
+	public boolean openCutsceneFile(File cutsceneFile)
 	{
 		if (!(cutsceneFile.getAbsolutePath().endsWith(".txt") || cutsceneFile.getAbsolutePath().endsWith(".TXT"))) cutsceneFile = new File(
 				cutsceneFile.getAbsolutePath() + ".txt");
@@ -542,7 +542,7 @@ public class MapEditor extends JFrame
 		return true;
 	}
 
-	public static boolean openMapFile(File mapFile)
+	public  boolean openMapFile(File mapFile)
 	{
 		String[] lines = FileUtils.readFileAsStringArray(mapFile.getAbsolutePath());
 
@@ -656,7 +656,7 @@ public class MapEditor extends JFrame
 		return true;
 	}
 
-	public static boolean createCutsceneFile(File cutsceneFile) throws IOException
+	public boolean createCutsceneFile(File cutsceneFile) throws IOException
 	{
 		String path = cutsceneFile.getAbsolutePath();
 		if (!(path.endsWith(".txt") || path.endsWith(".TXT"))) path += ".txt";
@@ -691,7 +691,7 @@ public class MapEditor extends JFrame
 		return true;
 	}
 
-	public static boolean createMapFile(File mapFile) throws IOException
+	public boolean createMapFile(File mapFile) throws IOException
 	{
 		String path = mapFile.getAbsolutePath();
 		if (!(path.endsWith(".txt") || path.endsWith(".TXT"))) path += ".txt";
