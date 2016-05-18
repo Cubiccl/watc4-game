@@ -66,19 +66,6 @@ public class EntityManager implements IRender, IUpdate
 	public Entity[] getCollisionsWith(Entity entity, float dx, float dy)
 	{
 		HashSet<Chunk> containers = this.getContainingChunks(entity);
-		HashSet<Chunk> chunks = new HashSet<Chunk>();
-		int x, y;
-		for (Chunk chunk : containers)
-		{
-			x = chunk.xPos;
-			y = chunk.yPos;
-			chunks.add(chunk);
-			chunks.add(this.map.getChunk(x - Chunk.SIZE, y));
-			chunks.add(this.map.getChunk(x + Chunk.SIZE, y));
-			chunks.add(this.map.getChunk(x, y - Chunk.SIZE));
-			chunks.add(this.map.getChunk(x, y + Chunk.SIZE));
-		}
-
 		HashSet<Entity> candidates = new HashSet<Entity>(), colliding = new HashSet<Entity>();
 		for (Chunk chunk : containers)
 			candidates.addAll(this.division.get(chunk));
@@ -111,12 +98,13 @@ public class EntityManager implements IRender, IUpdate
 		containers.add(current);
 		return containers;
 	}
-	
+
 	/** @return The Entity list */
-	public ArrayList<Entity> getEntities(){
+	public ArrayList<Entity> getEntities()
+	{
 		return this.entities;
 	}
-	
+
 	/** @param UUID - The UUID of the target Entity.
 	 * @return The Entity with the input UUID. */
 	public Entity getEntityByUUID(int UUID)
@@ -158,8 +146,23 @@ public class EntityManager implements IRender, IUpdate
 	private void replaceEntity(Entity entity)
 	{
 		this.clearEntityChunks(entity);
-		for (Chunk chunk : this.getContainingChunks(entity))
-			this.division.get(chunk).add(entity);
+		HashSet<Chunk> chunks = this.getContainingChunks(entity);
+		int x, y;
+		Chunk c;
+		for (Chunk chunk : chunks)
+		{
+			x = chunk.xPos;
+			y = chunk.yPos;
+			chunks.add(chunk);
+			c = this.map.getChunk(x - Chunk.SIZE, y);
+			if (c != null) this.division.get(c).add(entity);
+			c = this.map.getChunk(x + Chunk.SIZE, y);
+			if (c != null) this.division.get(c).add(entity);
+			c = this.map.getChunk(x, y - Chunk.SIZE);
+			if (c != null) this.division.get(c).add(entity);
+			c = this.map.getChunk(x, y + Chunk.SIZE);
+			if (c != null) this.division.get(c).add(entity);
+		}
 	}
 
 	/** @param entity - The target Entity.
