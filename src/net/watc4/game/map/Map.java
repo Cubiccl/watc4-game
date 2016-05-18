@@ -208,5 +208,6 @@ public class Map implements IRender, IUpdate
 	public void update()
 	{
 		this.entityManager.update();
+		this.lightManager.update();
 	}
 }
