@@ -20,6 +20,7 @@ public class EventChooser extends JDialog
 
 	private final JPanel contentPanel = new JPanel();
 	private static JComboBox<String> eventComboBox;
+	private MapEditor mapEd = (MapEditor) MapEditor.getFrames()[0];
 	
 	public static String[] getEventList()
 	{
@@ -77,16 +78,16 @@ public class EventChooser extends JDialog
 					@Override
 					public void mouseClicked(MouseEvent arg0) {
 						
-						ArrayList<EventLabel> newList = new ArrayList<EventLabel>(), oldList = MapEditor.getEventlist();
+						ArrayList<EventLabel> newList = new ArrayList<EventLabel>(), oldList = mapEd.getEventlist();
 						for(int i = 0; i < oldList.size()+1; i++)
 						{
 							if(i < pos) newList.add(oldList.get(i));
 							else if(i == pos) newList.add(getChoice());
 							else newList.add(oldList.get(i-1));
 						}
-						MapEditor.setEventList(newList);
-						MapEditor.updateEventList();
-						MapEditor.updateScrollCutscene();
+						mapEd.setEventList(newList);
+						mapEd.updateEventList();
+						mapEd.updateScrollCutscene();
 						dispose();
 					}
 				});

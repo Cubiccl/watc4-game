@@ -20,6 +20,7 @@ public abstract class EventLabel extends JLabel
 	protected JButton[] options;
 	protected TitledBorder tb;
 	protected int position;
+	private MapEditor mapEd = (MapEditor) MapEditor.getFrames()[0];
 
 	public void initBase()
 	{
@@ -48,11 +49,11 @@ public abstract class EventLabel extends JLabel
 			@Override
 			public void mouseClicked(MouseEvent arg0)
 			{
-				ArrayList<EventLabel> list = MapEditor.getEventlist();
+				ArrayList<EventLabel> list = mapEd.getEventlist();
 				EventLabel temp = list.get(position - 2);
 				list.set(position - 2, EventLabel.this);
 				list.set(position - 1, temp);
-				MapEditor.updateEventList();
+				mapEd.updateEventList();
 				temp.updateButtons();
 				EventLabel.this.updateButtons();
 			}
@@ -62,11 +63,11 @@ public abstract class EventLabel extends JLabel
 			@Override
 			public void mouseClicked(MouseEvent arg0)
 			{
-				ArrayList<EventLabel> list = MapEditor.getEventlist();
+				ArrayList<EventLabel> list = mapEd.getEventlist();
 				EventLabel temp = list.get(position);
 				list.set(position, EventLabel.this);
 				list.set(position - 1, temp);
-				MapEditor.updateEventList();
+				mapEd.updateEventList();
 				temp.updateButtons();
 				EventLabel.this.updateButtons();
 			}
@@ -76,11 +77,11 @@ public abstract class EventLabel extends JLabel
 			@Override
 			public void mouseClicked(MouseEvent arg0)
 			{
-				MapEditor.getEventlist().remove(EventLabel.this);
-				MapEditor.updateEventList();
-				for (int i = 0; i < MapEditor.getEventlist().size(); i++)
+				mapEd.getEventlist().remove(EventLabel.this);
+				mapEd.updateEventList();
+				for (int i = 0; i < mapEd.getEventlist().size(); i++)
 				{
-					MapEditor.getEventlist().get(i).updateButtons();
+					mapEd.getEventlist().get(i).updateButtons();
 				}
 			}
 		});
@@ -94,7 +95,7 @@ public abstract class EventLabel extends JLabel
 
 	public void updateButtons()
 	{
-		if (position == 1 && position == MapEditor.getEventlist().size())
+		if (position == 1 && position == mapEd.getEventlist().size())
 		{
 			options[0].setVisible(false);
 			options[1].setVisible(false);
@@ -105,7 +106,7 @@ public abstract class EventLabel extends JLabel
 			options[1].setVisible(true);
 			options[1].setBounds(245, 37, 20, 25);
 		}
-		else if (position == MapEditor.getEventlist().size())
+		else if (position == mapEd.getEventlist().size())
 		{
 			options[1].setVisible(false);
 			options[0].setVisible(true);
