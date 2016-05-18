@@ -186,6 +186,7 @@ public class MapEditor extends JFrame
 			eventList.get(i).setBounds(20, eventList.get(i).getHeight() * i + 20, eventList.get(i).getWidth(), eventList.get(i).getHeight());
 			cutsceneView.add(eventList.get(i));
 			eventList.get(i).updatePosition(i + 1);
+			eventList.get(i).updateButtons();
 		}
 		putAddButtons();
 		cutsceneView.updateUI();
@@ -355,7 +356,7 @@ public class MapEditor extends JFrame
 							if (tl.getData() == TileRegistry.getTileFromId(tl.getId()).maxData) d = 0;
 							else d = (byte) (tl.getData() + 1);
 							tl.setData(d);
-							tl.setIcon(new ImageIcon(TileRegistry.getTileFromId(selectedTile).getSprite(null, 0, 0, tl.getData())));
+							tl.setIcon(new ImageIcon(TileRegistry.getTileFromId(tl.getId()).getSprite(null, 0, 0, tl.getData())));
 							tl.updateUI();
 						}
 					} else
