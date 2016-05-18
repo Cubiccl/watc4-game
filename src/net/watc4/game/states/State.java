@@ -37,6 +37,14 @@ public abstract class State implements IRender, IUpdate, IRenderHud
 		if (keyID == KeyEvent.VK_F4) GameSettings.drawHitboxes = !GameSettings.drawHitboxes;
 	}
 
+	/** Called when this State is loaded. */
+	public void onLoad()
+	{}
+
+	/** Called when this State is unloaded. */
+	public void onUnload()
+	{}
+
 	@Override
 	public void render(Graphics2D g)
 	{

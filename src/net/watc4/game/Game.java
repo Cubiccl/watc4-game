@@ -99,6 +99,7 @@ public class Game implements Runnable
 		this.soundManager = new SoundManager();
 		if (map == null) this.state = new MainMenuState();
 		else this.state = GameState.createNew(map);
+		this.state.onLoad();
 		this.thread = new Thread(this);
 		this.thread.start();
 	}
@@ -242,7 +243,12 @@ public class Game implements Runnable
 		{
 			this.nextState = state;
 			this.transition = 1;
-		} else this.state = state;
+		} else
+		{
+			this.state.onUnload();
+			this.state = state;
+			state.onLoad();
+		}
 	}
 
 	/** Exits the game. */
@@ -260,9 +266,11 @@ public class Game implements Runnable
 			++this.transition;
 			if (this.transition == TRANSITION)
 			{
+				this.state.onUnload();
 				this.transition = -TRANSITION;
 				this.state = this.nextState;
 				this.nextState = null;
+				this.state.onLoad();
 			}
 		}
 	}
