@@ -86,7 +86,7 @@ public class Game implements Runnable
 
 	public Game()
 	{
-		this("map2");
+		this(null);
 	}
 
 	public Game(String map)
@@ -97,10 +97,10 @@ public class Game implements Runnable
 		this.controls = new Controls(inputManager);
 		this.transition = -TRANSITION;
 		this.soundManager = new SoundManager();
-		GameState.createNew(map);
+		if (map == null) this.state = new MainMenuState();
+		else this.state = GameState.createNew(map);
 		this.thread = new Thread(this);
 		this.thread.start();
-
 	}
 
 	public SoundManager getSoundManager()
@@ -174,7 +174,6 @@ public class Game implements Runnable
 		double framesTime = 0, updatesTime = 0;
 		final int targetFPS = 60, targetUPS = 60;
 		double timePerFrame = 1000000000 / targetFPS, timePerUpdate = 1000000000 / targetUPS;
-		this.state = new MainMenuState();
 
 		this.isRunning = true;
 		while (this.isRunning)
