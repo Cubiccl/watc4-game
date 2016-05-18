@@ -18,6 +18,7 @@ public class CreateMap extends JDialog
 	private final JPanel contentPanel = new JPanel();
 	private JTextField widthField;
 	private JTextField heightField;
+	private MapEditor mapEd = (MapEditor) MapEditor.getFrames()[0];
 
 	/** Create the dialog. */
 	public CreateMap()
@@ -85,8 +86,8 @@ public class CreateMap extends JDialog
 						if (wf <= 0 || hf <= 0) lblErreur.setVisible(true);
 						else
 						{
-							MapEditor.createTiles(wf, hf);
-							MapEditor.removeCharacters();
+							mapEd.createTiles(wf, hf);
+							mapEd.removeCharacters();
 							dispose();
 						}
 					}
