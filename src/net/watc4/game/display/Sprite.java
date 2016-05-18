@@ -67,7 +67,11 @@ public enum Sprite
 	ARROW_DOWN("res/textures/icons.png", 0, 0, 16, 16),
 	ARROW_UP("res/textures/icons.png", 16, 0, 16, 16),
 	CROSS("res/textures/icons.png", 32, 0, 16, 16),
-	PLUS("res/textures/icons.png", 48, 0, 16, 16);
+	PLUS("res/textures/icons.png", 48, 0, 16, 16),
+	FLUORESCENT("res/textures/fluorescent.png",0,0,32,32),
+	DOOR("res/textures/door.png",0,0,32,32),
+	CUTSCENE("res/textures/cutscene.png",0,0,32,32),
+	BATTERY("res/textures/battery.png",0,0,32,32);
 
 	/** The height of the Sprite. */
 	private int height;

@@ -65,9 +65,22 @@ public class EntityManager implements IRender, IUpdate
 	 * @return All Entities that would collide with the given Entity if it were to move to the given offsets. */
 	public Entity[] getCollisionsWith(Entity entity, float dx, float dy)
 	{
-		Chunk[] chunks = this.getContainingChunks(entity);
+		HashSet<Chunk> containers = this.getContainingChunks(entity);
+		HashSet<Chunk> chunks = new HashSet<Chunk>();
+		int x, y;
+		for (Chunk chunk : containers)
+		{
+			x = chunk.xPos;
+			y = chunk.yPos;
+			chunks.add(chunk);
+			chunks.add(this.map.getChunk(x - Chunk.SIZE, y));
+			chunks.add(this.map.getChunk(x + Chunk.SIZE, y));
+			chunks.add(this.map.getChunk(x, y - Chunk.SIZE));
+			chunks.add(this.map.getChunk(x, y + Chunk.SIZE));
+		}
+
 		HashSet<Entity> candidates = new HashSet<Entity>(), colliding = new HashSet<Entity>();
-		for (Chunk chunk : chunks)
+		for (Chunk chunk : containers)
 			candidates.addAll(this.division.get(chunk));
 
 		candidates.remove(entity);
@@ -78,7 +91,7 @@ public class EntityManager implements IRender, IUpdate
 
 	/** @param entity - The target Entity.
 	 * @return The Chunks this Entity occupies. */
-	private Chunk[] getContainingChunks(Entity entity)
+	private HashSet<Chunk> getContainingChunks(Entity entity)
 	{
 		HashSet<Chunk> containers = new HashSet<Chunk>();
 		if (!entity.hasMoved)
@@ -86,7 +99,7 @@ public class EntityManager implements IRender, IUpdate
 			for (Chunk chunk : this.division.keySet())
 				if (this.division.get(chunk).contains(entity)) containers.add(chunk);
 
-			return containers.toArray(new Chunk[containers.size()]);
+			return containers;
 		}
 		Chunk current = this.map.getChunk(entity.getX(), entity.getY());
 		containers.add(current);
@@ -96,7 +109,7 @@ public class EntityManager implements IRender, IUpdate
 		containers.add(current);
 		current = this.map.getChunk(entity.getX() + entity.getWidth(), entity.getY() + entity.getHeight());
 		containers.add(current);
-		return containers.toArray(new Chunk[containers.size()]);
+		return containers;
 	}
 	
 	/** @return The Entity list */
@@ -153,7 +166,7 @@ public class EntityManager implements IRender, IUpdate
 	 * @return True if the target Entity should render (i.e. it belongs to a rendered Chunk) */
 	public boolean shouldRender(Entity entity)
 	{
-		Chunk[] chunks = this.getContainingChunks(entity);
+		HashSet<Chunk> chunks = this.getContainingChunks(entity);
 		for (Chunk chunk : chunks)
 			if (chunk.shouldRender()) return true;
 
@@ -164,7 +177,7 @@ public class EntityManager implements IRender, IUpdate
 	 * @return True if the target Entity should update (i.e. it belongs to a updated Chunk) */
 	public boolean shouldUpdate(Entity entity)
 	{
-		Chunk[] chunks = this.getContainingChunks(entity);
+		HashSet<Chunk> chunks = this.getContainingChunks(entity);
 		for (Chunk chunk : chunks)
 			if (chunk.shouldUpdate()) return true;
 

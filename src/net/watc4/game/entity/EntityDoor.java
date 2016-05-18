@@ -1,6 +1,9 @@
 package net.watc4.game.entity;
 
 import net.watc4.game.Game;
+import net.watc4.game.display.Animation;
+import net.watc4.game.display.Sprite;
+import net.watc4.game.display.renderer.EntityRenderer;
 import net.watc4.game.map.Map;
 import net.watc4.game.states.GameState;
 
@@ -11,7 +14,7 @@ public class EntityDoor extends Entity
 	private final int lumiX, lumiY, pattouX, pattouY;
 	/** The Map to switch to. */
 	private final String mapName;
-	
+
 	public EntityDoor()
 	{
 		this(null, 0, 0, 0, 0, 0, "", 0, 0, 0, 0);
@@ -28,15 +31,15 @@ public class EntityDoor extends Entity
 		this.lumiY = lumiY;
 		this.pattouX = pattouX;
 		this.pattouY = pattouY;
-		this.setRenderer(null);
+		this.setRenderer(new EntityRenderer(this,new Animation(Sprite.DOOR)));
 	}
 
 	/** Activates this Door. */
 	public void activate()
 	{
 		GameState game = GameState.createNew(this.mapName);
-		game.entityLumi.setPosition(this.lumiX * Map.TILESIZE, this.lumiY * Map.TILESIZE);
-		game.entityPattou.setPosition(this.pattouX * Map.TILESIZE, this.pattouY * Map.TILESIZE);
+		if (game.hasLumi) game.entityLumi.setPosition(this.lumiX * Map.TILESIZE, this.lumiY * Map.TILESIZE);
+		if (game.hasPattou) game.entityPattou.setPosition(this.pattouX * Map.TILESIZE, this.pattouY * Map.TILESIZE);
 		Game.getGame().setCurrentState(game);
 	}
 }

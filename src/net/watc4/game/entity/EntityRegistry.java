@@ -23,19 +23,18 @@ public final class EntityRegistry
 		entities = new HashMap<Integer, Class<? extends Entity>>();
 		arguments = new HashMap<Class<? extends Entity>, String[]>();
 		registerEntity(0, EntityLumi.class, new String[]
-		{ "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 000 - 099" });
+		{ "X", "int", "Y", "int", "UUID", "unsigned int 000 - 099" });
 		registerEntity(1, EntityPattou.class, new String[]
-		{ "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 100 - 199" });
+		{ "X", "int", "Y", "int", "UUID", "unsigned int 100 - 199" });
 		registerEntity(2, EntityBattery.class, new String[]
 		{ "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 200 - 299", "ChargeTime", "float", "UnchargeTime", "float" });
 		registerEntity(3, EntityCutscene.class, new String[]
 		{ "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 300 - 399", "Tile Width", "unsigned int", "Tile Heigth", "unsigned int",
 				"Cutscene Name", "string" });
 		registerEntity(4, EntityDoor.class, "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 400 - 499", "Tile Width", "unsigned int",
-				"Tile Heigth", "unsigned int", "Map Name", "string", "Lumi X", "unsigned int", "Lumi Y", "unsigned int", "Pattou X", "unsigned int",
-				"Pattou Y", "unsigned int");
+				"Tile Heigth", "unsigned int", "Map Name", "string", "Lumi X", "int", "Lumi Y", "int", "Pattou X", "int", "Pattou Y", "int");
 		registerEntity(5, EntityFluorescent.class, new String[]
-				{ "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 500 - 599", "ChargeTime", "float", "UnchargeTime", "float", "Intensity max","int" });
+		{ "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 500 - 599", "ChargeTime", "float", "UnchargeTime", "float", "Intensity max", "int" });
 	}
 
 	/** Creates the adequate arguments then spawns an Entity.

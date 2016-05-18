@@ -1,5 +1,8 @@
 package net.watc4.game.entity.lightEntity;
 
+import net.watc4.game.display.Animation;
+import net.watc4.game.display.Sprite;
+import net.watc4.game.display.renderer.EntityRenderer;
 import net.watc4.game.entity.EntityBattery;
 import net.watc4.game.entity.ILightSource;
 import net.watc4.game.map.Map;
@@ -25,6 +28,7 @@ public class EntityFluorescent extends EntityBattery implements ILightSource
 		this.lightIntensity = MIN_LIGHT_INTENSITY;
 		this.hasGravity = true;
 		this.isMoveable = true;
+		this.setRenderer(new EntityRenderer(this,new Animation(Sprite.FLUORESCENT)));
 	}
 
 	@Override

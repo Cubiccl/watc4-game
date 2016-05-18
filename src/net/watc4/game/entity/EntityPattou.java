@@ -208,7 +208,7 @@ public class EntityPattou extends EntityPlayer
 
 		super.update();
 
-		if (!GameSettings.godMode && this.game.entityLumi.isInLight(this)) --this.health;
+		if (!GameSettings.godMode && this.game.hasLumi && this.game.entityLumi.isInLight(this)) --this.health;
 		else
 		{
 			++this.health;
