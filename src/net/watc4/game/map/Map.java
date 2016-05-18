@@ -56,18 +56,18 @@ public class Map implements IRender, IUpdate
 			++index;
 		}
 
-		game.entityLumi = (EntityLumi) EntityRegistry.spawnEntity(map, 0, game, map.lumiSpawnX, map.lumiSpawnY);
-		game.entityPattou = (EntityPattou) EntityRegistry.spawnEntity(map, 1, game, map.pattouSpawnX, map.pattouSpawnY);
+		game.hasLumi = map.lumiSpawnX != -TILESIZE && map.lumiSpawnY != -TILESIZE;
+		game.hasPattou = map.pattouSpawnX != -TILESIZE && map.pattouSpawnY != -TILESIZE;
+		if (game.hasLumi) game.entityLumi = (EntityLumi) EntityRegistry.spawnEntity(map, 0, game, map.lumiSpawnX, map.lumiSpawnY);
+		if (game.hasPattou) game.entityPattou = (EntityPattou) EntityRegistry.spawnEntity(map, 1, game, map.pattouSpawnX, map.pattouSpawnY);
 
 		return map;
 	}
 
 	/** List of Areas of this Map. Used to limit Entity collision detections. */
 	public final Chunk[][] chunks;
-
 	/** Manages Entities in this Game. */
 	public EntityManager entityManager;
-
 	/** The instance of the GameState. */
 	public final GameState game;
 	/** Height of the map in tiles. */

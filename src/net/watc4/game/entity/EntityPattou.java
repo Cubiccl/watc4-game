@@ -203,7 +203,7 @@ public class EntityPattou extends EntityPlayer
 	{
 		this.manageInput();
 
-		if (!GameSettings.godMode && this.game.entityLumi.isInLight(this)) --this.health;
+		if (!GameSettings.godMode && this.game.hasLumi && this.game.entityLumi.isInLight(this)) --this.health;
 		else
 		{
 			++this.health;

@@ -53,6 +53,17 @@ public class Camera
 	 * @param map - The Map they evolve in. */
 	public void centerOn(Entity entity1, Entity entity2, Map map)
 	{
+		if (entity1 == null)
+		{
+			this.centerOn(entity2, map);
+			return;
+		}
+		if (entity2 == null)
+		{
+			this.centerOn(entity1, map);
+			return;
+		}
+
 		double[] bounds = new double[4];
 		bounds[0] = Math.min(entity1.getX(), entity2.getX());
 		bounds[1] = Math.min(entity1.getY(), entity2.getY());
@@ -83,6 +94,18 @@ public class Camera
 		/* if (this.xOffset < 0) this.xOffset = 0; if (this.yOffset < 0) this.yOffset = 0;
 		 * 
 		 * if (this.xOffset > maxX) this.xOffset = maxX; if (this.yOffset > maxY) this.yOffset = maxY; */
+	}
+
+	/** Centers this Camera on the given Entity.
+	 * 
+	 * @param entity - The Entity to center on.
+	 * @param map - The Map containing the Entity. */
+	public void centerOn(Entity entity, Map map)
+	{
+		if (entity == null) return;
+		float[] pos = entity.getCenter();
+		this.xOffset = pos[0] - this.actualWidth() / 2;
+		this.yOffset = pos[1] - this.actualHeight() / 2;
 	}
 
 	public double getHeight()

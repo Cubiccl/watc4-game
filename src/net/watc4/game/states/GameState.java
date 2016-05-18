@@ -39,6 +39,8 @@ public class GameState extends State
 	public EntityLumi entityLumi;
 	/** The Shadow Player. */
 	public EntityPattou entityPattou;
+	/** True if the given Player is used in this State. */
+	public boolean hasLumi, hasPattou;
 	/** True if this State is in a Cutscene, thus the user cannot interact with this State. */
 	public boolean isInCutscene;
 	/** The world they evolve into. */
@@ -53,6 +55,8 @@ public class GameState extends State
 	{
 		this.mapName = mapName;
 		this.camera = new Camera();
+		this.hasLumi = false;
+		this.hasPattou = false;
 		this.map = Map.createFrom(this.mapName, this);
 		this.setBackground(new Background(new Animation(Sprite.TILE_WALL), this));
 	}
@@ -62,7 +66,8 @@ public class GameState extends State
 	 * @param g - The Graphics required to draw. */
 	private void drawDamage(Graphics g)
 	{
-		int life = this.entityPattou.getHealth() * 255 / EntityPlayer.MAX_HEALTH;
+		int life = 255;
+		if (this.hasPattou) life = this.entityPattou.getHealth() * 255 / EntityPlayer.MAX_HEALTH;
 		if (life >= 255 || life < 0) return;
 		g.setColor(new Color(200, 50, 50, 255 - life));
 		g.fillRect(0, 0, Camera.WIDTH, Camera.HEIGHT);
@@ -102,7 +107,7 @@ public class GameState extends State
 
 		super.render(g);
 		this.map.render(g);
-		this.entityPattou.render(g);
+		if (this.hasPattou) this.entityPattou.render(g);
 
 		g.setColor(Color.BLACK);
 		if (xOffset < 0) g.fillRect(xOffset, yOffset, -xOffset, height);
@@ -126,14 +131,26 @@ public class GameState extends State
 			TextRenderer.setFontSize(25);
 			int size = 30;
 			y += 2;
-			TextRenderer.drawString(g, "Lumi: " + this.entityLumi.getX() + ", " + this.entityLumi.getY(), x, y * size);
-			++y;
-			TextRenderer.drawString(g, "Pattou: " + this.entityPattou.getX() + ", " + this.entityPattou.getY(), x, y * size);
-			++y;
-			TextRenderer.drawString(g, "Lumi HP: " + this.entityLumi.getHealth() + "/" + EntityPlayer.MAX_HEALTH, x, y * size);
-			++y;
-			TextRenderer.drawString(g, "Pattou HP: " + this.entityPattou.getHealth() + "/" + EntityPlayer.MAX_HEALTH, x, y * size);
-			++y;
+			if (this.hasLumi)
+			{
+				TextRenderer.drawString(g, "Lumi: " + this.entityLumi.getX() + ", " + this.entityLumi.getY(), x, y * size);
+				++y;
+			}
+			if (this.hasPattou)
+			{
+				TextRenderer.drawString(g, "Pattou: " + this.entityPattou.getX() + ", " + this.entityPattou.getY(), x, y * size);
+				++y;
+			}
+			if (this.hasLumi)
+			{
+				TextRenderer.drawString(g, "Lumi HP: " + this.entityLumi.getHealth() + "/" + EntityPlayer.MAX_HEALTH, x, y * size);
+				++y;
+			}
+			if (this.hasPattou)
+			{
+				TextRenderer.drawString(g, "Pattou HP: " + this.entityPattou.getHealth() + "/" + EntityPlayer.MAX_HEALTH, x, y * size);
+				++y;
+			}
 			if (GameSettings.godMode) TextRenderer.drawString(g, "God mode (F2) ON", x, y * size);
 			else TextRenderer.drawString(g, "God mode (F2) OFF", x, y * size);
 			++y;

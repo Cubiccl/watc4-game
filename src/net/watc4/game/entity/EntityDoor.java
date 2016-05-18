@@ -14,7 +14,7 @@ public class EntityDoor extends Entity
 	private final int lumiX, lumiY, pattouX, pattouY;
 	/** The Map to switch to. */
 	private final String mapName;
-	
+
 	public EntityDoor()
 	{
 		this(null, 0, 0, 0, 0, 0, "", 0, 0, 0, 0);
@@ -38,8 +38,8 @@ public class EntityDoor extends Entity
 	public void activate()
 	{
 		GameState game = GameState.createNew(this.mapName);
-		game.entityLumi.setPosition(this.lumiX * Map.TILESIZE, this.lumiY * Map.TILESIZE);
-		game.entityPattou.setPosition(this.pattouX * Map.TILESIZE, this.pattouY * Map.TILESIZE);
+		if (game.hasLumi) game.entityLumi.setPosition(this.lumiX * Map.TILESIZE, this.lumiY * Map.TILESIZE);
+		if (game.hasPattou) game.entityPattou.setPosition(this.pattouX * Map.TILESIZE, this.pattouY * Map.TILESIZE);
 		Game.getGame().setCurrentState(game);
 	}
 }
