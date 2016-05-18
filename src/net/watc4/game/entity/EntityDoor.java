@@ -1,6 +1,9 @@
 package net.watc4.game.entity;
 
 import net.watc4.game.Game;
+import net.watc4.game.display.Animation;
+import net.watc4.game.display.Sprite;
+import net.watc4.game.display.renderer.EntityRenderer;
 import net.watc4.game.map.Map;
 import net.watc4.game.states.GameState;
 
@@ -28,7 +31,7 @@ public class EntityDoor extends Entity
 		this.lumiY = lumiY;
 		this.pattouX = pattouX;
 		this.pattouY = pattouY;
-		this.setRenderer(null);
+		this.setRenderer(new EntityRenderer(this,new Animation(Sprite.DOOR)));
 	}
 
 	/** Activates this Door. */

@@ -3,6 +3,9 @@ package net.watc4.game.entity;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
+import net.watc4.game.display.Animation;
+import net.watc4.game.display.Sprite;
+import net.watc4.game.display.renderer.EntityRenderer;
 import net.watc4.game.states.GameState;
 import net.watc4.game.utils.GameSettings;
 
@@ -27,6 +30,7 @@ public class EntityBattery extends Entity
 		this.isSolid = true;
 		this.chargeTime = chargeTime;
 		this.unchargeTime = unchargeTime;
+		this.setRenderer(new EntityRenderer(this, new Animation(Sprite.BATTERY)));
 	}
 
 	@Override

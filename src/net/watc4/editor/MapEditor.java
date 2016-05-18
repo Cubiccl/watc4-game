@@ -47,6 +47,7 @@ import net.watc4.game.Game;
 import net.watc4.game.display.AnimationManager;
 import net.watc4.game.display.Sprite;
 import net.watc4.game.entity.Entity;
+import net.watc4.game.entity.EntityCutscene;
 import net.watc4.game.entity.EntityRegistry;
 import net.watc4.game.map.TileRegistry;
 import net.watc4.game.utils.FileUtils;
@@ -323,7 +324,10 @@ public class MapEditor extends JFrame
 				System.out.println((EntityRegistry.getDefaultConstructor(i)).toString());
 				e.printStackTrace();
 			}
-			if (entityChoice[i].getEn().getRenderer() == null)
+			if (entityChoice[i].getEn() instanceof EntityCutscene)
+			{
+				entityChoice[i].setIcon(new ImageIcon(Sprite.CUTSCENE.getImage()));
+			} else if (entityChoice[i].getEn().getRenderer() == null)
 			{
 				entityChoice[i].setIcon(new ImageIcon(Sprite.UNKNOWN.getImage()));
 			} else entityChoice[i].setIcon(new ImageIcon(entityChoice[i].getEn().getRenderer().getAnimation().getImage()));
@@ -394,7 +398,10 @@ public class MapEditor extends JFrame
 							e.printStackTrace();
 						}
 						JLabel icon = new JLabel();
-						if (tl.getEn().getRenderer() == null) icon.setIcon(new ImageIcon(Sprite.UNKNOWN.getImage()));
+						if (tl.getEn() instanceof EntityCutscene)
+						{
+							icon = new JLabel(new ImageIcon(Sprite.CUTSCENE.getImage()));
+						} else if (tl.getEn().getRenderer() == null) icon.setIcon(new ImageIcon(Sprite.UNKNOWN.getImage()));
 						else icon.setIcon(new ImageIcon(tl.getEn().getRenderer().getAnimation().getImage()));
 						icon.setBounds(0, 0, 32, 32);
 						tl.add(icon);
@@ -616,7 +623,10 @@ public class MapEditor extends JFrame
 			tilemap[Integer.valueOf(entityValues[X])][Integer.valueOf(entityValues[Y])].setEn(en);
 			tilemap[Integer.valueOf(entityValues[X])][Integer.valueOf(entityValues[Y])].setEntityValues(entityValues);
 			JLabel icon;
-			if (en.getRenderer() == null)
+			if (en instanceof EntityCutscene)
+			{
+				icon = new JLabel(new ImageIcon(Sprite.CUTSCENE.getImage()));
+			} else if (en.getRenderer() == null)
 			{
 				icon = new JLabel(new ImageIcon(Sprite.UNKNOWN.getImage()));
 			} else icon = new JLabel(new ImageIcon(en.getRenderer().getAnimation().getImage()));
