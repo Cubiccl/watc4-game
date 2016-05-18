@@ -202,9 +202,17 @@ public class EntityPattou extends EntityPlayer
 	public void update()
 	{
 		this.manageInput();
-		
+
 		for (Entity entity : game.getMap().entityManager.getEntities())
-			if (entity.isMoveable && this.collidesWith(entity, Math.signum(-this.xSpeed), 0)) entity.setX(entity.getX() + this.xSpeed);
+			if (entity.isMoveable && this.collidesWith(entity, Math.signum(-this.xSpeed), 0))
+			{
+				if (!entity.placeFree(xSpeed, 0))
+				{
+					while (entity.placeFree(Math.signum(xSpeed), 0))
+						entity.setX(entity.getX() + Math.signum(xSpeed));
+					xSpeed = 0;
+				} else entity.setX(entity.getX() + this.xSpeed);
+			}
 
 		super.update();
 
