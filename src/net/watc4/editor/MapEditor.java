@@ -21,7 +21,6 @@ import java.io.PrintWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Date;
 
 import javax.swing.ImageIcon;
@@ -45,6 +44,16 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import net.watc4.editor.cutscene.EventChooser;
+import net.watc4.editor.cutscene.EventLabel;
+import net.watc4.editor.cutscene.EventLabelCutscene;
+import net.watc4.editor.cutscene.EventLabelMove;
+import net.watc4.editor.cutscene.EventLabelText;
+import net.watc4.editor.doors.AddDoorButton;
+import net.watc4.editor.doors.DoorButton;
+import net.watc4.editor.entity.EntityValues;
+import net.watc4.editor.tiles.CreateMap;
+import net.watc4.editor.tiles.TileLabel;
 import net.watc4.game.Game;
 import net.watc4.game.display.AnimationManager;
 import net.watc4.game.display.Sprite;
@@ -141,8 +150,8 @@ public class MapEditor extends JFrame
 					.parseInt(values[5]), Integer.parseInt(values[6])));
 			i++;
 		}
+		doorList.sort(null);
 		updateDoorList();
-		// doorList.sort(new Comparator<Integer>());
 	}
 
 	public void updateDoorList()

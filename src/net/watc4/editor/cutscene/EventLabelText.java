@@ -1,4 +1,4 @@
-package net.watc4.editor;
+package net.watc4.editor.cutscene;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;

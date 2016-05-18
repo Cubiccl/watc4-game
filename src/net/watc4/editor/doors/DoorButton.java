@@ -1,7 +1,6 @@
-package net.watc4.editor;
+package net.watc4.editor.doors;
 
 import java.awt.Dimension;
-import java.awt.Font;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -10,7 +9,7 @@ import javax.swing.JLabel;
 import net.watc4.game.display.Sprite;
 
 @SuppressWarnings("serial")
-public class DoorButton extends JButton
+public class DoorButton extends JButton implements Comparable<DoorButton>
 {
 	private JLabel[] infos = new JLabel[6]; // 0 : info maps 1 : Sprite Lumi 2 : coordonnees Lumi 3 : Sprite Pattou 4 : coordonnees Pattou	5 : UUID
 	private String map1, map2;
@@ -42,7 +41,7 @@ public class DoorButton extends JButton
 		infos[4].setBounds(440, 52, 150, 32);
 		infos[4].setFont(infos[4].getFont().deriveFont(18f));
 		add(infos[4]);
-		infos[5] = new JLabel("Porte n°"+(UUID-400));
+		infos[5] = new JLabel("Porte n\u00B0"+(UUID-400));
 		infos[5].setBounds(20, 10, 100, 20);
 		infos[5].setFont(infos[5].getFont().deriveFont(18f));
 		add(infos[5]);
@@ -62,6 +61,17 @@ public class DoorButton extends JButton
 	
 	public DoorButton(){
 		
+	}
+
+	@Override
+	public int compareTo(DoorButton db)
+	{
+		return ((Integer)(this.UUID)).compareTo(db.UUID);
+	}
+
+	public int getUUID()
+	{
+		return UUID;
 	}
 
 }

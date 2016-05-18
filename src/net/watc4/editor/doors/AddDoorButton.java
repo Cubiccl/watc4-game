@@ -1,9 +1,10 @@
-package net.watc4.editor;
+package net.watc4.editor.doors;
 
 import java.awt.Dimension;
 
 import javax.swing.JLabel;
 
+@SuppressWarnings("serial")
 public class AddDoorButton extends DoorButton
 {
 	private JLabel add = new JLabel("Ajouter une porte...");

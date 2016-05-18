@@ -1,4 +1,4 @@
-package net.watc4.editor;
+package net.watc4.editor.tiles;
 
 import javax.swing.JLabel;
 

@@ -1,4 +1,4 @@
-package net.watc4.editor;
+package net.watc4.editor.cutscene;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -13,6 +13,8 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import net.watc4.editor.MapEditor;
 
 @SuppressWarnings("serial")
 public class EventChooser extends JDialog

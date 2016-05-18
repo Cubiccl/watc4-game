@@ -1,35 +1,34 @@
-package net.watc4.editor;
+package net.watc4.editor.entity;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.border.EmptyBorder;
 
+import net.watc4.editor.cutscene.EventLabelCutscene;
+import net.watc4.editor.tiles.TileLabel;
 import net.watc4.game.entity.Entity;
 import net.watc4.game.entity.EntityRegistry;
 
 @SuppressWarnings("serial")
 public class EntityValues extends JDialog
 {
-
 	private static String[] definitions;
 	private static Entity en;
 	private static int enId;
 	private static JTextField[] fields;
+	@SuppressWarnings("rawtypes")
 	private static JComboBox[] cutsceneFields, mapFields;
 	private static JToggleButton[] booleanFields;
 	private static JLabel[] fieldsName;

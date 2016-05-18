@@ -1,4 +1,4 @@
-package net.watc4.editor;
+package net.watc4.editor.cutscene;
 
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
@@ -11,6 +11,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.border.TitledBorder;
 
+import net.watc4.editor.MapEditor;
 import net.watc4.game.display.Sprite;
 
 @SuppressWarnings("serial")
