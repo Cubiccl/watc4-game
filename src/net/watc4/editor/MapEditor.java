@@ -9,6 +9,7 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -20,6 +21,7 @@ import java.io.PrintWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 
 import javax.swing.ImageIcon;
@@ -62,16 +64,18 @@ public class MapEditor extends JFrame
 	private static final int MODE_ENTITY = 1;
 	private static final int MODE_CHARACTERS = 2;
 	private static final int MODE_CUTSCENE = 3;
+	private static final int MODE_DOORS = 4;
 	private int mode;
 	private Game g;
 	private JPanel contentPane;
 	private Toolkit tool = Toolkit.getDefaultToolkit();
 	private GridBagConstraints gbc = new GridBagConstraints();
-	private JPanel mapView = new JPanel(), cutsceneView = new JPanel();
-	private JScrollPane scrollMap = new JScrollPane(), scrollCutscene;
+	private JPanel mapView = new JPanel(), cutsceneView = new JPanel(), doorsView = new JPanel();
+	private JScrollPane scrollMap = new JScrollPane(), scrollCutscene, scrollDoors;
 	private final JMenuBar menuBar = new JMenuBar();
 	private final JMenuItem createMapMenu = new JMenuItem("Nouveau");
 	private ArrayList<EventLabel> eventList = new ArrayList<EventLabel>();
+	private ArrayList<DoorButton> doorList = new ArrayList<DoorButton>();
 	private TileLabel[][] tilemap;
 	private TileLabel[] tileChoice, entityChoice;
 	private int selectedTile, selectedEntity;
@@ -123,6 +127,32 @@ public class MapEditor extends JFrame
 				}
 			}
 		});
+	}
+
+	public void createDoorList()
+	{
+		doorList.add(new AddDoorButton());
+		String[] lines = FileUtils.readFileAsStringArray("res/lore.txt");
+		int i = 1;
+		while (!lines[i].equals("endings ="))
+		{
+			String[] values = lines[i].split("\t");
+			doorList.add(new DoorButton(values[0], Integer.parseInt(values[1]), values[2], Integer.parseInt(values[3]), Integer.parseInt(values[4]), Integer
+					.parseInt(values[5]), Integer.parseInt(values[6])));
+			i++;
+		}
+		updateDoorList();
+		// doorList.sort(new Comparator<Integer>());
+	}
+
+	public void updateDoorList()
+	{
+		doorsView.removeAll();
+		for(int i = 0; i < doorList.size(); i++)
+		{
+			doorsView.add(doorList.get(i));
+		}
+		doorsView.updateUI();
 	}
 
 	public void updateScrollCutscene()
@@ -265,7 +295,7 @@ public class MapEditor extends JFrame
 		fieldLumiY.setText("");
 	}
 
-	public  void createTiles(int width, int height)
+	public void createTiles(int width, int height)
 	{
 		tilemap = new TileLabel[width][height];
 		mapView.removeAll();
@@ -340,7 +370,7 @@ public class MapEditor extends JFrame
 		}
 	}
 
-	public  void addTileUpdater(int i, int j)
+	public void addTileUpdater(int i, int j)
 	{
 		tilemap[i][j].addMouseListener(new MouseAdapter()
 		{
@@ -543,7 +573,7 @@ public class MapEditor extends JFrame
 		return true;
 	}
 
-	public  boolean openMapFile(File mapFile)
+	public boolean openMapFile(File mapFile)
 	{
 		String[] lines = FileUtils.readFileAsStringArray(mapFile.getAbsolutePath());
 
@@ -1141,6 +1171,43 @@ public class MapEditor extends JFrame
 		scrollCutscene.getVerticalScrollBar().setUnitIncrement(6);
 		scrollCutscene.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
+		JPanel doorsMenu = new JPanel();
+		doorsMenu.setPreferredSize(new Dimension(620, 90));
+		doorsMenu.setMinimumSize(new Dimension(100, 10));
+		doorsMenu.setLayout(null);
+		BorderLayout bl2 = new BorderLayout();
+		doorsMenu.setLayout(bl2);
+		menu.add(doorsMenu, "Portes");
+
+		scrollDoors = new JScrollPane(doorsView);
+		doorsMenu.add(scrollDoors, BorderLayout.CENTER);
+		GridLayout gl = new GridLayout(0, 1);
+		doorsView.setLayout(gl);
+		// TODO début test DoorButton
+		// JButton[] lel = new DoorButton[30];
+		// for (int i = 0; i < lel.length; i++)
+		// {
+		// lel[i] = new DoorButton("map2", "dfdfdfdfdf2", 400 + i, i, i, 4 * i, 4 * i);
+		// doorsView.add(lel[i]);
+		// }
+		createDoorList();
+		// TODO fin test DoorButton
+		scrollDoors.getVerticalScrollBar().setUnitIncrement(6);
+		scrollDoors.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+		contentPane.add(scrollMap, BorderLayout.CENTER);
+		scrollMap.setViewportView(mapView);
+		scrollMap.getVerticalScrollBar().setUnitIncrement(6);
+		scrollMap.getHorizontalScrollBar().setUnitIncrement(6);
+		GridBagLayout gbl_panel = new GridBagLayout();
+		gbl_panel.rowWeights = new double[] {};
+		gbl_panel.columnWeights = new double[] {};
+		mapView.setLayout(gbl_panel);
+		contentPane.setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]
+		{ tilesMenu, lblTiles, scrollTileRegistry, tileRegistry, menu, mapView, lblTileSelected, selectedTileLabel, entityMenu, lblEntity,
+				scrollEntityRegistry, lblSelectedEntity, label_2, characterMenu, radioPattou, lblPattouX, fieldPattouX, lblPattouY, fieldPattouY, separator,
+				radioLumi, lblLumiX, fieldLumiX, lblLumiY, fieldLumiY, btnRemovePattou, btnRemoveLumi, scrollMap }));
+
 		menu.addMouseListener(new MouseAdapter()
 		{
 			public void mouseClicked(MouseEvent arg0)
@@ -1155,21 +1222,12 @@ public class MapEditor extends JFrame
 					menu.setSize(new Dimension(MapEditor.this.getWidth() - 26, MapEditor.this.getHeight() - 72));
 					updateEventList();
 					initCutsceneOptions();
+				} else if (selectedCmp == doorsMenu)
+				{
+					mode = MapEditor.MODE_DOORS;
+					menu.setSize(new Dimension(MapEditor.this.getWidth() - 26, MapEditor.this.getHeight() - 72));
 				}
 			}
 		});
-
-		contentPane.add(scrollMap, BorderLayout.CENTER);
-		scrollMap.setViewportView(mapView);
-		scrollMap.getVerticalScrollBar().setUnitIncrement(6);
-		scrollMap.getHorizontalScrollBar().setUnitIncrement(6);
-		GridBagLayout gbl_panel = new GridBagLayout();
-		gbl_panel.rowWeights = new double[] {};
-		gbl_panel.columnWeights = new double[] {};
-		mapView.setLayout(gbl_panel);
-		contentPane.setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]
-		{ tilesMenu, lblTiles, scrollTileRegistry, tileRegistry, menu, mapView, lblTileSelected, selectedTileLabel, entityMenu, lblEntity,
-				scrollEntityRegistry, lblSelectedEntity, label_2, characterMenu, radioPattou, lblPattouX, fieldPattouX, lblPattouY, fieldPattouY, separator,
-				radioLumi, lblLumiX, fieldLumiX, lblLumiY, fieldLumiY, btnRemovePattou, btnRemoveLumi, scrollMap }));
 	}
 }
