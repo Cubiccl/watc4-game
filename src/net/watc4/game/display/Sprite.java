@@ -50,7 +50,7 @@ public enum Sprite
 	TILE_DEFAULT("res/textures/tileset.png", 0, 0, 32, 32),
 	TILE_DOOR("res/textures/tileset.png", 160, 32, 32, 32),
 	TILE_GLASS("res/textures/tileset.png", 96, 0, 32, 32),
-	TILE_GROUND("res/textures/tileset.png", 32, 0, 32, 32),
+	TILE_GROUND("res/textures/tileground-test.png", 0, 0, 112, 112),
 	TILE_LADDER_BACK("res/textures/tileset.png", 192, 0, 32, 32),
 	TILE_LADDER_BASE("res/textures/tileset.png", 128, 0, 32, 32),
 	TILE_LADDER_TOP("res/textures/tileset.png", 160, 0, 32, 32),
