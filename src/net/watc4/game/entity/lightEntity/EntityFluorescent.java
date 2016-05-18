@@ -15,7 +15,7 @@ public class EntityFluorescent extends EntityBattery implements ILightSource
 
 	public EntityFluorescent()
 	{
-		this(null, 0, 0, 0, 1f, 40f, 300);
+		this(null, 0, 0, 0, 3f, 30f, 300);
 	}
 
 	public EntityFluorescent(GameState game, float xPos, float yPos, int UUID, float chargeTime, float unchargeTime, int maxLightIntensity)
