@@ -11,6 +11,8 @@ import net.watc4.game.display.AnimationManager;
 import net.watc4.game.display.Window;
 import net.watc4.game.entity.EntityRegistry;
 import net.watc4.game.map.TileRegistry;
+import net.watc4.game.sound.SoundBank;
+import net.watc4.game.sound.SoundManager;
 import net.watc4.game.states.GameState;
 import net.watc4.game.states.State;
 import net.watc4.game.states.menu.MainMenuState;
@@ -39,7 +41,7 @@ public class Game implements Runnable
 		AnimationManager.create();
 		TileRegistry.createTiles();
 		EntityRegistry.createEntities();
-
+		SoundBank.creat_All_Sound();
 		EventQueue.invokeLater(new Runnable()
 		{
 			public void run()
@@ -73,6 +75,8 @@ public class Game implements Runnable
 	private State nextState;
 	/** The current State of the Game. */
 	private State state;
+	/** the sound manager of the game */
+	private SoundManager soundManager;
 	/** A Thread used to update & render the <code>Game</code>. */
 	private Thread thread;
 	/** Manages the transition between 2 states. */
@@ -92,10 +96,16 @@ public class Game implements Runnable
 		this.inputManager = new InputManager(window);
 		this.controls = new Controls(inputManager);
 		this.transition = -TRANSITION;
+		this.soundManager = new SoundManager();
 		GameState.createNew(map);
 		this.thread = new Thread(this);
 		this.thread.start();
 
+	}
+
+	public SoundManager getSoundManager()
+	{
+		return this.soundManager;
 	}
 
 	public Controls getControls()
@@ -144,7 +154,7 @@ public class Game implements Runnable
 
 		int[] dimensions = this.window.getGameDimensions();
 		this.state.renderHud(g, dimensions[0], dimensions[1], dimensions[2], dimensions[3]);
-		
+
 		if (this.transition != 0)
 		{
 			g.setColor(new Color(0, 0, 0, Math.abs(this.transition) * 255 / TRANSITION));
