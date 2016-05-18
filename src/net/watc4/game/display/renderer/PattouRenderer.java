@@ -28,6 +28,12 @@ public class PattouRenderer extends EntityRenderer
 		this.ladder.dispose();
 	}
 
+	/** Useful for the level editor */
+	public Animation getAnimation()
+	{
+		return idleLeft;
+	}
+
 	@Override
 	public void render(Graphics2D g)
 	{
@@ -45,13 +51,13 @@ public class PattouRenderer extends EntityRenderer
 			else image = this.idleLeft.getImage();
 		} else
 		{
-			if (this.entity.getDirection() > 0) if (((EntityPattou) this.entity).getJumpingTime() / JUMP_ANIMATION_SPEED == 0) image = Sprite.PATTOU_JUMPING_RIGHT1
-					.getImage();
-			else if (((EntityPattou) this.entity).getJumpingTime() / JUMP_ANIMATION_SPEED == 1) image = Sprite.PATTOU_JUMPING_RIGHT2.getImage();
-			else if (((EntityPattou) this.entity).getJumpingTime() / JUMP_ANIMATION_SPEED == 2) image = Sprite.PATTOU_JUMPING_RIGHT3.getImage();
-			else if (((EntityPattou) this.entity).getJumpingTime() / JUMP_ANIMATION_SPEED == 3) image = Sprite.PATTOU_JUMPING_RIGHT4.getImage();
-			else if (((EntityPattou) this.entity).getJumpingTime() / JUMP_ANIMATION_SPEED == 4) image = Sprite.PATTOU_JUMPING_RIGHT5.getImage();
-			else image = Sprite.PATTOU_JUMPING_RIGHT6.getImage();
+			if (this.entity.getDirection() > 0)
+				if (((EntityPattou) this.entity).getJumpingTime() / JUMP_ANIMATION_SPEED == 0) image = Sprite.PATTOU_JUMPING_RIGHT1.getImage();
+				else if (((EntityPattou) this.entity).getJumpingTime() / JUMP_ANIMATION_SPEED == 1) image = Sprite.PATTOU_JUMPING_RIGHT2.getImage();
+				else if (((EntityPattou) this.entity).getJumpingTime() / JUMP_ANIMATION_SPEED == 2) image = Sprite.PATTOU_JUMPING_RIGHT3.getImage();
+				else if (((EntityPattou) this.entity).getJumpingTime() / JUMP_ANIMATION_SPEED == 3) image = Sprite.PATTOU_JUMPING_RIGHT4.getImage();
+				else if (((EntityPattou) this.entity).getJumpingTime() / JUMP_ANIMATION_SPEED == 4) image = Sprite.PATTOU_JUMPING_RIGHT5.getImage();
+				else image = Sprite.PATTOU_JUMPING_RIGHT6.getImage();
 			else if (((EntityPattou) this.entity).getJumpingTime() / JUMP_ANIMATION_SPEED == 0) image = Sprite.PATTOU_JUMPING_LEFT1.getImage();
 			else if (((EntityPattou) this.entity).getJumpingTime() / JUMP_ANIMATION_SPEED == 1) image = Sprite.PATTOU_JUMPING_LEFT2.getImage();
 			else if (((EntityPattou) this.entity).getJumpingTime() / JUMP_ANIMATION_SPEED == 2) image = Sprite.PATTOU_JUMPING_LEFT3.getImage();
@@ -61,12 +67,7 @@ public class PattouRenderer extends EntityRenderer
 
 		}
 
-		g.drawImage(image, (int) this.entity.getX() - 6, (int) this.entity.getY(), null);
-	}
-	
-	/** Useful for the level editor */
-	public Animation getAnimation()
-	{
-		return idleLeft;
+		g.drawImage(image, (int) (this.entity.getX() - (32 - this.entity.getWidth()) / 2), (int) (this.entity.getY() - (32 - this.entity.getHeight()) / 2),
+				null);
 	}
 }

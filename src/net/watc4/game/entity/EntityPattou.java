@@ -108,7 +108,7 @@ public class EntityPattou extends EntityPlayer
 	{
 		super(game, xPos, yPos, 1);
 		this.setRenderer(new PattouRenderer(this));
-		this.width = 20;
+		this.width = 12;
 		this.height = 32;
 		this.canJump = true;
 		this.jumpingTime = 0;
