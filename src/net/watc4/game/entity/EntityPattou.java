@@ -131,8 +131,8 @@ public class EntityPattou extends EntityPlayer
 	private void manageInput()
 	{
 		int move = 0;
-		boolean jumpPressed = ((AIPattou) this.ai).jump(), up = ((AIPattou) this.ai).up(), down = ((AIPattou) this.ai).down(),
-				left = ((AIPattou) this.ai).left(), right = ((AIPattou) this.ai).right();
+		boolean jumpPressed = ((AIPattou) this.ai).jump(), up = ((AIPattou) this.ai).up(), down = ((AIPattou) this.ai).down(), left = ((AIPattou) this.ai)
+				.left(), right = ((AIPattou) this.ai).right();
 		boolean ladderMovement = up || down;
 
 		if (this.door != null && up && this.canJump)
@@ -196,6 +196,17 @@ public class EntityPattou extends EntityPlayer
 	{
 		super.onCollisionWith(entity);
 		if (entity instanceof EntityDoor) this.door = (EntityDoor) entity;
+	}
+
+	/** @return True if this Player has reached the end of the level. */
+	public boolean reachedEnd()
+	{
+		for (Integer uuid : this.colliding)
+		{
+			Entity entity = this.game.getMap().entityManager.getEntityByUUID(uuid);
+			if (entity instanceof EntityEndLevel && ((EntityEndLevel) entity).player == EntityEndLevel.PATTOU) return true;
+		}
+		return false;
 	}
 
 	@Override

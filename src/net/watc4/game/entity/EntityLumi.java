@@ -69,6 +69,12 @@ public class EntityLumi extends EntityPlayer implements ILightSource
 	}
 
 	@Override
+	public int getLightIntensity()
+	{
+		return LIGHT_INTENSITY;
+	}
+
+	@Override
 	public Hitbox hitbox(double dx, double dy)
 	{
 		return new CircleHitbox(new Point((int) (this.getX() + dx + 16), (int) (this.getY() + dy + 16)), 16);
@@ -133,7 +139,7 @@ public class EntityLumi extends EntityPlayer implements ILightSource
 		if (down) vMove++;
 		if (left) hMove--;
 		if (right) hMove++;
-		
+
 		if (down && this.getAdjacentTile(GameUtils.DOWN) == TileRegistry.LADDER_TOP)
 		{
 			this.onLadder = true;
@@ -145,6 +151,17 @@ public class EntityLumi extends EntityPlayer implements ILightSource
 		if (doubleInput) multiplier = 0.7f;
 		this.ySpeed = vMove * MOVE_SPEED * multiplier;
 		this.xSpeed = hMove * MOVE_SPEED * multiplier;
+	}
+
+	/** @return True if this Player has reached the end of the level. */
+	public boolean reachedEnd()
+	{
+		for (Integer uuid : this.colliding)
+		{
+			Entity entity = this.game.getMap().entityManager.getEntityByUUID(uuid);
+			if (entity instanceof EntityEndLevel && ((EntityEndLevel) entity).player == EntityEndLevel.LUMI) return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -162,11 +179,5 @@ public class EntityLumi extends EntityPlayer implements ILightSource
 		if (this.game.isInCutscene) this.ai.update();
 
 		this.game.getMap().lightManager.update();
-	}
-
-	@Override
-	public int getLightIntensity()
-	{
-		return LIGHT_INTENSITY;
 	}
 }

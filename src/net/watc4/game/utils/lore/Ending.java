@@ -28,7 +28,7 @@ public class Ending
 				break;
 
 			case CUTSCENE:
-				Game.getGame().setCurrentState(CutsceneState.createFrom(currentGame, this.name));
+				Game.getGame().setCurrentState(CutsceneState.createFrom(currentGame, this.name), false);
 				break;
 
 			default:

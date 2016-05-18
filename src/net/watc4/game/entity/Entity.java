@@ -266,8 +266,10 @@ public abstract class Entity implements IRender, IUpdate
 		if (this.renderer != null) this.renderer.render(g);
 		if (GameSettings.drawHitboxes)
 		{
-			if (this instanceof EntityCutscene) this.hitbox().render(g, Color.YELLOW);
-			else this.hitbox().render(g, Color.BLUE);
+			Color color = Color.BLUE;
+			if (this instanceof EntityCutscene) color = Color.YELLOW;
+			if (this instanceof EntityEndLevel) color = Color.GREEN;
+			this.hitbox().render(g, color);
 		}
 	}
 

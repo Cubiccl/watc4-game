@@ -17,6 +17,7 @@ import net.watc4.game.entity.EntityPlayer;
 import net.watc4.game.map.Map;
 import net.watc4.game.states.menu.PauseMenuState;
 import net.watc4.game.utils.GameSettings;
+import net.watc4.game.utils.lore.LoreManager;
 
 /** Represents the main game engine. */
 public class GameState extends State
@@ -83,6 +84,14 @@ public class GameState extends State
 	public Map getMap()
 	{
 		return this.map;
+	}
+
+	private boolean isLevelOver()
+	{
+		boolean over = true;
+		if (this.hasLumi && !this.entityLumi.reachedEnd()) over = false;
+		if (this.hasPattou && !this.entityPattou.reachedEnd()) over = false;
+		return over;
 	}
 
 	@Override
@@ -174,5 +183,6 @@ public class GameState extends State
 	public void update()
 	{
 		this.map.update();
+		if (!this.isInCutscene && this.isLevelOver()) LoreManager.activateEnding(this.mapName, this);
 	}
 }

@@ -35,6 +35,8 @@ public final class EntityRegistry
 				"Tile Heigth", "unsigned int");
 		registerEntity(5, EntityFluorescent.class, new String[]
 		{ "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 500 - 599", "ChargeTime", "float", "UnchargeTime", "float", "Intensity max", "int" });
+		registerEntity(6, EntityEndLevel.class, "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 400 - 499", "Tile Width", "unsigned int",
+				"Tile Heigth", "unsigned int", "Player (Lumi true, Pattou false)", "boolean");
 	}
 
 	/** Creates the adequate arguments then spawns an Entity.
@@ -57,6 +59,7 @@ public final class EntityRegistry
 		{
 			if (constructor.getParameters()[i].getType().toString().equals("int")) arguments[i] = Integer.parseInt(values[i]);
 			else if (constructor.getParameters()[i].getType().toString().equals("float")) arguments[i] = Float.parseFloat(values[i]);
+			else if (constructor.getParameters()[i].getType().toString().equals("boolean")) arguments[i] = Boolean.parseBoolean(values[i]);
 			else arguments[i] = values[i];
 		}
 
