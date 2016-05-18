@@ -10,9 +10,11 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JFrame;
 
+@SuppressWarnings("serial")
 public class SoundManager extends JFrame
 {
-/*
+
+	/*
 	public static void main(String[] args)
 	{
 		SoundBank.creat_All_Sound();
