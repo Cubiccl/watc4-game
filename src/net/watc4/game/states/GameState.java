@@ -61,7 +61,7 @@ public class GameState extends State
 		this.map = Map.createFrom(this.mapName, this);
 		this.setBackground(new Background(new Animation(Sprite.TILE_WALL), this));
 	}
-
+	
 	/** Draws a Red overlay. It becomes more opaque the more damage the player takes.
 	 * 
 	 * @param g - The Graphics required to draw. */
@@ -94,6 +94,12 @@ public class GameState extends State
 		return over;
 	}
 
+	@Override
+	public void onLoad()
+	{
+		Game.getGame().getSoundManager().play(this.mapName);
+	}
+	
 	@Override
 	public void onKeyPressed(int keyID)
 	{

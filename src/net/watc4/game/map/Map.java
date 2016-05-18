@@ -244,6 +244,11 @@ public class Map implements IRender, IUpdate
 		this.setTileAt(x, y, tile.id);
 	}
 
+	public String getName()
+	{
+		return this.name;
+	}
+
 	@Override
 	public void update()
 	{
