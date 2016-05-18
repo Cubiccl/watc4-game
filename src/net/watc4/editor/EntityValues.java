@@ -4,15 +4,19 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 import javax.swing.border.EmptyBorder;
 
 import net.watc4.game.entity.Entity;
@@ -27,11 +31,15 @@ public class EntityValues extends JDialog
 	private static int enId;
 	private static JTextField[] fields;
 	private static JComboBox[] cutsceneFields, mapFields;
+	private static JToggleButton[] booleanFields;
 	private static JLabel[] fieldsName;
 	private static TileLabel tl;
+	private int pointeur = 0;
 
 	public static String getText(int i)
 	{
+		if (definitions[i * 2 + 1].equals("boolean")) return String.valueOf(booleanFields[i].isSelected());
+
 		switch (definitions[i * 2])
 		{
 			case "Cutscene Name":
@@ -147,6 +155,7 @@ public class EntityValues extends JDialog
 										.parseInt(getText(i));
 								else if (definitions[1 + i * 2].startsWith("unsigned float") || definitions[1 + i * 2].equals("float")) values[i + 1] = Float
 										.parseFloat(getText(i));
+								else if (definitions[1 + i * 2].startsWith("boolean")) values[i + 1] = Boolean.parseBoolean(getText(i));
 								else values[i + 1] = getText(i);
 							}
 							try
@@ -202,41 +211,82 @@ public class EntityValues extends JDialog
 		fields = new JTextField[definitions.length / 2];
 		cutsceneFields = new JComboBox[definitions.length / 2];
 		mapFields = new JComboBox[definitions.length / 2];
+		booleanFields = new JToggleButton[definitions.length / 2];
 		fieldsName = new JLabel[fields.length];
+
+		for (int i = 0; i < fields.length; i++)
+		{
+			cutsceneFields[i] = new JComboBox<String>(EventLabelCutscene.getCutsceneList());
+			mapFields[i] = new JComboBox<String>(EventLabelCutscene.getMapList());
+			booleanFields[i] = new JToggleButton("Pattou", Boolean.parseBoolean((String.valueOf(tl.getEntityValues()[i + 1]))));
+			fields[i] = new JTextField(String.valueOf(tl.getEntityValues()[i + 1]));
+		}
 
 		int currentY = 10;
 		for (int i = 2; i < fields.length; i++)
 		{
-			switch (definitions[i * 2])
+			if (definitions[i * 2 + 1].equals("boolean"))
 			{
-				case "Cutscene Name":
+				
+				String nameStr = definitions[i * 2].split("\t")[0], falseStr = definitions[i * 2].split("\t")[1].split("-")[0], trueStr = definitions[i * 2].split("\t")[1].split("-")[1];
+				booleanFields[i].setBounds(260, currentY + 3, 80, 20);
+				contentPanel.add(booleanFields[i]);
+				if (Boolean.parseBoolean((String) tl.getEntityValues()[6]))
 				{
-					cutsceneFields[i] = new JComboBox<String>(EventLabelCutscene.getCutsceneList());
-					cutsceneFields[i].setBounds(250, currentY + 3, 100, 20);
-					contentPanel.add(cutsceneFields[i]);
-					if (!tl.getEntityValues()[6].equals("null"))
+					booleanFields[i].setSelected(true);
+					booleanFields[pointeur].setText(trueStr);
+				} else
+				{
+					booleanFields[i].setSelected(false);
+					booleanFields[pointeur].setText(falseStr);
+				}
+				pointeur = i;
+				booleanFields[i].addMouseListener(new MouseAdapter()
+				{
+					@Override
+					public void mouseClicked(MouseEvent arg0)
 					{
-						cutsceneFields[i].setSelectedItem(tl.getEntityValues()[6]);
+						if (booleanFields[pointeur].isSelected())
+						{
+							booleanFields[pointeur].setText(trueStr);
+						} else
+						{
+							booleanFields[pointeur].setText(falseStr);
+						}
+					}
+				});
+				fieldsName[i] = new JLabel(nameStr + " (" + definitions[i * 2 + 1] + ") : ");
+			} else
+			{
+				switch (definitions[i * 2])
+				{
+					case "Cutscene Name":
+					{
+						cutsceneFields[i].setBounds(250, currentY + 3, 100, 20);
+						contentPanel.add(cutsceneFields[i]);
+						if (!tl.getEntityValues()[6].equals("null"))
+						{
+							cutsceneFields[i].setSelectedItem(tl.getEntityValues()[6]);
+						}
+					}
+					case "Map Name":
+					{
+						mapFields[i].setBounds(250, currentY + 3, 100, 20);
+						contentPanel.add(mapFields[i]);
+						if (!tl.getEntityValues()[6].equals("null"))
+						{
+							mapFields[i].setSelectedItem(tl.getEntityValues()[6]);
+						}
+					}
+					default:
+					{
+						fields[i].setBounds(250, currentY + 3, 100, 20);
+						contentPanel.add(fields[i]);
 					}
 				}
-				case "Map Name":
-				{
-					mapFields[i] = new JComboBox<String>(EventLabelCutscene.getMapList());
-					mapFields[i].setBounds(250, currentY + 3, 100, 20);
-					contentPanel.add(mapFields[i]);
-					if (!tl.getEntityValues()[6].equals("null"))
-					{
-						mapFields[i].setSelectedItem(tl.getEntityValues()[6]);
-					}
-				}
-				default:
-				{
-					fields[i] = new JTextField(String.valueOf(tl.getEntityValues()[i + 1]));
-					fields[i].setBounds(250, currentY + 3, 100, 20);
-					contentPanel.add(fields[i]);
-				}
+
+				fieldsName[i] = new JLabel(definitions[i * 2] + " (" + definitions[1 + i * 2] + ") : ");
 			}
-			fieldsName[i] = new JLabel(definitions[i * 2] + " (" + definitions[1 + i * 2] + ") : ");
 			fieldsName[i].setBounds(30, currentY, 200, 20);
 			contentPanel.add(fieldsName[i]);
 			currentY += 40;

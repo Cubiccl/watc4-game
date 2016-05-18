@@ -17,7 +17,9 @@ public final class EntityRegistry
 	/** Sorts Entities by ID. */
 	private static HashMap<Integer, Class<? extends Entity>> entities;
 
-	/** Creates and registers all Entities. */
+	/** Creates and registers all Entities. <br/>
+	 * The description of boolean parameters needs to be : <br/>
+	 * "<b>description</b>"+"<b>\t</b>"+"name for the value <b>0</b>"+"-"+"name for the value <b>1</b>" */
 	public static void createEntities()
 	{
 		entities = new HashMap<Integer, Class<? extends Entity>>();
@@ -36,7 +38,7 @@ public final class EntityRegistry
 		registerEntity(5, EntityFluorescent.class, new String[]
 		{ "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 500 - 599", "ChargeTime", "float", "UnchargeTime", "float", "Intensity max", "int" });
 		registerEntity(6, EntityEndLevel.class, "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 400 - 499", "Tile Width", "unsigned int",
-				"Tile Heigth", "unsigned int", "Player (Lumi true, Pattou false)", "boolean");
+				"Tile Heigth", "unsigned int", "Player	Lumi-Pattou", "boolean");
 	}
 
 	/** Creates the adequate arguments then spawns an Entity.

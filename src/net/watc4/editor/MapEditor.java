@@ -51,6 +51,7 @@ import net.watc4.game.entity.EntityCutscene;
 import net.watc4.game.entity.EntityRegistry;
 import net.watc4.game.map.TileRegistry;
 import net.watc4.game.utils.FileUtils;
+import net.watc4.game.utils.lore.LoreManager;
 
 import org.eclipse.wb.swing.FocusTraversalOnArray;
 
@@ -609,6 +610,7 @@ public class MapEditor extends JFrame
 			{
 				if (constructor.getParameters()[j].getType().toString().equals("int")) arguments[j] = Integer.parseInt(entityValues[j]);
 				else if (constructor.getParameters()[j].getType().toString().equals("float")) arguments[j] = Float.parseFloat(entityValues[j]);
+				else if (constructor.getParameters()[j].getType().toString().equals("boolean")) arguments[j] = Boolean.parseBoolean(entityValues[j]);
 				else arguments[j] = entityValues[j];
 			}
 
@@ -758,6 +760,7 @@ public class MapEditor extends JFrame
 		AnimationManager.create();
 		TileRegistry.createTiles();
 		EntityRegistry.createEntities();
+		LoreManager.createLore();
 		getEntityFromRegistry();
 		getTilesFromRegistry();
 
