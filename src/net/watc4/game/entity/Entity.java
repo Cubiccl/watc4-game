@@ -37,6 +37,8 @@ public abstract class Entity implements IRender, IUpdate
 	protected boolean hasGravity;
 	/** True if this Entity moved last update. */
 	public boolean hasMoved;
+	/** True if this Entity is moveable. */
+	protected boolean isMoveable = false;
 	/** True if this Entity is solid, as if it were a Solid Tile. */
 	protected boolean isSolid;
 	/** True if this Entity is standing on a Ladder. */

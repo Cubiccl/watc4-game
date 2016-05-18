@@ -23,6 +23,8 @@ public class EntityFluorescent extends EntityBattery implements ILightSource
 		super(game, xPos, yPos, UUID, chargeTime, unchargeTime);
 		this.maxLightIntensity = maxLightIntensity;
 		this.lightIntensity = MIN_LIGHT_INTENSITY;
+		this.hasGravity = true;
+		this.isMoveable = true;
 	}
 
 	@Override

@@ -131,8 +131,8 @@ public class EntityPattou extends EntityPlayer
 	private void manageInput()
 	{
 		int move = 0;
-		boolean jumpPressed = ((AIPattou) this.ai).jump(), up = ((AIPattou) this.ai).up(), down = ((AIPattou) this.ai).down(), left = ((AIPattou) this.ai)
-				.left(), right = ((AIPattou) this.ai).right();
+		boolean jumpPressed = ((AIPattou) this.ai).jump(), up = ((AIPattou) this.ai).up(), down = ((AIPattou) this.ai).down(),
+				left = ((AIPattou) this.ai).left(), right = ((AIPattou) this.ai).right();
 		boolean ladderMovement = up || down;
 
 		if (this.door != null && up && this.canJump)
@@ -202,6 +202,11 @@ public class EntityPattou extends EntityPlayer
 	public void update()
 	{
 		this.manageInput();
+		
+		for (Entity entity : game.getMap().entityManager.getEntities())
+			if (entity.isMoveable && this.collidesWith(entity, Math.signum(-this.xSpeed), 0)) entity.setX(entity.getX() + this.xSpeed);
+
+		super.update();
 
 		if (!GameSettings.godMode && this.game.entityLumi.isInLight(this)) --this.health;
 		else
@@ -210,7 +215,7 @@ public class EntityPattou extends EntityPlayer
 			if (this.health > MAX_HEALTH) this.health = MAX_HEALTH;
 		}
 		if (this.health < 0) this.kill();
-		super.update();
+
 	}
 
 }

@@ -98,7 +98,12 @@ public class EntityManager implements IRender, IUpdate
 		containers.add(current);
 		return containers.toArray(new Chunk[containers.size()]);
 	}
-
+	
+	/** @return The Entity list */
+	public ArrayList<Entity> getEntities(){
+		return this.entities;
+	}
+	
 	/** @param UUID - The UUID of the target Entity.
 	 * @return The Entity with the input UUID. */
 	public Entity getEntityByUUID(int UUID)
