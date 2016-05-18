@@ -177,7 +177,5 @@ public class EntityLumi extends EntityPlayer implements ILightSource
 		super.update();
 		this.manageInput();
 		if (this.game.isInCutscene) this.ai.update();
-
-		this.game.getMap().lightManager.update();
 	}
 }
