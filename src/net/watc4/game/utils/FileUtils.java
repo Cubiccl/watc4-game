@@ -60,6 +60,57 @@ public class FileUtils
 		return list.toArray(new String[0]);
 
 	}
+	
+	/** Returns a <b>String[]</b> with all the cutscene names. */
+	public static String[] getCutsceneList()
+	{
+		File direc = new File("res/cutscene/");
+		String[] res = direc.list();
+		for (int i = 0; i < res.length; i++)
+		{
+			res[i] = res[i].split(".txt")[0];
+		}
+		return res;
+	}
+
+	/** Returns a <b>String[]</b> with all the map names except the Editor test map. */
+	public static String[] getMapList()
+	{
+		File direc = new File("res/maps/");
+		String[] temp = direc.list();
+		for (int i = 0; i < temp.length; i++)
+		{
+			temp[i] = temp[i].split(".txt")[0];
+		}
+		String[] res = new String[temp.length - 1];
+		boolean found = false;
+		for (int i = 0; i < res.length; i++)
+		{
+			if (temp[i].equals("editorTest"))
+			{
+				found = true;
+			}
+			if (found)
+			{
+				res[i] = temp[i + 1];
+			} else res[i] = temp[i];
+		}
+		return res;
+	}
+	
+	/** Returns a <b>String[]</b> with all the event class names. */
+	public static String[] getEventList()
+	{
+		File direc = new File("src/net/watc4/editor/cutscene/");
+		String[] temp = direc.list();
+		ArrayList<String> res = new ArrayList<String>();
+		for (int i = 0; i < temp.length; i++)
+		{
+			if(temp[i].startsWith("EventLabel") && temp[i].length() > "EventLabel.java".length())
+				res.add(temp[i].replace("EventLabel", "").replace(".java", ""));
+		}
+		return res.toArray(new String[res.size()]);
+	}
 
 	/** Saves the Save Files. */
 	public static void saveSaves()

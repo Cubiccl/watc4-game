@@ -16,10 +16,10 @@ import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.border.EmptyBorder;
 
-import net.watc4.editor.cutscene.EventLabelCutscene;
 import net.watc4.editor.tiles.TileLabel;
 import net.watc4.game.entity.Entity;
 import net.watc4.game.entity.EntityRegistry;
+import net.watc4.game.utils.FileUtils;
 
 @SuppressWarnings("serial")
 public class EntityValues extends JDialog
@@ -215,8 +215,8 @@ public class EntityValues extends JDialog
 
 		for (int i = 0; i < fields.length; i++)
 		{
-			cutsceneFields[i] = new JComboBox<String>(EventLabelCutscene.getCutsceneList());
-			mapFields[i] = new JComboBox<String>(EventLabelCutscene.getMapList());
+			cutsceneFields[i] = new JComboBox<String>(FileUtils.getCutsceneList());
+			mapFields[i] = new JComboBox<String>(FileUtils.getMapList());
 			booleanFields[i] = new JToggleButton("Pattou", Boolean.parseBoolean((String.valueOf(tl.getEntityValues()[i + 1]))));
 			fields[i] = new JTextField(String.valueOf(tl.getEntityValues()[i + 1]));
 		}

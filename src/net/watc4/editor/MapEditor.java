@@ -51,6 +51,7 @@ import net.watc4.editor.cutscene.EventLabelMove;
 import net.watc4.editor.cutscene.EventLabelText;
 import net.watc4.editor.doors.AddDoorButton;
 import net.watc4.editor.doors.DoorButton;
+import net.watc4.editor.doors.DoorValues;
 import net.watc4.editor.entity.EntityValues;
 import net.watc4.editor.tiles.CreateMap;
 import net.watc4.editor.tiles.TileLabel;
@@ -87,7 +88,7 @@ public class MapEditor extends JFrame
 	private ArrayList<DoorButton> doorList = new ArrayList<DoorButton>();
 	private TileLabel[][] tilemap;
 	private TileLabel[] tileChoice, entityChoice;
-	private int selectedTile, selectedEntity;
+	private int selectedTile, selectedEntity, pointeur;
 	private JPanel tilesMenu, entityMenu, characterMenu;
 	private JLabel lblTiles = new JLabel("Tuiles :"), lblEntityName = new JLabel();
 	private JPanel tileRegistry = new JPanel(), entityRegistry = new JPanel();
@@ -138,6 +139,10 @@ public class MapEditor extends JFrame
 		});
 	}
 
+	public ArrayList<DoorButton> getDoorList()
+	{
+		return doorList;
+	}
 	public void createDoorList()
 	{
 		doorList.add(new AddDoorButton());
@@ -148,6 +153,23 @@ public class MapEditor extends JFrame
 			String[] values = lines[i].split("\t");
 			doorList.add(new DoorButton(values[0], Integer.parseInt(values[1]), values[2], Integer.parseInt(values[3]), Integer.parseInt(values[4]), Integer
 					.parseInt(values[5]), Integer.parseInt(values[6])));
+			pointeur = i;
+			doorList.get(i).addMouseListener(new MouseAdapter()
+			{
+				@Override
+				public void mouseClicked(MouseEvent e)
+				{
+					try
+					{
+						DoorValues dialog = new DoorValues(pointeur);
+						dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+						dialog.setVisible(true);
+					} catch (Exception ex)
+					{
+						ex.printStackTrace();
+					}
+				}
+			});
 			i++;
 		}
 		doorList.sort(null);
@@ -157,7 +179,7 @@ public class MapEditor extends JFrame
 	public void updateDoorList()
 	{
 		doorsView.removeAll();
-		for(int i = 0; i < doorList.size(); i++)
+		for (int i = 0; i < doorList.size(); i++)
 		{
 			doorsView.add(doorList.get(i));
 		}

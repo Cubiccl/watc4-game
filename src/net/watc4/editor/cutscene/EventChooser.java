@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import net.watc4.editor.MapEditor;
+import net.watc4.game.utils.FileUtils;
 
 @SuppressWarnings("serial")
 public class EventChooser extends JDialog
@@ -23,19 +24,6 @@ public class EventChooser extends JDialog
 	private final JPanel contentPanel = new JPanel();
 	private static JComboBox<String> eventComboBox;
 	private MapEditor mapEd = (MapEditor) MapEditor.getFrames()[0];
-	
-	public static String[] getEventList()
-	{
-		File direc = new File("src/net/watc4/editor/");
-		String[] temp = direc.list();
-		ArrayList<String> res = new ArrayList<String>();
-		for (int i = 0; i < temp.length; i++)
-		{
-			if(temp[i].startsWith("EventLabel") && temp[i].length() > "EventLabel.java".length())
-				res.add(temp[i].replace("EventLabel", "").replace(".java", ""));
-		}
-		return res.toArray(new String[res.size()]);
-	}
 	
 	public static EventLabel getChoice(){
 		switch ((String)eventComboBox.getSelectedItem())
@@ -52,6 +40,7 @@ public class EventChooser extends JDialog
 	 */
 	public EventChooser(int pos)
 	{
+		setModal(true);
 		setBounds(300, 300, 250, 200);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -67,7 +56,7 @@ public class EventChooser extends JDialog
 			contentPanel.add(lblParmiLaListe);
 		}
 		
-		eventComboBox = new JComboBox<String>(getEventList());
+		eventComboBox = new JComboBox<String>(FileUtils.getEventList());
 		eventComboBox.setBounds(60, 82, 120, 20);
 		contentPanel.add(eventComboBox);
 		{
