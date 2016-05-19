@@ -24,6 +24,11 @@ import net.watc4.game.utils.geometry.RectangleHitbox;
 /** Represents a moving object in the world. i.e. A monster, a moving block, etc. */
 public abstract class Entity implements IRender, IUpdate, IEntityMovementListener, ILightChangeListener
 {
+	/** Defines the behavior of an Entity. */
+	public abstract class EntityState implements IUpdate, IRender
+	{
+	}
+
 	public static final float DEFAULT_SIZE = 32;
 	private static final float GRAVITY = 0.4f;
 
@@ -37,20 +42,28 @@ public abstract class Entity implements IRender, IUpdate, IEntityMovementListene
 	public final GameState game;
 	/** True if this Entity is affected by Gravity. False if it flies. */
 	protected boolean hasGravity;
+	/** The health points of this Entity. */
+	private int health;
 	/** True if this Entity is affected by Lumi's light. */
 	private boolean isAffectedByLight;
 	/** True if this Entity is in Lumi's light. */
 	private boolean isInLight;
+	/** True if this Entity is invulnerable ; thus it will not take damage. It can still be killed. */
+	protected boolean isInvulnerable;
 	/** True if this Entity is moveable. */
 	protected boolean isMoveable = false;
 	/** True if this Entity is solid, as if it were a Solid Tile. */
 	protected boolean isSolid;
+	/** The maximum health of this Entity. */
+	private int maxHealth;
 	/** Listeners to this Entity's movement. */
 	private HashSet<IEntityMovementListener> movementListeners;
 	/** True if this Entity is standing on a Ladder. */
 	protected boolean onLadder;
 	/** Renders the Entity onto the screen. */
 	private EntityRenderer renderer;
+	/** The current state of this Entity. */
+	protected EntityState state;
 	/** Unique Universal IDentifier for this Entity. Each Entity should have a unique ID in a map. 0 is reserved for Lumi and 1 for Pattou. <br />
 	 * For better comprehension, please always use Entity ID * 100 + whatever. Example : Battery can be from 200 to 299, and Cutscene from 300 to 399. */
 	public final int UUID;
@@ -84,6 +97,9 @@ public abstract class Entity implements IRender, IUpdate, IEntityMovementListene
 		this.hasGravity = true;
 		this.isSolid = false;
 		this.isAffectedByLight = false;
+		this.isInvulnerable = false;
+		this.setMaxHealth(20);
+		this.heal(20);
 		this.renderer = new EntityRenderer(this);
 		this.width = (int) DEFAULT_SIZE;
 		this.height = (int) DEFAULT_SIZE;
@@ -131,6 +147,20 @@ public abstract class Entity implements IRender, IUpdate, IEntityMovementListene
 		return this.hitbox().contains(new Point(x, y));
 	}
 
+	/** Deals damage to this Entity. If health reaches 0, this Entity dies.
+	 * 
+	 * @param damage - The amount of damage to deal. */
+	public void dealDamage(int damage)
+	{
+		if (this.isInvulnerable) return;
+		this.health -= damage;
+		if (this.health <= 0)
+		{
+			this.health = 0;
+			this.kill();
+		}
+	}
+
 	/** @param entity - Another Entity.
 	 * @return The distance between this and a given Entity. */
 	public double distanceTo(Entity entity)
@@ -163,9 +193,21 @@ public abstract class Entity implements IRender, IUpdate, IEntityMovementListene
 		return this.direction;
 	}
 
+	/** @return The health points of this Player. */
+	public int getHealth()
+	{
+		return this.health;
+	}
+
 	public float getHeight()
 	{
 		return this.height;
+	}
+
+	/** @return This Entity's maximum health. */
+	public int getMaxHealth()
+	{
+		return maxHealth;
 	}
 
 	/** @return The Tile this Entity is currently occuping. */
@@ -207,6 +249,15 @@ public abstract class Entity implements IRender, IUpdate, IEntityMovementListene
 	public float getYSpeed()
 	{
 		return this.ySpeed;
+	}
+
+	/** Restores health to this Entity. Will not go higher than its maximum health.
+	 * 
+	 * @param health - The amount of health to restore. */
+	public void heal(int health)
+	{
+		this.health += health;
+		if (this.health > this.maxHealth) this.health = this.maxHealth;
 	}
 
 	/** @return This Entity's Hitbox. */
@@ -324,7 +375,8 @@ public abstract class Entity implements IRender, IUpdate, IEntityMovementListene
 	@Override
 	public void render(Graphics2D g)
 	{
-		if (this.renderer != null) this.renderer.render(g);
+		if (this.state != null) this.state.render(g);
+		else if (this.renderer != null) this.renderer.render(g);
 		if (GameSettings.drawHitboxes)
 		{
 			Color color = Color.BLUE;
@@ -341,6 +393,15 @@ public abstract class Entity implements IRender, IUpdate, IEntityMovementListene
 		this.isAffectedByLight = isAffectedByLight;
 		if (this.isAffectedByLight()) this.game.addLightChangeListener(this);
 		else this.game.removeLightChangeListener(this);
+	}
+
+	/** Sets this Entity's maximum health.
+	 * 
+	 * @param maxHealth - The new maximum health. */
+	public void setMaxHealth(int maxHealth)
+	{
+		this.maxHealth = maxHealth;
+		this.health = this.maxHealth;
 	}
 
 	public void setPosition(float x, float y)
@@ -374,6 +435,7 @@ public abstract class Entity implements IRender, IUpdate, IEntityMovementListene
 	@Override
 	public void update()
 	{
+		if (this.state != null) this.state.update();
 		float xPrev = this.xPos, yPrev = this.yPos;
 
 		if (this.isOnLadder() && !(this.getOccupiedTile() instanceof TileLadder))
@@ -403,6 +465,7 @@ public abstract class Entity implements IRender, IUpdate, IEntityMovementListene
 		yPos += ySpeed;
 
 		if (xPrev != this.xPos || yPrev != this.yPos) this.onEntityMove(this);
+
 	}
 
 	/** Calculates if this is in Lumi's light. */

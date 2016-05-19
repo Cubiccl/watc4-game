@@ -15,7 +15,6 @@ import net.watc4.game.display.TextRenderer;
 import net.watc4.game.entity.Entity;
 import net.watc4.game.entity.EntityLumi;
 import net.watc4.game.entity.EntityPattou;
-import net.watc4.game.entity.EntityPlayer;
 import net.watc4.game.listener.IEntityMovementListener;
 import net.watc4.game.listener.ILightChangeListener;
 import net.watc4.game.map.Map;
@@ -82,7 +81,7 @@ public class GameState extends State implements IEntityMovementListener
 	private void drawDamage(Graphics g)
 	{
 		int life = 255;
-		if (this.hasPattou) life = this.entityPattou.getHealth() * 255 / EntityPlayer.MAX_HEALTH;
+		if (this.hasPattou) life = this.entityPattou.getHealth() * 255 / this.entityPattou.getMaxHealth();
 		if (life >= 255 || life < 0) return;
 		g.setColor(new Color(200, 50, 50, 255 - life));
 		g.fillRect(0, 0, Camera.WIDTH, Camera.HEIGHT);
@@ -117,11 +116,6 @@ public class GameState extends State implements IEntityMovementListener
 	}
 
 	@Override
-	public void onUnload(){
-		Game.getGame().getSoundManager().clip_close(this.mapName);
-	}
-	
-	@Override
 	public void onKeyPressed(int keyID)
 	{
 		super.onKeyPressed(keyID);
@@ -135,6 +129,12 @@ public class GameState extends State implements IEntityMovementListener
 	public void onLoad()
 	{
 		Game.getGame().getSoundManager().play(this.mapName);
+	}
+
+	@Override
+	public void onUnload()
+	{
+		Game.getGame().getSoundManager().clip_close(this.mapName);
 	}
 
 	/** @param listener - The Listener to remove. */
@@ -191,12 +191,12 @@ public class GameState extends State implements IEntityMovementListener
 			}
 			if (this.hasLumi)
 			{
-				TextRenderer.drawString(g, "Lumi HP: " + this.entityLumi.getHealth() + "/" + EntityPlayer.MAX_HEALTH, x, y * size);
+				TextRenderer.drawString(g, "Lumi HP: " + this.entityLumi.getHealth() + "/" + this.entityLumi.getMaxHealth(), x, y * size);
 				++y;
 			}
 			if (this.hasPattou)
 			{
-				TextRenderer.drawString(g, "Pattou HP: " + this.entityPattou.getHealth() + "/" + EntityPlayer.MAX_HEALTH, x, y * size);
+				TextRenderer.drawString(g, "Pattou HP: " + this.entityPattou.getHealth() + "/" + this.entityPattou.getMaxHealth(), x, y * size);
 				++y;
 			}
 			if (GameSettings.godMode) TextRenderer.drawString(g, "God mode (F2) ON", x, y * size);

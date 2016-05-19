@@ -43,12 +43,6 @@ public abstract class EntityPlayer extends Entity
 
 	}
 
-	/** The maximum health of the players. */
-	public static final int MAX_HEALTH = 20;
-
-	/** The health points of this Player. */
-	protected int health;
-
 	/** Creates a new Entity Player without parameters. Useful for the level editor. */
 	public EntityPlayer()
 	{
@@ -64,13 +58,6 @@ public abstract class EntityPlayer extends Entity
 	public EntityPlayer(GameState game, float xPos, float yPos, int UUID)
 	{
 		super(game, xPos, yPos, UUID);
-		this.health = MAX_HEALTH;
-	}
-
-	/** @return The health points of this Player. */
-	public int getHealth()
-	{
-		return this.health;
 	}
 
 }

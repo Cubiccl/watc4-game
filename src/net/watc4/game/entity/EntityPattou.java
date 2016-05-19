@@ -229,13 +229,8 @@ public class EntityPattou extends EntityPlayer
 
 		super.update();
 
-		if (this.isInLight() && !GameSettings.godMode) --this.health;
-		else
-		{
-			++this.health;
-			if (this.health > MAX_HEALTH) this.health = MAX_HEALTH;
-		}
-		if (this.health < 0) this.kill();
+		if (this.isInLight() && !GameSettings.godMode) this.dealDamage(1);
+		else if (this.getHealth() < 20) this.heal(1);
 
 	}
 
