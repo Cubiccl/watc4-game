@@ -8,6 +8,7 @@ import java.util.HashSet;
 import net.watc4.game.display.renderer.EntityRenderer;
 import net.watc4.game.entity.ai.AI;
 import net.watc4.game.listener.IEntityMovementListener;
+import net.watc4.game.listener.ILightChangeListener;
 import net.watc4.game.map.Map;
 import net.watc4.game.map.Tile;
 import net.watc4.game.map.TileRegistry;
@@ -21,7 +22,7 @@ import net.watc4.game.utils.geometry.Hitbox;
 import net.watc4.game.utils.geometry.RectangleHitbox;
 
 /** Represents a moving object in the world. i.e. A monster, a moving block, etc. */
-public abstract class Entity implements IRender, IUpdate, IEntityMovementListener
+public abstract class Entity implements IRender, IUpdate, IEntityMovementListener, ILightChangeListener
 {
 	public static final float DEFAULT_SIZE = 32;
 	private static final float GRAVITY = 0.4f;
@@ -37,7 +38,9 @@ public abstract class Entity implements IRender, IUpdate, IEntityMovementListene
 	/** True if this Entity is affected by Gravity. False if it flies. */
 	protected boolean hasGravity;
 	/** True if this Entity is affected by Lumi's light. */
-	protected boolean isAffectedByLight;
+	private boolean isAffectedByLight;
+	/** True if this Entity is in Lumi's light. */
+	private boolean isInLight;
 	/** True if this Entity is moveable. */
 	protected boolean isMoveable = false;
 	/** True if this Entity is solid, as if it were a Solid Tile. */
@@ -218,6 +221,18 @@ public abstract class Entity implements IRender, IUpdate, IEntityMovementListene
 		return new RectangleHitbox((int) (this.getX() + dx), (int) (this.getY() + dy), (int) this.getWidth(), (int) this.getHeight());
 	}
 
+	/** @return True if this Entity is affected bu Lumi's light. */
+	public boolean isAffectedByLight()
+	{
+		return isAffectedByLight;
+	}
+
+	/** @return True if this Entity is in Lumi's light. */
+	public boolean isInLight()
+	{
+		return isInLight;
+	}
+
 	/** @return True if this Entity is standing on a Ladder. */
 	public boolean isOnLadder()
 	{
@@ -247,11 +262,33 @@ public abstract class Entity implements IRender, IUpdate, IEntityMovementListene
 		this.colliding.add(entity.UUID);
 	}
 
+	/** Called when this Entity enters Lumi's light.
+	 * 
+	 * @param lumi - Lumi. */
+	public void onEnterLight(EntityLumi lumi)
+	{}
+
 	@Override
 	public void onEntityMove(Entity entity)
 	{
-		if (entity == this) for (IEntityMovementListener listener : this.movementListeners)
-			listener.onEntityMove(this);
+		if (entity == this)
+		{
+			for (IEntityMovementListener listener : this.movementListeners)
+				listener.onEntityMove(this);
+			if (this.isAffectedByLight()) this.updateLight(this.game.entityLumi);
+		}
+	}
+
+	/** Called when this Entity exits Lumi's light.
+	 * 
+	 * @param lumi - Lumi. */
+	public void onExitLight(EntityLumi lumi)
+	{}
+
+	@Override
+	public void onLightChange(EntityLumi lumi)
+	{
+		this.updateLight(lumi);
 	}
 
 	/** @param dx - delta x
@@ -295,6 +332,15 @@ public abstract class Entity implements IRender, IUpdate, IEntityMovementListene
 			if (this instanceof EntityEndLevel) color = Color.GREEN;
 			this.hitbox().render(g, color);
 		}
+	}
+
+	/** @param isAffectedByLight - True if this Entity is affected by Lumi's light. */
+	public void setAffectedByLight(boolean isAffectedByLight)
+	{
+		if (this.game == null) return;
+		this.isAffectedByLight = isAffectedByLight;
+		if (this.isAffectedByLight()) this.game.addLightChangeListener(this);
+		else this.game.removeLightChangeListener(this);
 	}
 
 	public void setPosition(float x, float y)
@@ -357,5 +403,14 @@ public abstract class Entity implements IRender, IUpdate, IEntityMovementListene
 		yPos += ySpeed;
 
 		if (xPrev != this.xPos || yPrev != this.yPos) this.onEntityMove(this);
+	}
+
+	/** Calculates if this is in Lumi's light. */
+	private void updateLight(EntityLumi lumi)
+	{
+		boolean wasInLight = this.isInLight;
+		this.isInLight = lumi.isInLight(this);
+		if (this.isInLight && !wasInLight) this.onEnterLight(lumi);
+		if (!this.isInLight && wasInLight) this.onExitLight(lumi);
 	}
 }

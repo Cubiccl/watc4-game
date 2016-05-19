@@ -114,6 +114,7 @@ public class EntityPattou extends EntityPlayer
 		this.jumpingTime = 0;
 		this.direction = -1;
 		this.ai = new AIPattou(this);
+		this.setAffectedByLight(true);
 	}
 
 	public int getJumpingTime()
@@ -228,7 +229,7 @@ public class EntityPattou extends EntityPlayer
 
 		super.update();
 
-		if (!GameSettings.godMode && this.game.hasLumi && this.game.entityLumi.isInLight(this)) --this.health;
+		if (this.isInLight() && !GameSettings.godMode) --this.health;
 		else
 		{
 			++this.health;

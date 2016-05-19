@@ -31,6 +31,7 @@ public class EntityBattery extends Entity
 		this.chargeTime = chargeTime;
 		this.unchargeTime = unchargeTime;
 		this.setRenderer(new EntityRenderer(this, new Animation(Sprite.BATTERY)));
+		this.setAffectedByLight(true);
 	}
 
 	@Override
@@ -50,7 +51,7 @@ public class EntityBattery extends Entity
 	public void update()
 	{
 		super.update();
-		if (this.game.hasLumi && this.game.entityLumi.isInLight(this)) this.power = (this.power >= 1) ? 1 : 0.0167f / chargeTime + this.power;
+		if (this.isInLight()) this.power = (this.power >= 1) ? 1 : 0.0167f / chargeTime + this.power;
 		else this.power = (this.power <= 0) ? 0 : this.power - 0.0167f / unchargeTime;
 	}
 

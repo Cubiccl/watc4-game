@@ -14,11 +14,11 @@ import net.watc4.game.utils.geometry.Hitbox;
 
 public class EntityFluorescent extends EntityBattery implements ILightSource
 {
-	private final int MIN_LIGHT_INTENSITY = (int)(Map.TILESIZE / 1.2);
+	private int lightIntensity;
 
 	private int maxLightIntensity;
 
-	private int lightIntensity;
+	private final int MIN_LIGHT_INTENSITY = (int) (Map.TILESIZE / 1.2);
 
 	public EntityFluorescent()
 	{
@@ -32,7 +32,7 @@ public class EntityFluorescent extends EntityBattery implements ILightSource
 		this.lightIntensity = MIN_LIGHT_INTENSITY;
 		this.hasGravity = true;
 		this.isMoveable = true;
-		this.setRenderer(new EntityRenderer(this,new Animation(Sprite.FLUORESCENT)));
+		this.setRenderer(new EntityRenderer(this, new Animation(Sprite.FLUORESCENT)));
 	}
 
 	@Override
@@ -40,17 +40,20 @@ public class EntityFluorescent extends EntityBattery implements ILightSource
 	{
 		return this.lightIntensity;
 	}
-	
+
 	@Override
 	public Hitbox hitbox(double dx, double dy)
 	{
 		return new CircleHitbox(new Point((int) (this.getX() + dx + 16), (int) (this.getY() + dy + 16)), 14);
 	}
-	
+
 	@Override
-	 public void update(){
+	public void update()
+	{
 		super.update();
-		this.lightIntensity = (int)(this.power * (maxLightIntensity - MIN_LIGHT_INTENSITY) + MIN_LIGHT_INTENSITY); 
+		int previousIntensity = this.lightIntensity;
+		this.lightIntensity = (int) (this.power * (maxLightIntensity - MIN_LIGHT_INTENSITY) + MIN_LIGHT_INTENSITY);
+		if (previousIntensity != this.lightIntensity) this.game.getMap().lightManager.update();
 	}
 
 }
