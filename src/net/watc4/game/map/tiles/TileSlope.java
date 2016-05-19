@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 
+import net.watc4.game.display.Animation;
 import net.watc4.game.display.Sprite;
 import net.watc4.game.map.Map;
 import net.watc4.game.utils.geometry.Hitbox;
@@ -17,7 +18,7 @@ public class TileSlope extends TileGround
 
 	public TileSlope(int id)
 	{
-		super(id, (byte) 3, null);
+		super(id, (byte) 3, new Animation(Sprite.TILE_SLOPE[0]));
 	}
 
 	@Override
