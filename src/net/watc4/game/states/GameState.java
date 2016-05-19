@@ -101,6 +101,11 @@ public class GameState extends State
 	}
 	
 	@Override
+	public void onUnload(){
+		Game.getGame().getSoundManager().clip_close(this.mapName);
+	}
+	
+	@Override
 	public void onKeyPressed(int keyID)
 	{
 		super.onKeyPressed(keyID);
