@@ -6,7 +6,6 @@ import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -41,6 +40,7 @@ public class DoorValues extends JDialog
 	private ArrayList<DoorButton> doorsList = mapEd.getDoorList();
 	private JComboBox<String> map1comboBox, map2comboBox;
 	private DoorButton dbtn;
+	private String mapDestination;
 
 	public void updateLore() throws IOException
 	{
@@ -52,13 +52,12 @@ public class DoorValues extends JDialog
 			DoorButton db = doorsList.get(i);
 			pw.println(db.map1 + "\t" + db.UUID + "\t" + db.map2 + "\t" + db.LumiX + "\t" + db.LumiY + "\t" + db.PattouX + "\t" + db.PattouY);
 		}
-		pw.println("endings =");
 		int j = 0;
 		do
 		{
 			j++;
 		} while (!oldLore[j].equals("endings ="));
-		for(; j < oldLore.length; j++)
+		for (; j < oldLore.length; j++)
 		{
 			pw.println(oldLore[j]);
 		}
@@ -78,8 +77,9 @@ public class DoorValues extends JDialog
 		}
 	}
 
-	public boolean checkUUID(int fieldUUID)
+	public int checkFields(int fieldUUID, String mapDestinationName)
 	{
+		if (!(mapDestinationName.equals(mapDestination))) { return 1; }
 		int dbtnUUID = dbtn.getUUID();
 		ArrayList<Integer> UUIDs = new ArrayList<Integer>();
 		String[] lines = FileUtils.readFileAsStringArray("res/lore.txt");
@@ -92,18 +92,10 @@ public class DoorValues extends JDialog
 		UUIDs.sort(null);
 		for (int j = 0; j < UUIDs.size(); j++)
 		{
-			if (fieldUUID <= 400 || fieldUUID > 499)
-			{
-				JOptionPane.showMessageDialog(null, "Veuillez remplir le champ UUID correctement.", null, JOptionPane.ERROR_MESSAGE);
-				return false;
-			}
-			if (UUIDs.get(j) == fieldUUID && UUIDs.get(j) != dbtnUUID)
-			{
-				JOptionPane.showMessageDialog(null, "Cet UUID est d\u00E9j\u00E0 utilis\u00E9.", null, JOptionPane.ERROR_MESSAGE);
-				return false;
-			}
+			if (fieldUUID <= 400 || fieldUUID > 499) { return 2; }
+			if (UUIDs.get(j) == fieldUUID && UUIDs.get(j) != dbtnUUID) { return 3; }
 		}
-		return true;
+		return 0;
 	}
 
 	/** Create the dialog. */
@@ -128,6 +120,8 @@ public class DoorValues extends JDialog
 		map2comboBox.setSelectedItem(dbtn.getMap2());
 		map2comboBox.setBounds(30, 170, 120, 20);
 		contentPanel.add(map2comboBox);
+
+		mapDestination = (String) map2comboBox.getSelectedItem();
 
 		JLabel versLabel = new JLabel("vers");
 		versLabel.setFont(new Font("Tahoma", Font.PLAIN, 20));
@@ -208,6 +202,7 @@ public class DoorValues extends JDialog
 					DoorSpawnChooser frame = new DoorSpawnChooser((String) map2comboBox.getSelectedItem(), false, Integer.valueOf(fieldLumiX.getText()),
 							Integer.valueOf(fieldLumiY.getText()), Integer.valueOf(fieldPattouX.getText()), Integer.valueOf(fieldPattouY.getText()));
 					frame.setVisible(true);
+					mapDestination = (String) map2comboBox.getSelectedItem();
 				} catch (Exception ex)
 				{
 					ex.printStackTrace();
@@ -228,6 +223,7 @@ public class DoorValues extends JDialog
 					DoorSpawnChooser frame = new DoorSpawnChooser((String) map2comboBox.getSelectedItem(), true, Integer.valueOf(fieldLumiX.getText()), Integer
 							.valueOf(fieldLumiY.getText()), Integer.valueOf(fieldPattouX.getText()), Integer.valueOf(fieldPattouY.getText()));
 					frame.setVisible(true);
+					mapDestination = (String) map2comboBox.getSelectedItem();
 				} catch (Exception ex)
 				{
 					ex.printStackTrace();
@@ -257,7 +253,8 @@ public class DoorValues extends JDialog
 					@Override
 					public void mouseClicked(MouseEvent e)
 					{
-						if (checkUUID(Integer.valueOf(fieldUUID.getText())))
+						int check = checkFields(Integer.valueOf(fieldUUID.getText()), (String) map2comboBox.getSelectedItem());
+						if (check == 0)
 						{
 							doorsList.remove(dbtn);
 							doorsList.add(new DoorButton(((String) map1comboBox.getSelectedItem()), Integer.valueOf(fieldUUID.getText()),
@@ -272,10 +269,26 @@ public class DoorValues extends JDialog
 								e1.printStackTrace();
 							}
 							dispose();
+						} else
+						{
+							switch (check)
+							{
+								case 1:
+									JOptionPane.showMessageDialog(null,
+											"La carte de destination a \u00E9t\u00E9 modifi\u00E9e depuis le placement des personnages.", null,
+											JOptionPane.ERROR_MESSAGE);
+									break;
+								case 2:
+									JOptionPane.showMessageDialog(null, "Veuillez remplir le champ UUID correctement.", null, JOptionPane.ERROR_MESSAGE);
+									break;
+								case 3:
+									JOptionPane.showMessageDialog(null, "Cet UUID est d\u00E9j\u00E0 utilis\u00E9.", null, JOptionPane.ERROR_MESSAGE);
+									break;
+								default : break;
+							}
 						}
 					}
 				});
-				okButton.setActionCommand("OK");
 				buttonPane.add(okButton);
 				getRootPane().setDefaultButton(okButton);
 			}
@@ -307,7 +320,6 @@ public class DoorValues extends JDialog
 						DoorValues.this.dispose();
 					}
 				});
-				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}
 		}

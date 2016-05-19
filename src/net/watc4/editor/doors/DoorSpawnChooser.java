@@ -41,6 +41,7 @@ public class DoorSpawnChooser extends JDialog
 	private static String[] fileHeader = new String[]
 	{ "width = ", "height = ", "lumiSpawnX = ", "lumiSpawnY = ", "pattouSpawnX = ", "pattouSpawnY = ", "tiles =" };
 	private JLabel focusPattou, focusLumi, lumiEyes;
+	
 	public void addTileUpdater(int i, int j)
 	{
 		tilemap[i][j].addMouseListener(new MouseAdapter()
@@ -79,28 +80,6 @@ public class DoorSpawnChooser extends JDialog
 				}
 			}
 		});
-	}
-
-	public void createTiles(int width, int height)
-	{
-		tilemap = new TileLabel[width][height];
-		mapView.removeAll();
-		for (int i = 0; i < tilemap.length; i++)
-		{
-			for (int j = 0; j < tilemap[0].length; j++)
-			{
-				tilemap[i][j] = new TileLabel();
-				tilemap[i][j].setLayout(null);
-				tilemap[i][j].setPreferredSize(new Dimension(32, 32));
-				tilemap[i][j].setIcon(new ImageIcon(Sprite.TILE_WALL.getImage()));
-				tilemap[i][j].setVisible(true);
-				gbc.gridx = i;
-				gbc.gridy = j;
-				mapView.add(tilemap[i][j], gbc);
-				addTileUpdater(i, j);
-			}
-		}
-		mapView.updateUI();
 	}
 
 	public boolean openMapFile(File mapFile)
@@ -244,12 +223,12 @@ public class DoorSpawnChooser extends JDialog
 			}
 		}
 		openMapFile(new File("res/maps/" + mapfile + ".txt"));
-		if (PattouX != 0 && PattouY != 0)
+		if (PattouX + PattouY != 0)
 		{
 			tilemap[PattouX][PattouY].add(focusPattou);
 			tilemap[PattouX][PattouY].updateUI();
 		}
-		if (LumiX != 0 && LumiY != 0)
+		if (LumiX + LumiY != 0)
 		{
 			tilemap[LumiX][LumiY].add(focusLumi);
 			tilemap[LumiX][LumiY].updateUI();
