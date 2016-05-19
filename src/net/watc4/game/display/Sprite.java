@@ -5,6 +5,7 @@ import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
@@ -50,37 +51,11 @@ public class Sprite
 		PATTOU_LADDER[2] = new Sprite("res/textures/playerPattou.png", 160, 0, 32, 32, true);
 		PATTOU_LADDER[3] = new Sprite("res/textures/playerPattou.png", 128, 0, 32, 32, true);
 
-		PATTOU_MOVING_RIGHT = new Sprite[6];
-		PATTOU_MOVING_RIGHT[0] = new Sprite("res/textures/playerPattou.png", 0, 32, 32, 32);
-		PATTOU_MOVING_RIGHT[1] = new Sprite("res/textures/playerPattou.png", 32, 32, 32, 32);
-		PATTOU_MOVING_RIGHT[2] = new Sprite("res/textures/playerPattou.png", 64, 32, 32, 32);
-		PATTOU_MOVING_RIGHT[3] = new Sprite("res/textures/playerPattou.png", 96, 32, 32, 32);
-		PATTOU_MOVING_RIGHT[4] = new Sprite("res/textures/playerPattou.png", 128, 32, 32, 32);
-		PATTOU_MOVING_RIGHT[5] = new Sprite("res/textures/playerPattou.png", 160, 32, 32, 32);
+		PATTOU_MOVING_RIGHT = loadSpriteSheet("res/textures/playerPattou.png", 0, 32, 32, 6, false);
+		PATTOU_MOVING_LEFT = loadSpriteSheet("res/textures/playerPattou.png", 0, 32, 32, 6, true);
 
-		PATTOU_MOVING_LEFT = new Sprite[6];
-		PATTOU_MOVING_LEFT[0] = new Sprite("res/textures/playerPattou.png", 0, 32, 32, 32, true);
-		PATTOU_MOVING_LEFT[1] = new Sprite("res/textures/playerPattou.png", 32, 32, 32, 32, true);
-		PATTOU_MOVING_LEFT[2] = new Sprite("res/textures/playerPattou.png", 64, 32, 32, 32, true);
-		PATTOU_MOVING_LEFT[3] = new Sprite("res/textures/playerPattou.png", 96, 32, 32, 32, true);
-		PATTOU_MOVING_LEFT[4] = new Sprite("res/textures/playerPattou.png", 128, 32, 32, 32, true);
-		PATTOU_MOVING_LEFT[5] = new Sprite("res/textures/playerPattou.png", 160, 32, 32, 32, true);
-
-		PATTOU_JUMPING_RIGHT = new Sprite[6];
-		PATTOU_JUMPING_RIGHT[0] = new Sprite("res/textures/playerPattou.png", 0, 64, 32, 32);
-		PATTOU_JUMPING_RIGHT[1] = new Sprite("res/textures/playerPattou.png", 32, 64, 32, 32);
-		PATTOU_JUMPING_RIGHT[2] = new Sprite("res/textures/playerPattou.png", 64, 64, 32, 32);
-		PATTOU_JUMPING_RIGHT[3] = new Sprite("res/textures/playerPattou.png", 96, 64, 32, 32);
-		PATTOU_JUMPING_RIGHT[4] = new Sprite("res/textures/playerPattou.png", 128, 64, 32, 32);
-		PATTOU_JUMPING_RIGHT[5] = new Sprite("res/textures/playerPattou.png", 160, 64, 32, 32);
-
-		PATTOU_JUMPING_LEFT = new Sprite[6];
-		PATTOU_JUMPING_LEFT[0] = new Sprite("res/textures/playerPattou.png", 0, 64, 32, 32, true);
-		PATTOU_JUMPING_LEFT[1] = new Sprite("res/textures/playerPattou.png", 32, 64, 32, 32, true);
-		PATTOU_JUMPING_LEFT[2] = new Sprite("res/textures/playerPattou.png", 64, 64, 32, 32, true);
-		PATTOU_JUMPING_LEFT[3] = new Sprite("res/textures/playerPattou.png", 96, 64, 32, 32, true);
-		PATTOU_JUMPING_LEFT[4] = new Sprite("res/textures/playerPattou.png", 128, 64, 32, 32, true);
-		PATTOU_JUMPING_LEFT[5] = new Sprite("res/textures/playerPattou.png", 160, 64, 32, 32, true);
+		PATTOU_JUMPING_RIGHT = loadSpriteSheet("res/textures/playerPattou.png", 0, 64, 32, 6, false);
+		PATTOU_JUMPING_LEFT = loadSpriteSheet("res/textures/playerPattou.png", 0, 64, 32, 6, true);
 
 		BATTERY = new Sprite("res/textures/battery.png", 0, 0, 32, 32);
 		DOOR = new Sprite("res/textures/door.png", 0, 0, 32, 32);
@@ -97,17 +72,51 @@ public class Sprite
 		TILE_LADDER_TOP = new Sprite("res/textures/tileset.png", 160, 0, 32, 32);
 		TILE_LADDER_BOTTOM = new Sprite("res/textures/tileset.png", 192, 0, 32, 32);
 
-		TILE_SLOPE = new Sprite[4];
-		TILE_SLOPE[0] = new Sprite("res/textures/tileset.png", 32, 32, 32, 32);
-		TILE_SLOPE[1] = new Sprite("res/textures/tileset.png", 64, 32, 32, 32);
-		TILE_SLOPE[2] = new Sprite("res/textures/tileset.png", 96, 32, 32, 32);
-		TILE_SLOPE[3] = new Sprite("res/textures/tileset.png", 128, 32, 32, 32);
+		TILE_SLOPE = loadSpriteSheet("res/textures/tileset.png", 32, 32, 32, 4, false);
 
 		TILE_MIRROR = new Sprite[4];
 		TILE_MIRROR[0] = new Sprite("res/textures/tileset.png", 0, 32, 32, 32);
-		TILE_MIRROR[1] = new Sprite("res/textures/tileset.png", 224, 0, 32, 32);
-		TILE_MIRROR[2] = new Sprite("res/textures/tileset.png", 256, 0, 32, 32);
+		TILE_MIRROR[1] = new Sprite("res/textures/tileset.png", 256, 0, 32, 32);
+		TILE_MIRROR[2] = new Sprite("res/textures/tileset.png", 224, 0, 32, 32);
 		TILE_MIRROR[3] = new Sprite("res/textures/tileset.png", 288, 0, 32, 32);
+	}
+
+	/** @param URL - The URL of the SpriteSheet to load.
+	 * @param x - The X position to start at in the sheet.
+	 * @param y - The Y position to start at in the sheet.
+	 * @param size - The Size of the Sprites to extract.
+	 * @param length - The number of Sprites to extract. If -1, return everything.
+	 * @param reverse - True if the sprites should be reversed (horizontally).
+	 * @return An Array containing length sprites from the target SpriteSheet. */
+	public static Sprite[] loadSpriteSheet(String URL, int x, int y, int size, int length, boolean reverse)
+	{
+		ArrayList<Sprite> sprites = new ArrayList<Sprite>();
+		try
+		{
+			BufferedImage sheet = ImageIO.read(new File(URL));
+			for (int i = 0; i < length; ++i)
+			{
+				BufferedImage img = sheet.getSubimage(x, y, size, size);
+				if (reverse)
+				{
+					AffineTransform tx = AffineTransform.getScaleInstance(-1, 1);
+					tx.translate(-img.getWidth(null), 0);
+					AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+					img = op.filter(img, null);
+				}
+				sprites.add(new Sprite(img));
+				x += size;
+				if (x >= sheet.getWidth())
+				{
+					x = 0;
+					y += size;
+				}
+			}
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		return sprites.toArray(new Sprite[sprites.size()]);
 	}
 
 	/** The height of the Sprite. */
@@ -122,6 +131,12 @@ public class Sprite
 	private int width;
 	/** The position of the Sprite in the Sprite sheet. */
 	private int x, y;
+
+	/** @param img - The Image of this Sprite. */
+	public Sprite(BufferedImage img)
+	{
+		this.image = img;
+	}
 
 	/** A Sprite in a Sprite sheet.
 	 * 

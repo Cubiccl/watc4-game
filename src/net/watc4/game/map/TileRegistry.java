@@ -26,11 +26,11 @@ public class TileRegistry
 		AIR = new TileAir(2, (byte) 0, null); // BG Wall
 		new Tile(3, (byte) 0, new Animation(Sprite.TILE_GLASS), true, false); // Glass
 		new TileMirror();
-		LADDER_TOP = new TileLadder(8, new Animation(Sprite.TILE_LADDER_TOP)); // Top Ladder
-		new TileLadder(9, new Animation(Sprite.TILE_LADDER_BASE)); // Ladder
-		new TileLadder(10, new Animation(Sprite.TILE_LADDER_BOTTOM)); // Bottom Ladder
-		new TileSlope(11);
-		new TileAir(12, (byte) 0, new Animation(Sprite.TILE_DOOR));
+		LADDER_TOP = new TileLadder(5, new Animation(Sprite.TILE_LADDER_TOP)); // Top Ladder
+		new TileLadder(6, new Animation(Sprite.TILE_LADDER_BASE)); // Ladder
+		new TileLadder(7, new Animation(Sprite.TILE_LADDER_BOTTOM)); // Bottom Ladder
+		new TileSlope(8);
+		new TileAir(9, (byte) 0, new Animation(Sprite.TILE_DOOR));
 	}
 
 	/** @param id - A Tile identifier.

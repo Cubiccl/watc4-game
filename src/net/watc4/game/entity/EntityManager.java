@@ -89,13 +89,13 @@ public class EntityManager implements IRender, IUpdate
 			return containers;
 		}
 		Chunk current = this.map.getChunk(entity.getX(), entity.getY());
-		containers.add(current);
+		if (current != null) containers.add(current);
 		current = this.map.getChunk(entity.getX() + entity.getWidth(), entity.getY());
-		containers.add(current);
+		if (current != null) containers.add(current);
 		current = this.map.getChunk(entity.getX(), entity.getY() + entity.getHeight());
-		containers.add(current);
+		if (current != null) containers.add(current);
 		current = this.map.getChunk(entity.getX() + entity.getWidth(), entity.getY() + entity.getHeight());
-		containers.add(current);
+		if (current != null) containers.add(current);
 		return containers;
 	}
 
