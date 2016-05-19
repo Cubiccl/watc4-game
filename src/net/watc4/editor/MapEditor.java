@@ -105,20 +105,6 @@ public class MapEditor extends JFrame
 	private boolean exists = false;
 	private static String[] fileHeader = new String[]
 	{ "width = ", "height = ", "lumiSpawnX = ", "lumiSpawnY = ", "pattouSpawnX = ", "pattouSpawnY = ", "tiles =" };
-	{
-		lblSelected = new JLabel();
-		lblSelected.setBounds(11, 11, 10, 10);
-		lblSelected.setBackground(new Color(0, 0, 255));
-		lblSelected.setOpaque(true);
-		focusPattou = new JLabel();
-		focusPattou.setBounds(0, 0, 32, 32);
-		focusPattou.setIcon(new ImageIcon(Sprite.PATTOU_IDLE_RIGHT1.getImage()));
-		focusLumi = new JLabel();
-		focusLumi.setBounds(0, 0, 32, 32);
-		focusLumi.setIcon(new ImageIcon(Sprite.LUMI.getImage()));
-		lumiEyes = new JLabel(new ImageIcon(Sprite.LUMI_EYE.getImage()));
-		lumiEyes.setBounds(0, 0, 32, 32);
-	}
 
 	/** Launch the application. */
 	public static void main(String[] args)
@@ -820,12 +806,26 @@ public class MapEditor extends JFrame
 		setBounds(300, 120, 650, 600);
 		menuBar.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 
+		LoreManager.createLore();
+		Sprite.createMainSprites();
 		AnimationManager.create();
 		TileRegistry.createTiles();
 		EntityRegistry.createEntities();
-		LoreManager.createLore();
 		getEntityFromRegistry();
 		getTilesFromRegistry();
+		
+		lblSelected = new JLabel();
+		lblSelected.setBounds(11, 11, 10, 10);
+		lblSelected.setBackground(new Color(0, 0, 255));
+		lblSelected.setOpaque(true);
+		focusPattou = new JLabel();
+		focusPattou.setBounds(0, 0, 32, 32);
+		focusPattou.setIcon(new ImageIcon(Sprite.PATTOU_IDLE_RIGHT[0].getImage()));
+		focusLumi = new JLabel();
+		focusLumi.setBounds(0, 0, 32, 32);
+		focusLumi.setIcon(new ImageIcon(Sprite.LUMI.getImage()));
+		lumiEyes = new JLabel(new ImageIcon(Sprite.LUMI_EYE.getImage()));
+		lumiEyes.setBounds(0, 0, 32, 32);
 
 		FileFilter txtOnly = new FileNameExtensionFilter("Fichier texte", "txt");
 		fc.addChoosableFileFilter(txtOnly);

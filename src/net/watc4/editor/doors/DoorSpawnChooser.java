@@ -41,7 +41,6 @@ public class DoorSpawnChooser extends JDialog
 	private static String[] fileHeader = new String[]
 	{ "width = ", "height = ", "lumiSpawnX = ", "lumiSpawnY = ", "pattouSpawnX = ", "pattouSpawnY = ", "tiles =" };
 	private JLabel focusPattou, focusLumi, lumiEyes;
-
 	public void addTileUpdater(int i, int j)
 	{
 		tilemap[i][j].addMouseListener(new MouseAdapter()
@@ -212,7 +211,7 @@ public class DoorSpawnChooser extends JDialog
 		PattouY = pattouY;
 		focusPattou = new JLabel();
 		focusPattou.setBounds(0, 0, 32, 32);
-		focusPattou.setIcon(new ImageIcon(Sprite.PATTOU_IDLE_RIGHT1.getImage()));
+		focusPattou.setIcon(new ImageIcon(Sprite.PATTOU_IDLE_RIGHT[0].getImage()));
 		focusLumi = new JLabel();
 		focusLumi.setBounds(0, 0, 32, 32);
 		focusLumi.setIcon(new ImageIcon(Sprite.LUMI.getImage()));

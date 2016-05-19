@@ -38,7 +38,7 @@ public class DoorButton extends JButton implements Comparable<DoorButton>
 		infos[2].setFont(infos[2].getFont().deriveFont(18f));
 		infos[2].setBounds(440, 12, 150, 32);
 		add(infos[2]);
-		infos[3] = new JLabel(new ImageIcon(Sprite.PATTOU_IDLE_RIGHT1.getImage()));
+		infos[3] = new JLabel(new ImageIcon(Sprite.PATTOU_IDLE_RIGHT[0].getImage()));
 		infos[3].setBounds(400,54,32,32);
 		add(infos[3]);
 		infos[4] = new JLabel("("+PattouX+","+PattouY+")");

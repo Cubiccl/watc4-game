@@ -9,69 +9,106 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 /** Contains all Images to be used in the <code>Game</code>. Usually, sprites are square, and dimensions are 16x, 32x, 64x, etc. */
-public enum Sprite
+public class Sprite
 {
-	LUMI("res/textures/playerLumi.png", 0, 0, 32, 32),
-	LUMI_EYE("res/textures/playerLumi.png", 32, 0, 15, 15),
-	PATTOU_FALLING_LEFT("res/textures/playerPattou.png", 160, 64, 32, 32, true),
-	PATTOU_FALLING_RIGHT("res/textures/playerPattou.png", 160, 64, 32, 32),
-	PATTOU_IDLE_LEFT1("res/textures/playerPattou.png", 0, 0, 32, 32, true),
-	PATTOU_IDLE_LEFT2("res/textures/playerPattou.png", 32, 0, 32, 32, true),
-	PATTOU_IDLE_RIGHT1("res/textures/playerPattou.png", 0, 0, 32, 32),
-	PATTOU_IDLE_RIGHT2("res/textures/playerPattou.png", 32, 0, 32, 32),
-	PATTOU_JUMPING_LEFT1("res/textures/playerPattou.png", 0, 64, 32, 32, true),
-	PATTOU_JUMPING_LEFT2("res/textures/playerPattou.png", 32, 64, 32, 32, true),
-	PATTOU_JUMPING_LEFT3("res/textures/playerPattou.png", 64, 64, 32, 32, true),
-	PATTOU_JUMPING_LEFT4("res/textures/playerPattou.png", 96, 64, 32, 32, true),
-	PATTOU_JUMPING_LEFT5("res/textures/playerPattou.png", 128, 64, 32, 32, true),
-	PATTOU_JUMPING_LEFT6("res/textures/playerPattou.png", 160, 64, 32, 32, true),
-	PATTOU_JUMPING_RIGHT1("res/textures/playerPattou.png", 0, 64, 32, 32),
-	PATTOU_JUMPING_RIGHT2("res/textures/playerPattou.png", 32, 64, 32, 32),
-	PATTOU_JUMPING_RIGHT3("res/textures/playerPattou.png", 64, 64, 32, 32),
-	PATTOU_JUMPING_RIGHT4("res/textures/playerPattou.png", 96, 64, 32, 32),
-	PATTOU_JUMPING_RIGHT5("res/textures/playerPattou.png", 128, 64, 32, 32),
-	PATTOU_JUMPING_RIGHT6("res/textures/playerPattou.png", 160, 64, 32, 32),
-	PATTOU_MOVING_LEFT1("res/textures/playerPattou.png", 0, 32, 32, 32, true),
-	PATTOU_MOVING_LEFT2("res/textures/playerPattou.png", 32, 32, 32, 32, true),
-	PATTOU_MOVING_LEFT3("res/textures/playerPattou.png", 64, 32, 32, 32, true),
-	PATTOU_MOVING_LEFT4("res/textures/playerPattou.png", 96, 32, 32, 32, true),
-	PATTOU_MOVING_LEFT5("res/textures/playerPattou.png", 128, 32, 32, 32, true),
-	PATTOU_MOVING_LEFT6("res/textures/playerPattou.png", 160, 32, 32, 32, true),
-	PATTOU_MOVING_RIGHT1("res/textures/playerPattou.png", 0, 32, 32, 32),
-	PATTOU_MOVING_RIGHT2("res/textures/playerPattou.png", 32, 32, 32, 32),
-	PATTOU_MOVING_RIGHT3("res/textures/playerPattou.png", 64, 32, 32, 32),
-	PATTOU_MOVING_RIGHT4("res/textures/playerPattou.png", 96, 32, 32, 32),
-	PATTOU_MOVING_RIGHT5("res/textures/playerPattou.png", 128, 32, 32, 32),
-	PATTOU_MOVING_RIGHT6("res/textures/playerPattou.png", 160, 32, 32, 32),
-	PATTOU_LADDER1("res/textures/playerPattou.png", 160, 0, 32, 32),
-	PATTOU_LADDER2("res/textures/playerPattou.png", 128, 0, 32, 32),
-	PATTOU_LADDER3("res/textures/playerPattou.png", 160, 0, 32, 32, true),
-	PATTOU_LADDER4("res/textures/playerPattou.png", 128, 0, 32, 32, true),
-	TILE_DEFAULT("res/textures/tileset.png", 0, 0, 32, 32),
-	TILE_DOOR("res/textures/tileset.png", 160, 32, 32, 32),
-	TILE_GLASS("res/textures/tileset.png", 96, 0, 32, 32),
-	TILE_GROUND("res/textures/tileground-test.png", 0, 0, 112, 112),
-	TILE_LADDER_BACK("res/textures/tileset.png", 192, 0, 32, 32),
-	TILE_LADDER_BASE("res/textures/tileset.png", 128, 0, 32, 32),
-	TILE_LADDER_TOP("res/textures/tileset.png", 160, 0, 32, 32),
-	TILE_MIRROR_BACK("res/textures/tileset.png", 256, 0, 32, 32),
-	TILE_MIRROR_LEFT("res/textures/tileset.png", 288, 0, 32, 32),
-	TILE_MIRROR_RIGHT("res/textures/tileset.png", 224, 0, 32, 32),
-	TILE_MIRROR_TOP("res/textures/tileset.png", 0, 32, 32, 32),
-	TILE_SLOPE_TL("res/textures/tileset.png", 32, 32, 32, 32),
-	TILE_SLOPE_TR("res/textures/tileset.png", 64, 32, 32, 32),
-	TILE_SLOPE_BR("res/textures/tileset.png", 96, 32, 32, 32),
-	TILE_SLOPE_BL("res/textures/tileset.png", 128, 32, 32, 32),
-	TILE_WALL("res/textures/tileset.png", 64, 0, 32, 32),
-	UNKNOWN("res/textures/unknown.png", 0, 0, 32, 32),
-	ARROW_DOWN("res/textures/icons.png", 0, 0, 16, 16),
-	ARROW_UP("res/textures/icons.png", 16, 0, 16, 16),
-	CROSS("res/textures/icons.png", 32, 0, 16, 16),
-	PLUS("res/textures/icons.png", 48, 0, 16, 16),
-	FLUORESCENT("res/textures/fluorescent.png",0,0,32,32),
-	DOOR("res/textures/door.png",0,0,32,32),
-	CUTSCENE("res/textures/cutscene.png",0,0,32,32),
-	BATTERY("res/textures/battery.png",0,0,32,32);
+	public static Sprite ARROW_DOWN, ARROW_UP, CROSS, PLUS;
+	public static Sprite BATTERY, CUTSCENE, DOOR, FLUORESCENT;
+	public static Sprite LUMI, LUMI_EYE;
+	public static Sprite[] PATTOU_IDLE_RIGHT, PATTOU_IDLE_LEFT;
+	public static Sprite[] PATTOU_JUMPING_RIGHT, PATTOU_JUMPING_LEFT;
+	public static Sprite[] PATTOU_LADDER;
+	public static Sprite[] PATTOU_MOVING_RIGHT, PATTOU_MOVING_LEFT;
+	public static Sprite TILE_DEFAULT, TILE_GROUND, TILE_WALL, TILE_DOOR, TILE_GLASS;
+	public static Sprite TILE_LADDER_BOTTOM, TILE_LADDER_BASE, TILE_LADDER_TOP;
+	public static Sprite[] TILE_MIRROR;
+	public static Sprite[] TILE_SLOPE;
+	public static Sprite UNKNOWN;
+
+	/** Creates the main Sprites. */
+	public static void createMainSprites()
+	{
+		UNKNOWN = new Sprite("res/textures/unknown.png", 0, 0, 32, 32);
+
+		ARROW_DOWN = new Sprite("res/textures/icons.png", 0, 0, 16, 16);
+		ARROW_UP = new Sprite("res/textures/icons.png", 16, 0, 16, 16);
+		CROSS = new Sprite("res/textures/icons.png", 32, 0, 16, 16);
+		PLUS = new Sprite("res/textures/icons.png", 48, 0, 16, 16);
+
+		LUMI = new Sprite("res/textures/playerLumi.png", 0, 0, 32, 32);
+		LUMI_EYE = new Sprite("res/textures/playerLumi.png", 32, 0, 15, 15);
+
+		PATTOU_IDLE_RIGHT = new Sprite[2];
+		PATTOU_IDLE_LEFT = new Sprite[2];
+		PATTOU_IDLE_RIGHT[0] = new Sprite("res/textures/playerPattou.png", 0, 0, 32, 32);
+		PATTOU_IDLE_RIGHT[1] = new Sprite("res/textures/playerPattou.png", 32, 0, 32, 32);
+		PATTOU_IDLE_LEFT[0] = new Sprite("res/textures/playerPattou.png", 0, 0, 32, 32, true);
+		PATTOU_IDLE_LEFT[1] = new Sprite("res/textures/playerPattou.png", 32, 0, 32, 32, true);
+
+		PATTOU_LADDER = new Sprite[4];
+		PATTOU_LADDER[0] = new Sprite("res/textures/playerPattou.png", 160, 0, 32, 32);
+		PATTOU_LADDER[1] = new Sprite("res/textures/playerPattou.png", 128, 0, 32, 32);
+		PATTOU_LADDER[2] = new Sprite("res/textures/playerPattou.png", 160, 0, 32, 32, true);
+		PATTOU_LADDER[3] = new Sprite("res/textures/playerPattou.png", 128, 0, 32, 32, true);
+
+		PATTOU_MOVING_RIGHT = new Sprite[6];
+		PATTOU_MOVING_RIGHT[0] = new Sprite("res/textures/playerPattou.png", 0, 32, 32, 32);
+		PATTOU_MOVING_RIGHT[1] = new Sprite("res/textures/playerPattou.png", 32, 32, 32, 32);
+		PATTOU_MOVING_RIGHT[2] = new Sprite("res/textures/playerPattou.png", 64, 32, 32, 32);
+		PATTOU_MOVING_RIGHT[3] = new Sprite("res/textures/playerPattou.png", 96, 32, 32, 32);
+		PATTOU_MOVING_RIGHT[4] = new Sprite("res/textures/playerPattou.png", 128, 32, 32, 32);
+		PATTOU_MOVING_RIGHT[5] = new Sprite("res/textures/playerPattou.png", 160, 32, 32, 32);
+
+		PATTOU_MOVING_LEFT = new Sprite[6];
+		PATTOU_MOVING_LEFT[0] = new Sprite("res/textures/playerPattou.png", 0, 32, 32, 32, true);
+		PATTOU_MOVING_LEFT[1] = new Sprite("res/textures/playerPattou.png", 32, 32, 32, 32, true);
+		PATTOU_MOVING_LEFT[2] = new Sprite("res/textures/playerPattou.png", 64, 32, 32, 32, true);
+		PATTOU_MOVING_LEFT[3] = new Sprite("res/textures/playerPattou.png", 96, 32, 32, 32, true);
+		PATTOU_MOVING_LEFT[4] = new Sprite("res/textures/playerPattou.png", 128, 32, 32, 32, true);
+		PATTOU_MOVING_LEFT[5] = new Sprite("res/textures/playerPattou.png", 160, 32, 32, 32, true);
+
+		PATTOU_JUMPING_RIGHT = new Sprite[6];
+		PATTOU_JUMPING_RIGHT[0] = new Sprite("res/textures/playerPattou.png", 0, 64, 32, 32);
+		PATTOU_JUMPING_RIGHT[1] = new Sprite("res/textures/playerPattou.png", 32, 64, 32, 32);
+		PATTOU_JUMPING_RIGHT[2] = new Sprite("res/textures/playerPattou.png", 64, 64, 32, 32);
+		PATTOU_JUMPING_RIGHT[3] = new Sprite("res/textures/playerPattou.png", 96, 64, 32, 32);
+		PATTOU_JUMPING_RIGHT[4] = new Sprite("res/textures/playerPattou.png", 128, 64, 32, 32);
+		PATTOU_JUMPING_RIGHT[5] = new Sprite("res/textures/playerPattou.png", 160, 64, 32, 32);
+
+		PATTOU_JUMPING_LEFT = new Sprite[6];
+		PATTOU_JUMPING_LEFT[0] = new Sprite("res/textures/playerPattou.png", 0, 64, 32, 32, true);
+		PATTOU_JUMPING_LEFT[1] = new Sprite("res/textures/playerPattou.png", 32, 64, 32, 32, true);
+		PATTOU_JUMPING_LEFT[2] = new Sprite("res/textures/playerPattou.png", 64, 64, 32, 32, true);
+		PATTOU_JUMPING_LEFT[3] = new Sprite("res/textures/playerPattou.png", 96, 64, 32, 32, true);
+		PATTOU_JUMPING_LEFT[4] = new Sprite("res/textures/playerPattou.png", 128, 64, 32, 32, true);
+		PATTOU_JUMPING_LEFT[5] = new Sprite("res/textures/playerPattou.png", 160, 64, 32, 32, true);
+
+		BATTERY = new Sprite("res/textures/battery.png", 0, 0, 32, 32);
+		DOOR = new Sprite("res/textures/door.png", 0, 0, 32, 32);
+		CUTSCENE = new Sprite("res/textures/cutscene.png", 0, 0, 32, 32);
+		FLUORESCENT = new Sprite("res/textures/fluorescent.png", 0, 0, 32, 32);
+
+		TILE_DEFAULT = new Sprite("res/textures/tileset.png", 0, 0, 32, 32);
+		TILE_GROUND = new Sprite("res/textures/tileset.png", 32, 0, 32, 32);
+		TILE_WALL = new Sprite("res/textures/tileset.png", 64, 0, 32, 32);
+		TILE_GLASS = new Sprite("res/textures/tileset.png", 96, 0, 32, 32);
+		TILE_DOOR = new Sprite("res/textures/tileset.png", 160, 32, 32, 32);
+
+		TILE_LADDER_BASE = new Sprite("res/textures/tileset.png", 128, 0, 32, 32);
+		TILE_LADDER_TOP = new Sprite("res/textures/tileset.png", 160, 0, 32, 32);
+		TILE_LADDER_BOTTOM = new Sprite("res/textures/tileset.png", 192, 0, 32, 32);
+
+		TILE_SLOPE = new Sprite[4];
+		TILE_SLOPE[0] = new Sprite("res/textures/tileset.png", 32, 32, 32, 32);
+		TILE_SLOPE[1] = new Sprite("res/textures/tileset.png", 64, 32, 32, 32);
+		TILE_SLOPE[2] = new Sprite("res/textures/tileset.png", 96, 32, 32, 32);
+		TILE_SLOPE[3] = new Sprite("res/textures/tileset.png", 128, 32, 32, 32);
+
+		TILE_MIRROR = new Sprite[4];
+		TILE_MIRROR[0] = new Sprite("res/textures/tileset.png", 0, 32, 32, 32);
+		TILE_MIRROR[1] = new Sprite("res/textures/tileset.png", 224, 0, 32, 32);
+		TILE_MIRROR[2] = new Sprite("res/textures/tileset.png", 256, 0, 32, 32);
+		TILE_MIRROR[3] = new Sprite("res/textures/tileset.png", 288, 0, 32, 32);
+	}
 
 	/** The height of the Sprite. */
 	private int height;

@@ -8,7 +8,6 @@ import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import net.watc4.game.display.Camera;
-import net.watc4.game.utils.FileUtils;
 import net.watc4.game.utils.GameSettings;
 import net.watc4.game.utils.GameUtils;
 import net.watc4.game.utils.IRender;

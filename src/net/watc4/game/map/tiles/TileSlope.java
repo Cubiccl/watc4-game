@@ -4,7 +4,6 @@ import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 
-import net.watc4.game.display.Animation;
 import net.watc4.game.display.Sprite;
 import net.watc4.game.map.Map;
 import net.watc4.game.utils.geometry.Hitbox;
@@ -16,9 +15,15 @@ public class TileSlope extends TileGround
 	/** Data values. */
 	public static final int TOP_LEFT = 0, TOP_RIGHT = 1, BOTTOM_RIGHT = 2, BOTTOM_LEFT = 3;
 
-	public TileSlope(int id, Animation animation)
+	public TileSlope(int id)
 	{
-		super(id, (byte) 3, animation);
+		super(id, (byte) 3, null);
+	}
+
+	@Override
+	public BufferedImage getSprite(Map map, int x, int y, int data)
+	{
+		return Sprite.TILE_SLOPE[data].getImage();
 	}
 
 	@Override
@@ -41,25 +46,6 @@ public class TileSlope extends TileGround
 
 			default:
 				return new PolygonHitbox(tr, br, bl);
-		}
-	}
-
-	@Override
-	public BufferedImage getSprite(Map map, int x, int y, int data)
-	{
-		switch (data)
-		{
-			case TOP_RIGHT:
-				return Sprite.TILE_SLOPE_TR.getImage();
-
-			case BOTTOM_RIGHT:
-				return Sprite.TILE_SLOPE_BR.getImage();
-
-			case BOTTOM_LEFT:
-				return Sprite.TILE_SLOPE_BL.getImage();
-
-			default:
-				return super.getSprite(map, x, y, data);
 		}
 	}
 
