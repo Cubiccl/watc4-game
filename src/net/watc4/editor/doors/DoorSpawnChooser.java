@@ -44,7 +44,7 @@ public class DoorSpawnChooser extends JDialog
 	{
 		focusPattou = new JLabel();
 		focusPattou.setBounds(0, 0, 32, 32);
-		focusPattou.setIcon(new ImageIcon(Sprite.PATTOU_IDLE_RIGHT1.getImage()));
+		focusPattou.setIcon(new ImageIcon(Sprite.PATTOU_IDLE_RIGHT[0].getImage()));
 		focusLumi = new JLabel();
 		focusLumi.setBounds(0, 0, 32, 32);
 		focusLumi.setIcon(new ImageIcon(Sprite.LUMI.getImage()));

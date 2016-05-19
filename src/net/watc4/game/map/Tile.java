@@ -38,8 +38,7 @@ public class Tile
 	/** @return The Image of this Tile. */
 	public BufferedImage getSprite(Map map, int x, int y, int data)
 	{
-		if (this.sprite.getImage().getWidth() != Map.TILESIZE || this.sprite.getImage().getHeight() != Map.TILESIZE) return this.sprite.getImage().getSubimage(
-				x % this.sprite.getImage().getWidth(), y % this.sprite.getImage().getHeight(), 32, 32);
+		if (this.sprite == null) return null;
 		return this.sprite.getImage();
 	}
 

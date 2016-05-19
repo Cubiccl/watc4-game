@@ -166,7 +166,7 @@ public class DoorValues extends JDialog
 
 		JLabel labelPattou = new JLabel("");
 		labelPattou.setBounds(255, 147, 32, 32);
-		labelPattou.setIcon(new ImageIcon(Sprite.PATTOU_IDLE_RIGHT1.getImage()));
+		labelPattou.setIcon(new ImageIcon(Sprite.PATTOU_IDLE_RIGHT[0].getImage()));
 		contentPanel.add(labelPattou);
 
 		JButton buttonPlacerLumi = new JButton("Placer");

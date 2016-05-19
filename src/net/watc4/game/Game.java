@@ -8,6 +8,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferStrategy;
 
 import net.watc4.game.display.AnimationManager;
+import net.watc4.game.display.Sprite;
 import net.watc4.game.display.Window;
 import net.watc4.game.entity.EntityRegistry;
 import net.watc4.game.map.TileRegistry;
@@ -38,6 +39,7 @@ public class Game implements Runnable
 	public static void main(String[] args)
 	{
 		LoreManager.createLore();
+		Sprite.createMainSprites();
 		AnimationManager.create();
 		TileRegistry.createTiles();
 		EntityRegistry.createEntities();

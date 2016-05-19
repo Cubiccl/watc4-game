@@ -112,7 +112,7 @@ public class MapEditor extends JFrame
 		lblSelected.setOpaque(true);
 		focusPattou = new JLabel();
 		focusPattou.setBounds(0, 0, 32, 32);
-		focusPattou.setIcon(new ImageIcon(Sprite.PATTOU_IDLE_RIGHT1.getImage()));
+		focusPattou.setIcon(new ImageIcon(Sprite.PATTOU_IDLE_RIGHT[0].getImage()));
 		focusLumi = new JLabel();
 		focusLumi.setBounds(0, 0, 32, 32);
 		focusLumi.setIcon(new ImageIcon(Sprite.LUMI.getImage()));
@@ -846,10 +846,11 @@ public class MapEditor extends JFrame
 		setBounds(300, 120, 650, 600);
 		menuBar.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 
+		LoreManager.createLore();
+		Sprite.createMainSprites();
 		AnimationManager.create();
 		TileRegistry.createTiles();
 		EntityRegistry.createEntities();
-		LoreManager.createLore();
 		getEntityFromRegistry();
 		getTilesFromRegistry();
 

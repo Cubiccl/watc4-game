@@ -8,21 +8,14 @@ import net.watc4.game.map.tiles.TileAir;
 import net.watc4.game.map.tiles.TileGround;
 import net.watc4.game.map.tiles.TileLadder;
 import net.watc4.game.map.tiles.TileSlope;
-import net.watc4.game.utils.GameUtils;
 
 /** Registers all Tiles. */
 public class TileRegistry
 {
+	public static Tile DEFAULT, AIR, LADDER_TOP;
+
 	/** List of all Tiles. */
 	private static HashMap<Integer, Tile> tiles;
-
-	/** @return The list of all Tiles*/
-	public static HashMap<Integer, Tile> getTiles()
-	{
-		return tiles;
-	}
-
-	public static Tile DEFAULT, AIR, LADDER_TOP;
 
 	/** Creates all Tiles in the Game. */
 	public static void createTiles()
@@ -32,14 +25,11 @@ public class TileRegistry
 		new TileGround(1, (byte) 0, new Animation(Sprite.TILE_GROUND)); // Ground
 		AIR = new TileAir(2, (byte) 0, null); // BG Wall
 		new Tile(3, (byte) 0, new Animation(Sprite.TILE_GLASS), true, false); // Glass
-		new TileMirror(4, new Animation(Sprite.TILE_MIRROR_TOP), GameUtils.UP); // Mirror Top
-		new TileMirror(5, new Animation(Sprite.TILE_MIRROR_RIGHT), GameUtils.RIGHT); // Mirror Right
-		new TileMirror(6, new Animation(Sprite.TILE_MIRROR_BACK), GameUtils.DOWN); // Mirror Bottom
-		new TileMirror(7, new Animation(Sprite.TILE_MIRROR_LEFT), GameUtils.LEFT); // Mirror Left
+		new TileMirror();
 		LADDER_TOP = new TileLadder(8, new Animation(Sprite.TILE_LADDER_TOP)); // Top Ladder
 		new TileLadder(9, new Animation(Sprite.TILE_LADDER_BASE)); // Ladder
-		new TileLadder(10, new Animation(Sprite.TILE_LADDER_BACK)); // Bottom Ladder
-		new TileSlope(11, new Animation(Sprite.TILE_SLOPE_TL));
+		new TileLadder(10, new Animation(Sprite.TILE_LADDER_BOTTOM)); // Bottom Ladder
+		new TileSlope(11);
 		new TileAir(12, (byte) 0, new Animation(Sprite.TILE_DOOR));
 	}
 
@@ -48,6 +38,12 @@ public class TileRegistry
 	public static Tile getTileFromId(int id)
 	{
 		return tiles.get(new Integer(id));
+	}
+
+	/** @return The list of all Tiles */
+	public static HashMap<Integer, Tile> getTiles()
+	{
+		return tiles;
 	}
 
 	/** Registers a new Tile.
