@@ -41,17 +41,6 @@ public class DoorSpawnChooser extends JDialog
 	private static String[] fileHeader = new String[]
 	{ "width = ", "height = ", "lumiSpawnX = ", "lumiSpawnY = ", "pattouSpawnX = ", "pattouSpawnY = ", "tiles =" };
 	private JLabel focusPattou, focusLumi, lumiEyes;
-	{
-		focusPattou = new JLabel();
-		focusPattou.setBounds(0, 0, 32, 32);
-		focusPattou.setIcon(new ImageIcon(Sprite.PATTOU_IDLE_RIGHT1.getImage()));
-		focusLumi = new JLabel();
-		focusLumi.setBounds(0, 0, 32, 32);
-		focusLumi.setIcon(new ImageIcon(Sprite.LUMI.getImage()));
-		lumiEyes = new JLabel(new ImageIcon(Sprite.LUMI_EYE.getImage()));
-		lumiEyes.setBounds(0, 0, 32, 32);
-		focusLumi.add(lumiEyes);
-	}
 
 	public void addTileUpdater(int i, int j)
 	{
@@ -221,6 +210,15 @@ public class DoorSpawnChooser extends JDialog
 		LumiY = lumiY;
 		PattouX = pattouX;
 		PattouY = pattouY;
+		focusPattou = new JLabel();
+		focusPattou.setBounds(0, 0, 32, 32);
+		focusPattou.setIcon(new ImageIcon(Sprite.PATTOU_IDLE_RIGHT1.getImage()));
+		focusLumi = new JLabel();
+		focusLumi.setBounds(0, 0, 32, 32);
+		focusLumi.setIcon(new ImageIcon(Sprite.LUMI.getImage()));
+		lumiEyes = new JLabel(new ImageIcon(Sprite.LUMI_EYE.getImage()));
+		lumiEyes.setBounds(0, 0, 32, 32);
+		focusLumi.add(lumiEyes);
 		setModal(true);
 		setBounds(100, 100, 600, 500);
 		getContentPane().setLayout(new BorderLayout());

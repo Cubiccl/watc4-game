@@ -171,31 +171,10 @@ public class MapEditor extends JFrame
 			String[] values = lines[i].split("\t");
 			doorList.add(new DoorButton(values[0], Integer.parseInt(values[1]), values[2], Integer.parseInt(values[3]), Integer.parseInt(values[4]), Integer
 					.parseInt(values[5]), Integer.parseInt(values[6])));
-			 addDoorListener(i);
 			i++;
 		}
 		doorList.sort(null);
 		updateDoorList();
-	}
-	
-	public void addDoorListener(int i)
-	{
-		doorList.get(i).addMouseListener(new MouseAdapter()
-		{
-			@Override
-			public void mouseClicked(MouseEvent e)
-			{
-				try
-				{
-					DoorValues dialog = new DoorValues(doorList.get(i));
-					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-					dialog.setVisible(true);
-				} catch (Exception ex)
-				{
-					ex.printStackTrace();
-				}
-			}
-		});
 	}
 
 	public void updateDoorList()
@@ -205,11 +184,6 @@ public class MapEditor extends JFrame
 		for (int i = 0; i < doorList.size(); i++)
 		{
 			doorsView.add(doorList.get(i));
-			for (int j = 1; j < doorList.get(i).getMouseListeners().length; j++)
-			{
-				doorList.get(i).removeMouseListener(doorList.get(i).getMouseListeners()[j]);
-			}
-			addDoorListener(i);
 		}
 		doorsView.updateUI();
 	}

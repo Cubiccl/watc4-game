@@ -5,6 +5,11 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
@@ -36,6 +41,29 @@ public class DoorValues extends JDialog
 	private ArrayList<DoorButton> doorsList = mapEd.getDoorList();
 	private JComboBox<String> map1comboBox, map2comboBox;
 	private DoorButton dbtn;
+
+	public void updateLore() throws IOException
+	{
+		String[] oldLore = FileUtils.readFileAsStringArray("res/lore.txt");
+		PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("res/lore.txt")));
+		pw.println("doors =");
+		for (int i = 1; i < doorsList.size(); i++)
+		{
+			DoorButton db = doorsList.get(i);
+			pw.println(db.map1 + "\t" + db.UUID + "\t" + db.map2 + "\t" + db.LumiX + "\t" + db.LumiY + "\t" + db.PattouX + "\t" + db.PattouY);
+		}
+		pw.println("endings =");
+		int j = 0;
+		do
+		{
+			j++;
+		} while (!oldLore[j].equals("endings ="));
+		for(; j < oldLore.length; j++)
+		{
+			pw.println(oldLore[j]);
+		}
+		pw.close();
+	}
 
 	public void setSpawnPoint(int x, int y, boolean character)
 	{
@@ -236,6 +264,13 @@ public class DoorValues extends JDialog
 									((String) map2comboBox.getSelectedItem()), Integer.valueOf(fieldLumiX.getText()), Integer.valueOf(fieldLumiY.getText()),
 									Integer.valueOf(fieldPattouX.getText()), Integer.valueOf(fieldPattouY.getText())));
 							mapEd.updateDoorList();
+							try
+							{
+								updateLore();
+							} catch (IOException e1)
+							{
+								e1.printStackTrace();
+							}
 							dispose();
 						}
 					}

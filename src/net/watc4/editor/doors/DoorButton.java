@@ -1,9 +1,12 @@
 package net.watc4.editor.doors;
 
 import java.awt.Dimension;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 
 import net.watc4.game.display.Sprite;
@@ -46,6 +49,25 @@ public class DoorButton extends JButton implements Comparable<DoorButton>
 		infos[5].setBounds(20, 10, 100, 20);
 		infos[5].setFont(infos[5].getFont().deriveFont(18f));
 		add(infos[5]);
+		if(!(this instanceof AddDoorButton))
+		{
+			addMouseListener(new MouseAdapter()
+			{
+				@Override
+				public void mouseClicked(MouseEvent e)
+				{
+					try
+					{
+						DoorValues dialog = new DoorValues(DoorButton.this);
+						dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+						dialog.setVisible(true);
+					} catch (Exception ex)
+					{
+						ex.printStackTrace();
+					}
+				}
+			});
+		}
 	}
 	
 	public DoorButton(String map1, int UUID, String map2, int lumiX, int lumiY, int pattouX, int pattouY)
