@@ -1,5 +1,6 @@
 package net.watc4.editor.doors;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -49,6 +50,10 @@ public class DoorButton extends JButton implements Comparable<DoorButton>
 		infos[5].setBounds(20, 10, 100, 20);
 		infos[5].setFont(infos[5].getFont().deriveFont(18f));
 		add(infos[5]);
+		for(int i = 0; i < infos.length; i++)
+		{
+			infos[i].setForeground(new Color(255,255,255));
+		}
 		if(!(this instanceof AddDoorButton))
 		{
 			addMouseListener(new MouseAdapter()
@@ -80,6 +85,7 @@ public class DoorButton extends JButton implements Comparable<DoorButton>
 		this.PattouX = pattouX;
 		this.PattouY = pattouY;
 		init();
+		this.setBackground(new Color(50,50,50));
 	}
 	
 	public DoorButton(){

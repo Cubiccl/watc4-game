@@ -75,32 +75,35 @@ public class MapEditor extends JFrame
 	private static final int MODE_CHARACTERS = 2;
 	private static final int MODE_CUTSCENE = 3;
 	private static final int MODE_DOORS = 4;
+	private static final int MODE_ENDINGS = 5;
 	private int mode;
 	private Game g;
 	private JPanel contentPane;
 	private Toolkit tool = Toolkit.getDefaultToolkit();
 	private GridBagConstraints gbc = new GridBagConstraints();
-	private JPanel mapView = new JPanel(), cutsceneView = new JPanel(), doorsView = new JPanel();
-	private JScrollPane scrollMap = new JScrollPane(), scrollCutscene, scrollDoors;
+	private JPanel mapView = new JPanel(), cutsceneView = new JPanel(), doorsView = new JPanel(), endingsView = new JPanel();
+	private JScrollPane scrollMap = new JScrollPane(), scrollCutscene, scrollDoors, scrollEndings, scrollTileRegistry, scrollEntityRegistry;
 	private final JMenuBar menuBar = new JMenuBar();
-	private final JMenuItem createMapMenu = new JMenuItem("Nouveau");
+	private final JMenuItem createMapMenu = new JMenuItem("Nouveau"), mntmTester, mntmOuvrirUneCarte, mntmEnregistrer, mntmEnregistrerSous, mntmQuitter;
 	private ArrayList<EventLabel> eventList = new ArrayList<EventLabel>();
 	private ArrayList<DoorButton> doorList = new ArrayList<DoorButton>();
 	private TileLabel[][] tilemap;
 	private TileLabel[] tileChoice, entityChoice;
 	private int selectedTile, selectedEntity;
-	private JPanel tilesMenu, entityMenu, characterMenu;
-	private JLabel lblTiles = new JLabel("Tuiles :"), lblEntityName = new JLabel();
+	private JPanel tilesMenu, entityMenu, characterMenu, cutsceneMenu, doorsMenu, endingsMenu;
+	private JLabel lblTiles = new JLabel("Tuiles :"), lblEntityName = new JLabel(), lblEntity, label_2, lblSelectedEntity;
 	private JPanel tileRegistry = new JPanel(), entityRegistry = new JPanel();
 	private JLabel lblTileSelected = new JLabel("Tuile s\u00E9lectionn\u00E9e :");
 	private JLabel selectedTileLabel = new JLabel(), selectedEntityLabel = new JLabel();
 	private JTextField fieldPattouX, fieldPattouY, fieldLumiX, fieldLumiY;
 	private JRadioButton radioPattou, radioLumi;
-	private JLabel focusPattou, focusLumi, lumiEyes, lblSelected;
+	private JLabel focusPattou, focusLumi, lumiEyes, lblSelected, lblPattouX, lblPattouY, lblLumiX, lblLumiY;
 	private int lblSelectedTileIndex = -1, lblSelectedEntityIndex = -1;
 	private JButton btnRemovePattou, btnRemoveLumi;
 	private JButton[] cutsceneOptions;
 	private JButton[] ajoutCutscene;
+	private JTabbedPane menu;
+	public final static Color black1 = new Color(25, 25, 25), black2 = new Color(50, 50, 50), black3 = new Color(80, 80, 80), white = new Color(255, 255, 255);
 	private final static JFileChooser fc = new JFileChooser(), sceneC = new JFileChooser();
 	private boolean exists = false;
 	private static String[] fileHeader = new String[]
@@ -123,6 +126,64 @@ public class MapEditor extends JFrame
 				}
 			}
 		});
+	}
+
+	public void colorStyle()
+	{
+		setColor(this.contentPane, black1, white);
+		// MenuBar
+		setColor(menuBar, black2, white);
+		setColor(createMapMenu, black2, white);
+		setColor(mntmTester, black2, white);
+		setColor(mntmOuvrirUneCarte, black2, white);
+		setColor(mntmEnregistrer, black2, white);
+		setColor(mntmEnregistrerSous, black2, white);
+		setColor(mntmQuitter, black2, white);
+		// Menu
+		for (int i = 0; i < this.menu.getComponentCount(); i++)
+			setColor(this.menu.getComponent(i), black2, white);
+		setColor((Component) tilesMenu.getParent(), white, black1);
+		// TilesMenu
+		setColor(lblTiles, black2, white);
+		setColor(tileRegistry, black3, white);
+		setColor(lblTileSelected, black2, white);
+		setColor(selectedTileLabel, black2, white);
+		setColor(mapView, black1, null);
+		for (int i = 0; i < scrollTileRegistry.getHorizontalScrollBar().getComponents().length; i++)
+			setColor(scrollTileRegistry.getHorizontalScrollBar().getComponent(i), black3, white);
+		// EntityMenu
+		setColor(lblEntityName, black2, white);
+		setColor(entityRegistry, black3, white);
+		setColor(selectedEntityLabel, black2, white);
+		setColor(lblEntity, black2, white);
+		setColor(label_2, black2, white);
+		setColor(lblSelectedEntity, black2, white);
+		// CharactersMenu
+		setColor(radioPattou, black2, white);
+		setColor(radioLumi, black2, white);
+		setColor(lblPattouX, black2, white);
+		setColor(lblPattouY, black2, white);
+		setColor(lblLumiX, black2, white);
+		setColor(lblLumiY, black2, white);
+		setColor(btnRemoveLumi, black3, white);
+		setColor(btnRemovePattou, black3, white);
+		// Cutscene Menu
+		setColor(cutsceneView, black2, white);
+		for (int i = 0; i < cutsceneOptions.length; i++)
+			setColor(cutsceneOptions[i], black3, white);
+			// addButtons colores dans putAddButtons()
+		// Ending Menu
+		setColor(endingsView,black2, white);
+		// TODO
+	}
+
+	public void setColor(Component c, Color back, Color fore)
+	{
+		if (c != null)
+		{
+			if (back != null) c.setBackground(back);
+			if (fore != null) c.setForeground(fore);
+		}
 	}
 
 	public ArrayList<DoorButton> getDoorList()
@@ -197,6 +258,7 @@ public class MapEditor extends JFrame
 			ajoutCutscene[i] = new JButton(new ImageIcon(Sprite.PLUS.getImage()));
 			ajoutCutscene[i].setBounds(160, 100 * i + 13, 20, 20);
 			cutsceneView.add(ajoutCutscene[i]);
+			setColor(ajoutCutscene[i],black3,white);
 			ajoutCutscene[i].addMouseListener(new MouseAdapter()
 			{
 				@Override
@@ -244,8 +306,6 @@ public class MapEditor extends JFrame
 
 	public void initCutsceneOptions()
 	{
-		cutsceneOptions = new JButton[]
-		{ new JButton("Cr\u00E9er"), new JButton("Ouvrir"), new JButton("Enregistrer") };
 		for (int i = 0; i < cutsceneOptions.length; i++)
 		{
 			cutsceneOptions[i].setBounds(MapEditor.getFrames()[0].getWidth() - 280, 50 + i * 40, 160, 25);
@@ -813,7 +873,7 @@ public class MapEditor extends JFrame
 		EntityRegistry.createEntities();
 		getEntityFromRegistry();
 		getTilesFromRegistry();
-		
+
 		lblSelected = new JLabel();
 		lblSelected.setBounds(11, 11, 10, 10);
 		lblSelected.setBackground(new Color(0, 0, 255));
@@ -861,7 +921,7 @@ public class MapEditor extends JFrame
 
 		menuBar.add(createMapMenu);
 
-		JMenuItem mntmTester = new JMenuItem("Tester");
+		mntmTester = new JMenuItem("Tester");
 		mntmTester.addMouseListener(new MouseAdapter()
 		{
 			@Override
@@ -901,7 +961,7 @@ public class MapEditor extends JFrame
 		mntmTester.setMaximumSize(new Dimension(80, 32767));
 		menuBar.add(mntmTester);
 
-		JMenuItem mntmOuvrirUneCarte = new JMenuItem("Ouvrir");
+		mntmOuvrirUneCarte = new JMenuItem("Ouvrir");
 		mntmOuvrirUneCarte.addMouseListener(new MouseAdapter()
 		{
 			@Override
@@ -921,7 +981,7 @@ public class MapEditor extends JFrame
 		mntmOuvrirUneCarte.setMaximumSize(new Dimension(70, 32767));
 		menuBar.add(mntmOuvrirUneCarte);
 
-		JMenuItem mntmEnregistrer = new JMenuItem("Enregistrer");
+		mntmEnregistrer = new JMenuItem("Enregistrer");
 		mntmEnregistrer.addMouseListener(new MouseAdapter()
 		{
 			@SuppressWarnings("deprecation")
@@ -963,7 +1023,7 @@ public class MapEditor extends JFrame
 		mntmEnregistrer.setToolTipText("Sauvegardez votre carte au format texte");
 		menuBar.add(mntmEnregistrer);
 
-		JMenuItem mntmEnregistrerSous = new JMenuItem("Enregistrer sous");
+		mntmEnregistrerSous = new JMenuItem("Enregistrer sous");
 		mntmEnregistrerSous.setMaximumSize(new Dimension(110, 32767));
 		mntmEnregistrerSous.addMouseListener(new MouseAdapter()
 		{
@@ -995,7 +1055,7 @@ public class MapEditor extends JFrame
 		mntmEnregistrerSous.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		menuBar.add(mntmEnregistrerSous);
 
-		JMenuItem mntmQuitter = new JMenuItem("     Quitter");
+		mntmQuitter = new JMenuItem("     Quitter");
 		mntmQuitter.setMaximumSize(new Dimension(80, 32767));
 		mntmQuitter.addMouseListener(new MouseAdapter()
 		{
@@ -1012,7 +1072,7 @@ public class MapEditor extends JFrame
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
 
-		JTabbedPane menu = new JTabbedPane();
+		menu = new JTabbedPane();
 		contentPane.add(menu, BorderLayout.NORTH);
 		selectedTileLabel.setIcon(new ImageIcon(TileRegistry.getTileFromId(selectedTile).sprite.getImage()));
 		tilesMenu = new JPanel();
@@ -1024,7 +1084,7 @@ public class MapEditor extends JFrame
 
 		tilesMenu.add(lblTiles);
 
-		JScrollPane scrollTileRegistry = new JScrollPane();
+		scrollTileRegistry = new JScrollPane();
 		scrollTileRegistry.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 		scrollTileRegistry.setPreferredSize(new Dimension(150, 34));
 		scrollTileRegistry.setBounds(74, 15, 300, 50);
@@ -1048,11 +1108,11 @@ public class MapEditor extends JFrame
 		entityMenu.setPreferredSize(new Dimension(620, 90));
 		entityMenu.setMinimumSize(new Dimension(100, 10));
 
-		JLabel lblEntity = new JLabel("Entit\u00E9s :");
+		lblEntity = new JLabel("Entit\u00E9s :");
 		lblEntity.setBounds(18, 23, 46, 14);
 		entityMenu.add(lblEntity);
 
-		JScrollPane scrollEntityRegistry = new JScrollPane();
+		scrollEntityRegistry = new JScrollPane();
 		scrollEntityRegistry.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 		scrollEntityRegistry.setPreferredSize(new Dimension(150, 34));
 		scrollEntityRegistry.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
@@ -1064,11 +1124,11 @@ public class MapEditor extends JFrame
 		entityRegistry.setPreferredSize(new Dimension(32 * entityChoice.length, 32));
 		entityRegistry.setLayout(gbl_entityRegistry);
 
-		JLabel lblSelectedEntity = new JLabel("Entit\u00E9 s\u00E9lectionn\u00E9e :");
+		lblSelectedEntity = new JLabel("Entit\u00E9 s\u00E9lectionn\u00E9e :");
 		lblSelectedEntity.setBounds(430, 23, 116, 14);
 		entityMenu.add(lblSelectedEntity);
 
-		JLabel label_2 = new JLabel();
+		label_2 = new JLabel();
 		label_2.setBounds(555, 15, 32, 32);
 		entityMenu.add(label_2);
 
@@ -1093,7 +1153,7 @@ public class MapEditor extends JFrame
 		radioPattou.setBounds(18, 8, 121, 24);
 		characterMenu.add(radioPattou);
 
-		JLabel lblPattouX = new JLabel("X :");
+		lblPattouX = new JLabel("X :");
 		lblPattouX.setBounds(18, 40, 19, 16);
 		characterMenu.add(lblPattouX);
 
@@ -1103,7 +1163,7 @@ public class MapEditor extends JFrame
 		characterMenu.add(fieldPattouX);
 		fieldPattouX.setColumns(10);
 
-		JLabel lblPattouY = new JLabel("Y :");
+		lblPattouY = new JLabel("Y :");
 		lblPattouY.setBounds(88, 40, 19, 16);
 		characterMenu.add(lblPattouY);
 
@@ -1130,7 +1190,7 @@ public class MapEditor extends JFrame
 		radioLumi.setBounds(328, 8, 121, 24);
 		characterMenu.add(radioLumi);
 
-		JLabel lblLumiX = new JLabel("X :");
+		lblLumiX = new JLabel("X :");
 		lblLumiX.setBounds(328, 40, 19, 16);
 		characterMenu.add(lblLumiX);
 
@@ -1140,7 +1200,7 @@ public class MapEditor extends JFrame
 		characterMenu.add(fieldLumiX);
 		fieldLumiX.setColumns(10);
 
-		JLabel lblLumiY = new JLabel("Y :");
+		lblLumiY = new JLabel("Y :");
 		lblLumiY.setBounds(398, 40, 19, 16);
 		characterMenu.add(lblLumiY);
 
@@ -1149,6 +1209,24 @@ public class MapEditor extends JFrame
 		fieldLumiY.setBounds(420, 38, 28, 20);
 		characterMenu.add(fieldLumiY);
 		fieldLumiY.setColumns(10);
+
+		btnRemoveLumi = new JButton("Retirer");
+		btnRemoveLumi.addMouseListener(new MouseAdapter()
+		{
+			@Override
+			public void mouseClicked(MouseEvent e)
+			{
+				if (!fieldLumiX.getText().equals("") || !fieldLumiY.getText().equals(""))
+				{
+					int oldX = Integer.valueOf(fieldLumiX.getText());
+					int oldY = Integer.valueOf(fieldLumiY.getText());
+					tilemap[oldX][oldY].remove(focusLumi);
+					tilemap[oldX][oldY].updateUI();
+				}
+				fieldLumiX.setText("");
+				fieldLumiY.setText("");
+			}
+		});
 
 		btnRemovePattou = new JButton("Retirer");
 		btnRemovePattou.addMouseListener(new MouseAdapter()
@@ -1169,28 +1247,14 @@ public class MapEditor extends JFrame
 		});
 		btnRemovePattou.setBounds(198, 35, 73, 26);
 		characterMenu.add(btnRemovePattou);
-
-		btnRemoveLumi = new JButton("Retirer");
-		btnRemoveLumi.addMouseListener(new MouseAdapter()
-		{
-			@Override
-			public void mouseClicked(MouseEvent e)
-			{
-				if (!fieldLumiX.getText().equals("") || !fieldLumiY.getText().equals(""))
-				{
-					int oldX = Integer.valueOf(fieldLumiX.getText());
-					int oldY = Integer.valueOf(fieldLumiY.getText());
-					tilemap[oldX][oldY].remove(focusLumi);
-					tilemap[oldX][oldY].updateUI();
-				}
-				fieldLumiX.setText("");
-				fieldLumiY.setText("");
-			}
-		});
+		contentPane.setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]
+		{ tilesMenu, lblTiles, scrollTileRegistry, tileRegistry, menu, mapView, lblTileSelected, selectedTileLabel, entityMenu, lblEntity,
+				scrollEntityRegistry, lblSelectedEntity, label_2, characterMenu, radioPattou, lblPattouX, fieldPattouX, lblPattouY, fieldPattouY, separator,
+				radioLumi, lblLumiX, fieldLumiX, lblLumiY, fieldLumiY, btnRemovePattou, btnRemoveLumi, scrollMap }));
 		btnRemoveLumi.setBounds(508, 35, 73, 26);
 		characterMenu.add(btnRemoveLumi);
 
-		JPanel cutsceneMenu = new JPanel();
+		cutsceneMenu = new JPanel();
 		cutsceneMenu.setPreferredSize(new Dimension(620, 90));
 		cutsceneMenu.setMinimumSize(new Dimension(100, 10));
 		cutsceneMenu.setLayout(null);
@@ -1204,7 +1268,10 @@ public class MapEditor extends JFrame
 		scrollCutscene.getVerticalScrollBar().setUnitIncrement(6);
 		scrollCutscene.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-		JPanel doorsMenu = new JPanel();
+		cutsceneOptions = new JButton[]
+		{ new JButton("Cr\u00E9er"), new JButton("Ouvrir"), new JButton("Enregistrer") };
+
+		doorsMenu = new JPanel();
 		doorsMenu.setPreferredSize(new Dimension(620, 90));
 		doorsMenu.setMinimumSize(new Dimension(100, 10));
 		doorsMenu.setLayout(null);
@@ -1216,17 +1283,26 @@ public class MapEditor extends JFrame
 		doorsMenu.add(scrollDoors, BorderLayout.CENTER);
 		GridLayout gl = new GridLayout(0, 1);
 		doorsView.setLayout(gl);
-		// TODO début test DoorButton
-		// JButton[] lel = new DoorButton[30];
-		// for (int i = 0; i < lel.length; i++)
-		// {
-		// lel[i] = new DoorButton("map2", "dfdfdfdfdf2", 400 + i, i, i, 4 * i, 4 * i);
-		// doorsView.add(lel[i]);
-		// }
 		createDoorList();
-		// TODO fin test DoorButton
 		scrollDoors.getVerticalScrollBar().setUnitIncrement(6);
 		scrollDoors.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+		// TODO
+		endingsMenu = new JPanel();
+		endingsMenu.setPreferredSize(new Dimension(620, 90));
+		endingsMenu.setMinimumSize(new Dimension(100, 10));
+		endingsMenu.setLayout(null);
+		BorderLayout bl3 = new BorderLayout();
+		endingsMenu.setLayout(bl3);
+		menu.add(endingsMenu, "Fins");
+
+		scrollEndings = new JScrollPane(endingsView);
+		endingsMenu.add(scrollEndings, BorderLayout.CENTER);
+		GridLayout gl2 = new GridLayout(0, 1);
+		doorsView.setLayout(gl2);
+		scrollEndings.getVerticalScrollBar().setUnitIncrement(6);
+		scrollEndings.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		// TODO
 
 		contentPane.add(scrollMap, BorderLayout.CENTER);
 		scrollMap.setViewportView(mapView);
@@ -1236,10 +1312,6 @@ public class MapEditor extends JFrame
 		gbl_panel.rowWeights = new double[] {};
 		gbl_panel.columnWeights = new double[] {};
 		mapView.setLayout(gbl_panel);
-		contentPane.setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]
-		{ tilesMenu, lblTiles, scrollTileRegistry, tileRegistry, menu, mapView, lblTileSelected, selectedTileLabel, entityMenu, lblEntity,
-				scrollEntityRegistry, lblSelectedEntity, label_2, characterMenu, radioPattou, lblPattouX, fieldPattouX, lblPattouY, fieldPattouY, separator,
-				radioLumi, lblLumiX, fieldLumiX, lblLumiY, fieldLumiY, btnRemovePattou, btnRemoveLumi, scrollMap }));
 
 		menu.addMouseListener(new MouseAdapter()
 		{
@@ -1259,8 +1331,15 @@ public class MapEditor extends JFrame
 				{
 					mode = MapEditor.MODE_DOORS;
 					menu.setSize(new Dimension(MapEditor.this.getWidth() - 26, MapEditor.this.getHeight() - 72));
+				} else if (selectedCmp == endingsMenu)
+				{
+					mode = MapEditor.MODE_ENDINGS;
+					menu.setSize(new Dimension(MapEditor.this.getWidth() - 26, MapEditor.this.getHeight() - 72));
 				}
 			}
 		});
+
+		colorStyle();
+
 	}
 }

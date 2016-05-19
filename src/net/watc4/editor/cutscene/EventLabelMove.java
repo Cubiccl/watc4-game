@@ -1,5 +1,7 @@
 package net.watc4.editor.cutscene;
 
+import java.awt.Color;
+
 import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
@@ -37,10 +39,13 @@ public class EventLabelMove extends EventLabel
 			fields[i].setBounds(60 + 60 * i, 52, 30, 20);
 			this.add(fields[i]);
 
+			info[i].setForeground(Color.white);
 			this.add(info[i]);
 		}
 		if (this.relative == null) relative = new JRadioButton("Relatif", false);
 		this.relative.setBounds(100, 20, 80, 20);
+		this.relative.setBackground(new Color(50,50,50));
+		this.relative.setForeground(Color.white);
 		this.add(this.relative);
 	}
 

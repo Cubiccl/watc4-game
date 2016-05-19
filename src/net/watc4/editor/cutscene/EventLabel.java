@@ -1,5 +1,6 @@
 package net.watc4.editor.cutscene;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -9,6 +10,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
 import net.watc4.editor.MapEditor;
@@ -44,7 +46,13 @@ public abstract class EventLabel extends JLabel
 
 		tb = BorderFactory.createTitledBorder(String.valueOf(position));
 		this.setBorder(tb);
-
+		
+		this.setBackground(new Color(90,90,90));
+		for(int i = 0; i < options.length; i++){
+			options[i].setBackground(new Color(90,90,90));
+		}
+		tb.setTitleColor(new Color(255,255,255));
+		type.setForeground(Color.white);
 		options[0].addMouseListener(new MouseAdapter()
 		{
 			@Override

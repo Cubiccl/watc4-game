@@ -1,5 +1,7 @@
 package net.watc4.editor.cutscene;
 
+import java.awt.Color;
+
 import javax.swing.JComboBox;
 
 import net.watc4.game.utils.FileUtils;
@@ -27,6 +29,10 @@ public class EventLabelCutscene extends EventLabel
 		map.setBounds(130, 50, 100, 20);
 		this.add(cutscene);
 		this.add(map);
+		cutscene.setBackground(new Color(80,80,80));
+		cutscene.setForeground(Color.white);
+		map.setBackground(new Color(80,80,80));
+		map.setForeground(Color.white);
 	}
 
 	public EventLabelCutscene()
