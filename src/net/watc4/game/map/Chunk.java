@@ -8,7 +8,9 @@ import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import net.watc4.game.display.Camera;
+import net.watc4.game.utils.FileUtils;
 import net.watc4.game.utils.GameSettings;
+import net.watc4.game.utils.GameUtils;
 import net.watc4.game.utils.IRender;
 import net.watc4.game.utils.Vector;
 import net.watc4.game.utils.geometry.PolygonHitbox;
@@ -71,9 +73,11 @@ public class Chunk implements IRender
 								new Point2D.Double(vertices[i + 1].getX() - vertices[i].getX(), vertices[i + 1].getY() - vertices[i].getY()));
 						wallSet.add(wall);
 					}
-					Vector wall = new Vector(new Point2D.Double(xPos * ACTUAL_SIZE + vertices[vertices.length - 1].getX(), yPos * ACTUAL_SIZE
-							+ vertices[vertices.length - 1].getY()), new Point2D.Double(vertices[0].getX() - vertices[vertices.length - 1].getX(),
-							vertices[0].getY() - vertices[vertices.length - 1].getY()));
+					Vector wall = new Vector(
+							new Point2D.Double(xPos * ACTUAL_SIZE + vertices[vertices.length - 1].getX(),
+									yPos * ACTUAL_SIZE + vertices[vertices.length - 1].getY()),
+							new Point2D.Double(vertices[0].getX() - vertices[vertices.length - 1].getX(),
+									vertices[0].getY() - vertices[vertices.length - 1].getY()));
 					wallSet.add(wall);
 				}
 			}
@@ -114,12 +118,11 @@ public class Chunk implements IRender
 					}
 				}
 				if (vectorFound == null) manyVectorFound = true;
-				if (!manyVectorFound
-						&& targetVector.getDirection().getX() * vectorFound.getDirection().getY() - targetVector.getDirection().getY()
-								* vectorFound.getDirection().getX() == 0)
+				if (!manyVectorFound && targetVector.getDirection().getX() * vectorFound.getDirection().getY()
+						- targetVector.getDirection().getY() * vectorFound.getDirection().getX() == 0)
 				{
-					vectorFound.setDirection(new Point2D.Double(vectorFound.getDirection().getX() + targetVector.getDirection().getX(), vectorFound
-							.getDirection().getY() + targetVector.getDirection().getY()));
+					vectorFound.setDirection(new Point2D.Double(vectorFound.getDirection().getX() + targetVector.getDirection().getX(),
+							vectorFound.getDirection().getY() + targetVector.getDirection().getY()));
 					this.wallSet.remove(targetVector);
 					done = false;
 				}
@@ -161,6 +164,10 @@ public class Chunk implements IRender
 		{
 			g.setColor(Color.GREEN);
 			g.drawRect(this.xPos * ACTUAL_SIZE, this.yPos * ACTUAL_SIZE, ACTUAL_SIZE, ACTUAL_SIZE);
+			g.setColor(Color.ORANGE);
+			for (Vector wall : wallSet)
+				GameUtils.drawArrow(g, wall.getPosition().getX(), wall.getPosition().getY(), wall.getPosition().getX() + wall.getDirection().getX(),
+						wall.getPosition().getY() + wall.getDirection().getY());
 		}
 	}
 
