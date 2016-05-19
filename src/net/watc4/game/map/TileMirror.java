@@ -2,6 +2,7 @@ package net.watc4.game.map;
 
 import java.awt.image.BufferedImage;
 
+import net.watc4.game.display.Animation;
 import net.watc4.game.display.Sprite;
 import net.watc4.game.utils.GameUtils;
 
@@ -17,7 +18,7 @@ public class TileMirror extends Tile
 	 * @see GameUtils#UP */
 	public TileMirror()
 	{
-		super(4, (byte) 3, null, true, false);
+		super(4, (byte) 3, new Animation(Sprite.TILE_MIRROR[0]), true, false);
 	}
 
 	@Override
