@@ -128,7 +128,7 @@ public class GameState extends State implements IEntityMovementListener
 	@Override
 	public void onLoad()
 	{
-		Game.getGame().getSoundManager().play(this.mapName);
+		if (Game.getGame() != null) Game.getGame().getSoundManager().play(this.mapName);
 	}
 
 	@Override

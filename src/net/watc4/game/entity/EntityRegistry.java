@@ -37,8 +37,10 @@ public final class EntityRegistry
 				"Tile Heigth", "unsigned int");
 		registerEntity(5, EntityFluorescent.class, new String[]
 		{ "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 500 - 599", "ChargeTime", "float", "UnchargeTime", "float", "Intensity max", "int" });
-		registerEntity(6, EntityEndLevel.class, "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 400 - 499", "Tile Width", "unsigned int",
+		registerEntity(6, EntityEndLevel.class, "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 600 - 699", "Tile Width", "unsigned int",
 				"Tile Heigth", "unsigned int", "Player	Lumi-Pattou", "boolean");
+		registerEntity(7, EntitySpikePlatform.class, "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 700 - 799", "ChargeTime", "float",
+				"UnchargeTime", "float");
 	}
 
 	/** Creates the adequate arguments then spawns an Entity.
