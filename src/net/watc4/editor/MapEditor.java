@@ -88,7 +88,7 @@ public class MapEditor extends JFrame
 	private ArrayList<DoorButton> doorList = new ArrayList<DoorButton>();
 	private TileLabel[][] tilemap;
 	private TileLabel[] tileChoice, entityChoice;
-	private int selectedTile, selectedEntity, pointeur;
+	private int selectedTile, selectedEntity;
 	private JPanel tilesMenu, entityMenu, characterMenu;
 	private JLabel lblTiles = new JLabel("Tuiles :"), lblEntityName = new JLabel();
 	private JPanel tileRegistry = new JPanel(), entityRegistry = new JPanel();
@@ -143,9 +143,27 @@ public class MapEditor extends JFrame
 	{
 		return doorList;
 	}
+
 	public void createDoorList()
 	{
-		doorList.add(new AddDoorButton());
+		AddDoorButton adb = new AddDoorButton();
+		adb.addMouseListener(new MouseAdapter()
+		{
+			@Override
+			public void mouseClicked(MouseEvent e)
+			{
+				try
+				{
+					DoorValues dialog = new DoorValues(new AddDoorButton());
+					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+					dialog.setVisible(true);
+				} catch (Exception ex)
+				{
+					ex.printStackTrace();
+				}
+			}
+		});
+		doorList.add(adb);
 		String[] lines = FileUtils.readFileAsStringArray("res/lore.txt");
 		int i = 1;
 		while (!lines[i].equals("endings ="))
@@ -153,35 +171,45 @@ public class MapEditor extends JFrame
 			String[] values = lines[i].split("\t");
 			doorList.add(new DoorButton(values[0], Integer.parseInt(values[1]), values[2], Integer.parseInt(values[3]), Integer.parseInt(values[4]), Integer
 					.parseInt(values[5]), Integer.parseInt(values[6])));
-			pointeur = i;
-			doorList.get(i).addMouseListener(new MouseAdapter()
-			{
-				@Override
-				public void mouseClicked(MouseEvent e)
-				{
-					try
-					{
-						DoorValues dialog = new DoorValues(pointeur);
-						dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-						dialog.setVisible(true);
-					} catch (Exception ex)
-					{
-						ex.printStackTrace();
-					}
-				}
-			});
+			 addDoorListener(i);
 			i++;
 		}
 		doorList.sort(null);
 		updateDoorList();
 	}
+	
+	public void addDoorListener(int i)
+	{
+		doorList.get(i).addMouseListener(new MouseAdapter()
+		{
+			@Override
+			public void mouseClicked(MouseEvent e)
+			{
+				try
+				{
+					DoorValues dialog = new DoorValues(doorList.get(i));
+					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+					dialog.setVisible(true);
+				} catch (Exception ex)
+				{
+					ex.printStackTrace();
+				}
+			}
+		});
+	}
 
 	public void updateDoorList()
 	{
+		doorList.sort(null);
 		doorsView.removeAll();
 		for (int i = 0; i < doorList.size(); i++)
 		{
 			doorsView.add(doorList.get(i));
+			for (int j = 1; j < doorList.get(i).getMouseListeners().length; j++)
+			{
+				doorList.get(i).removeMouseListener(doorList.get(i).getMouseListeners()[j]);
+			}
+			addDoorListener(i);
 		}
 		doorsView.updateUI();
 	}

@@ -1,9 +1,9 @@
 doors = 
-map2	400	map1	18	12	4	12
-map2	401	map1	18	12	4	12
-map2	409	map1	18	18	4	12
-map2	404	map1	18	12	4	12
-map2	403	map1	18	12	4	12
+map2	405	map1	24	2	4	53
+map2	401	map1	78	12	2	12
+map2	409	map1	25	18	4	15
+map2	404	map1	8	12	3	10
+map2	403	map1	9	12	4	12
 endings =
 map1	0	map2
 map2	1	cutscene1

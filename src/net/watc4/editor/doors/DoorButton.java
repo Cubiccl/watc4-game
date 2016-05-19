@@ -12,13 +12,14 @@ import net.watc4.game.display.Sprite;
 public class DoorButton extends JButton implements Comparable<DoorButton>
 {
 	private JLabel[] infos = new JLabel[6]; // 0 : info maps 1 : Sprite Lumi 2 : coordonnees Lumi 3 : Sprite Pattou 4 : coordonnees Pattou	5 : UUID
-	private String map1, map2;
-	private int UUID = 0, LumiX, LumiY, PattouX, PattouY;
+	protected String map1, map2;
+	protected int UUID = 0, LumiX, LumiY, PattouX, PattouY;
 
 	private void init()
 	{
 		setLayout(null);
 		setPreferredSize(new Dimension(600, 100));
+		removeAll();
 		infos[0] = new JLabel(map1+"   vers   "+map2);
 		infos[0].setBounds(50,48,300,24);
 		infos[0].setFont(infos[0].getFont().deriveFont(24f));
@@ -68,10 +69,39 @@ public class DoorButton extends JButton implements Comparable<DoorButton>
 	{
 		return ((Integer)(this.UUID)).compareTo(db.UUID);
 	}
+	
+	public String getMap1()
+	{
+		return map1;
+	}
+
+	public String getMap2()
+	{
+		return map2;
+	}
+
+	public int getLumiX()
+	{
+		return LumiX;
+	}
+
+	public int getLumiY()
+	{
+		return LumiY;
+	}
+
+	public int getPattouX()
+	{
+		return PattouX;
+	}
+
+	public int getPattouY()
+	{
+		return PattouY;
+	}
 
 	public int getUUID()
 	{
 		return UUID;
 	}
-
 }
