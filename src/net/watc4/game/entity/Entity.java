@@ -7,6 +7,7 @@ import java.util.HashSet;
 
 import net.watc4.game.display.renderer.EntityRenderer;
 import net.watc4.game.entity.ai.AI;
+import net.watc4.game.listener.IEntityMovementListener;
 import net.watc4.game.map.Map;
 import net.watc4.game.map.Tile;
 import net.watc4.game.map.TileRegistry;
@@ -20,7 +21,7 @@ import net.watc4.game.utils.geometry.Hitbox;
 import net.watc4.game.utils.geometry.RectangleHitbox;
 
 /** Represents a moving object in the world. i.e. A monster, a moving block, etc. */
-public abstract class Entity implements IRender, IUpdate
+public abstract class Entity implements IRender, IUpdate, IEntityMovementListener
 {
 	public static final float DEFAULT_SIZE = 32;
 	private static final float GRAVITY = 0.4f;
@@ -35,12 +36,14 @@ public abstract class Entity implements IRender, IUpdate
 	public final GameState game;
 	/** True if this Entity is affected by Gravity. False if it flies. */
 	protected boolean hasGravity;
-	/** True if this Entity moved last update. */
-	public boolean hasMoved;
+	/** True if this Entity is affected by Lumi's light. */
+	protected boolean isAffectedByLight;
 	/** True if this Entity is moveable. */
 	protected boolean isMoveable = false;
 	/** True if this Entity is solid, as if it were a Solid Tile. */
 	protected boolean isSolid;
+	/** Listeners to this Entity's movement. */
+	private HashSet<IEntityMovementListener> movementListeners;
 	/** True if this Entity is standing on a Ladder. */
 	protected boolean onLadder;
 	/** Renders the Entity onto the screen. */
@@ -77,10 +80,18 @@ public abstract class Entity implements IRender, IUpdate
 		this.ySpeed = 0;
 		this.hasGravity = true;
 		this.isSolid = false;
+		this.isAffectedByLight = false;
 		this.renderer = new EntityRenderer(this);
 		this.width = (int) DEFAULT_SIZE;
 		this.height = (int) DEFAULT_SIZE;
 		this.colliding = new HashSet<Integer>();
+		this.movementListeners = new HashSet<IEntityMovementListener>();
+	}
+
+	/** @param listener - The Listener. Will be called when this Entity moves. */
+	public void addMovementListener(IEntityMovementListener listener)
+	{
+		this.movementListeners.add(listener);
 	}
 
 	/** @param entity - The Entity to test.
@@ -236,6 +247,13 @@ public abstract class Entity implements IRender, IUpdate
 		this.colliding.add(entity.UUID);
 	}
 
+	@Override
+	public void onEntityMove(Entity entity)
+	{
+		if (entity == this) for (IEntityMovementListener listener : this.movementListeners)
+			listener.onEntityMove(this);
+	}
+
 	/** @param dx - delta x
 	 * @param dy - delta y
 	 * @return true if the entity doesn't collide with a solid tile at {@linkplain Entity#xPos xPos} + dx, {@linkplain Entity#yPos yPos} + dy */
@@ -260,6 +278,12 @@ public abstract class Entity implements IRender, IUpdate
 		return this.game.getMap().entityManager.canEntityMove(this, dx, dy);
 	}
 
+	/** @param listener - The Listener to remove. */
+	public void removeMovementListener(IEntityMovementListener listener)
+	{
+		this.movementListeners.remove(listener);
+	}
+
 	@Override
 	public void render(Graphics2D g)
 	{
@@ -279,7 +303,7 @@ public abstract class Entity implements IRender, IUpdate
 		this.ySpeed = 0;
 		this.xPos = x;
 		this.yPos = y;
-		this.hasMoved = true;
+		this.onEntityMove(this);
 	}
 
 	/** Changes this Entity's renderer.
@@ -332,6 +356,6 @@ public abstract class Entity implements IRender, IUpdate
 		}
 		yPos += ySpeed;
 
-		if (xPrev != this.xPos || yPrev != this.yPos) this.hasMoved = true;
+		if (xPrev != this.xPos || yPrev != this.yPos) this.onEntityMove(this);
 	}
 }

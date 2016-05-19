@@ -223,6 +223,7 @@ public class EntityPattou extends EntityPlayer
 						entity.setX(entity.getX() + Math.signum(xSpeed));
 					xSpeed = 0;
 				} else entity.setX(entity.getX() + this.xSpeed);
+				entity.onEntityMove(entity);
 			}
 
 		super.update();

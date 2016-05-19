@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
+import java.util.HashSet;
 
 import net.watc4.game.Game;
 import net.watc4.game.display.Animation;
@@ -11,16 +12,19 @@ import net.watc4.game.display.Background;
 import net.watc4.game.display.Camera;
 import net.watc4.game.display.Sprite;
 import net.watc4.game.display.TextRenderer;
+import net.watc4.game.entity.Entity;
 import net.watc4.game.entity.EntityLumi;
 import net.watc4.game.entity.EntityPattou;
 import net.watc4.game.entity.EntityPlayer;
+import net.watc4.game.listener.IEntityMovementListener;
+import net.watc4.game.listener.ILightChangeListener;
 import net.watc4.game.map.Map;
 import net.watc4.game.states.menu.PauseMenuState;
 import net.watc4.game.utils.GameSettings;
 import net.watc4.game.utils.lore.LoreManager;
 
 /** Represents the main game engine. */
-public class GameState extends State
+public class GameState extends State implements IEntityMovementListener
 {
 
 	/** Creates the GameState.
@@ -44,6 +48,8 @@ public class GameState extends State
 	public boolean hasLumi, hasPattou;
 	/** True if this State is in a Cutscene, thus the user cannot interact with this State. */
 	public boolean isInCutscene;
+	/** Light Change Listeners. */
+	private HashSet<ILightChangeListener> lightListeners;
 	/** The world they evolve into. */
 	private Map map;
 	/** The name of the current Map. */
@@ -58,10 +64,18 @@ public class GameState extends State
 		this.camera = new Camera();
 		this.hasLumi = false;
 		this.hasPattou = false;
+		this.lightListeners = new HashSet<ILightChangeListener>();
 		this.map = Map.createFrom(this.mapName, this);
+		if (this.hasLumi) this.entityLumi.addMovementListener(this);
 		this.setBackground(new Background(new Animation(Sprite.TILE_WALL), this));
 	}
-	
+
+	/** @param listener - The Listener. Will be called when Lumi's Light changes. */
+	public void addLightChangeListener(ILightChangeListener listener)
+	{
+		this.lightListeners.add(listener);
+	}
+
 	/** Draws a Red overlay. It becomes more opaque the more damage the player takes.
 	 * 
 	 * @param g - The Graphics required to draw. */
@@ -86,6 +100,7 @@ public class GameState extends State
 		return this.map;
 	}
 
+	/** @return True if the current Level is over. */
 	private boolean isLevelOver()
 	{
 		boolean over = true;
@@ -95,11 +110,12 @@ public class GameState extends State
 	}
 
 	@Override
-	public void onLoad()
+	public void onEntityMove(Entity entity)
 	{
-		Game.getGame().getSoundManager().play(this.mapName);
+		if (entity == this.entityLumi) for (ILightChangeListener listener : this.lightListeners)
+			listener.onLightChange(this.entityLumi);
 	}
-	
+
 	@Override
 	public void onUnload(){
 		Game.getGame().getSoundManager().clip_close(this.mapName);
@@ -113,6 +129,18 @@ public class GameState extends State
 		{
 			if (keyID == KeyEvent.VK_ESCAPE) Game.getGame().setCurrentState(new PauseMenuState(this), false);
 		}
+	}
+
+	@Override
+	public void onLoad()
+	{
+		Game.getGame().getSoundManager().play(this.mapName);
+	}
+
+	/** @param listener - The Listener to remove. */
+	public void removeLightChangeListener(ILightChangeListener listener)
+	{
+		this.lightListeners.remove(listener);
 	}
 
 	@Override

@@ -35,6 +35,11 @@ public class Map implements IRender, IUpdate
 
 		Map map = new Map(game, mapName, info[0], info[1], info[2] * Map.TILESIZE, info[3] * Map.TILESIZE, info[4] * Map.TILESIZE, info[5] * Map.TILESIZE);
 
+		game.hasLumi = map.lumiSpawnX != -TILESIZE && map.lumiSpawnY != -TILESIZE;
+		game.hasPattou = map.pattouSpawnX != -TILESIZE && map.pattouSpawnY != -TILESIZE;
+		if (game.hasLumi) game.entityLumi = (EntityLumi) EntityRegistry.spawnEntity(map, 0, game, map.lumiSpawnX, map.lumiSpawnY);
+		if (game.hasPattou) game.entityPattou = (EntityPattou) EntityRegistry.spawnEntity(map, 1, game, map.pattouSpawnX, map.pattouSpawnY);
+
 		String[] values; // Tiles values temporarily stored per line from the map file
 		for (int y = 0; y < info[1]; y++)
 		{
@@ -57,11 +62,6 @@ public class Map implements IRender, IUpdate
 			EntityRegistry.createEntity(map, Integer.parseInt(values[0]), values);
 			++index;
 		}
-
-		game.hasLumi = map.lumiSpawnX != -TILESIZE && map.lumiSpawnY != -TILESIZE;
-		game.hasPattou = map.pattouSpawnX != -TILESIZE && map.pattouSpawnY != -TILESIZE;
-		if (game.hasLumi) game.entityLumi = (EntityLumi) EntityRegistry.spawnEntity(map, 0, game, map.lumiSpawnX, map.lumiSpawnY);
-		if (game.hasPattou) game.entityPattou = (EntityPattou) EntityRegistry.spawnEntity(map, 1, game, map.pattouSpawnX, map.pattouSpawnY);
 
 		return map;
 	}
@@ -253,6 +253,5 @@ public class Map implements IRender, IUpdate
 	public void update()
 	{
 		this.entityManager.update();
-		this.lightManager.update();
 	}
 }

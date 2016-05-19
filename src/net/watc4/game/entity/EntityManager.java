@@ -5,17 +5,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import net.watc4.game.listener.IEntityMovementListener;
 import net.watc4.game.map.Chunk;
 import net.watc4.game.map.Map;
 import net.watc4.game.utils.IRender;
 import net.watc4.game.utils.IUpdate;
 
 /** Manages all Entities of the Game. */
-public class EntityManager implements IRender, IUpdate
+public class EntityManager implements IRender, IUpdate, IEntityMovementListener
 {
 
-	/** List of Entities that currently collide. */
-	private HashSet<Entity> colliding;
 	/** Divides Entities into the Chunks containing them. */
 	private HashMap<Chunk, HashSet<Entity>> division;
 	/** List of all Entities. */
@@ -28,7 +27,6 @@ public class EntityManager implements IRender, IUpdate
 		this.map = map;
 		this.entities = new ArrayList<Entity>();
 		this.division = new HashMap<Chunk, HashSet<Entity>>();
-		this.colliding = new HashSet<Entity>();
 	}
 
 	/** @param entity - The Entity to move.
@@ -50,6 +48,24 @@ public class EntityManager implements IRender, IUpdate
 	{
 		for (Chunk chunk : this.division.keySet())
 			this.division.get(chunk).remove(entity);
+	}
+
+	/** Calculates the new Chunks for the given Entity.
+	 * 
+	 * @param entity - The target Entity.
+	 * @return The Chunks this Entity occupies. */
+	private HashSet<Chunk> generateContainingChunks(Entity entity)
+	{
+		HashSet<Chunk> containers = new HashSet<Chunk>();
+		Chunk current = this.map.getChunk(entity.getX(), entity.getY());
+		if (current != null) containers.add(current);
+		current = this.map.getChunk(entity.getX() + entity.getWidth(), entity.getY());
+		if (current != null) containers.add(current);
+		current = this.map.getChunk(entity.getX(), entity.getY() + entity.getHeight());
+		if (current != null) containers.add(current);
+		current = this.map.getChunk(entity.getX() + entity.getWidth(), entity.getY() + entity.getHeight());
+		if (current != null) containers.add(current);
+		return containers;
 	}
 
 	/** @param entity - The Entity to test.
@@ -80,23 +96,11 @@ public class EntityManager implements IRender, IUpdate
 	 * @return The Chunks this Entity occupies. */
 	private HashSet<Chunk> getContainingChunks(Entity entity)
 	{
-		HashSet<Chunk> containers = new HashSet<Chunk>();
-		if (!entity.hasMoved)
-		{
-			for (Chunk chunk : this.division.keySet())
-				if (this.division.get(chunk).contains(entity)) containers.add(chunk);
+		HashSet<Chunk> chunks = new HashSet<Chunk>();
+		for (Chunk chunk : this.division.keySet())
+			if (this.division.get(chunk).contains(entity)) chunks.add(chunk);
 
-			return containers;
-		}
-		Chunk current = this.map.getChunk(entity.getX(), entity.getY());
-		if (current != null) containers.add(current);
-		current = this.map.getChunk(entity.getX() + entity.getWidth(), entity.getY());
-		if (current != null) containers.add(current);
-		current = this.map.getChunk(entity.getX(), entity.getY() + entity.getHeight());
-		if (current != null) containers.add(current);
-		current = this.map.getChunk(entity.getX() + entity.getWidth(), entity.getY() + entity.getHeight());
-		if (current != null) containers.add(current);
-		return containers;
+		return chunks;
 	}
 
 	/** @return The Entity list */
@@ -112,6 +116,13 @@ public class EntityManager implements IRender, IUpdate
 		for (Entity entity : this.entities)
 			if (entity.UUID == UUID) return entity;
 		return null;
+	}
+
+	@Override
+	public void onEntityMove(Entity entity)
+	{
+		this.replaceEntity(entity);
+		this.testForCollisions(entity);
 	}
 
 	/** Adds a Chunk to the Chunk Manager.
@@ -130,8 +141,8 @@ public class EntityManager implements IRender, IUpdate
 		if (entity == null) return;
 		this.entities.add(entity);
 		if (entity instanceof ILightSource) map.lightManager.add(entity);
-		entity.hasMoved = true;
-		this.replaceEntity(entity);
+		entity.addMovementListener(this);
+		this.onEntityMove(entity);
 	}
 
 	@Override
@@ -147,7 +158,7 @@ public class EntityManager implements IRender, IUpdate
 	private void replaceEntity(Entity entity)
 	{
 		this.clearEntityChunks(entity);
-		HashSet<Chunk> chunks = this.getContainingChunks(entity);
+		HashSet<Chunk> chunks = this.generateContainingChunks(entity);
 		int x, y;
 		Chunk c;
 		for (Chunk chunk : chunks)
@@ -188,32 +199,36 @@ public class EntityManager implements IRender, IUpdate
 		return false;
 	}
 
-	/** Tests for and applies collisions between the given Entities.
+	/** Tests for and applies collisions on the given Entity.
 	 * 
-	 * @param entities - The Entities to test for. */
-	private void testForCollisions(HashSet<Entity> entities)
+	 * @param entity - The Entity to test. */
+	private void testForCollisions(Entity entity)
 	{
 		HashSet<Entity> toTest = new HashSet<Entity>();
-		for (Entity entity : entities)
-			if (entity.hasMoved || this.colliding.contains(entity)) toTest.add(entity);
+		for (Chunk chunk : this.getContainingChunks(entity))
+			for (Entity candidate : this.division.get(chunk))
+				toTest.add(candidate);
 
-		for (Entity testing : toTest)
-			for (Entity entity : entities)
+		for (Entity candidate : toTest)
+		{
+			if (entity == candidate) continue;
+			if (candidate.collidesWith(entity))
 			{
-				if (entity == testing) continue;
-				if (testing.collidesWith(entity))
+				if (!candidate.colliding.contains(entity.UUID))
 				{
-					if (!testing.colliding.contains(entity.UUID)) testing.onCollisionWith(entity);
-					this.colliding.add(entity);
-				} else
+					candidate.onCollisionWith(entity);
+					entity.onCollisionWith(candidate);
+				}
+			} else
+			{
+				if (candidate.colliding.contains(entity.UUID))
 				{
-					if (testing.colliding.contains(entity.UUID)) testing.onCollisionEndWith(entity);
-					this.colliding.remove(entity);
+					candidate.onCollisionEndWith(entity);
+					entity.onCollisionEndWith(candidate);
 				}
 			}
+		}
 
-		for (Entity entity : toTest)
-			entity.hasMoved = false;
 	}
 
 	/** Removes a new Entity to track.
@@ -228,12 +243,6 @@ public class EntityManager implements IRender, IUpdate
 	@Override
 	public void update()
 	{
-		for (Entity entity : this.entities)
-			if (entity.hasMoved) this.replaceEntity(entity);
-
-		for (Chunk chunk : this.division.keySet())
-			this.testForCollisions(this.division.get(chunk));
-
 		for (Entity entity : this.entities)
 			if (this.shouldUpdate(entity)) entity.update();
 
