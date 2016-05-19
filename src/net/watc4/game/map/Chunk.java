@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import net.watc4.game.display.Camera;
+import net.watc4.game.display.Sprite;
 import net.watc4.game.utils.GameSettings;
 import net.watc4.game.utils.GameUtils;
 import net.watc4.game.utils.IRender;
@@ -21,6 +22,8 @@ public class Chunk implements IRender
 	/** The Size of a Chunk, in tiles. */
 	public static final int SIZE = 10;
 
+	/** The custom Sprites for this Chunk's Tiles. */
+	private Sprite[][] customTextures;
 	/** The tile data. */
 	private byte[][] data;
 	/** A reference to the Map it belongs to. */
@@ -49,6 +52,7 @@ public class Chunk implements IRender
 		this.size = SIZE;
 		this.tiles = new int[this.size][this.size];
 		this.data = new byte[this.size][this.size];
+		if (map.hasCustomTexture) this.customTextures = new Sprite[this.size][this.size];
 	}
 
 	/** Creates the Walls. */
@@ -72,11 +76,9 @@ public class Chunk implements IRender
 								new Point2D.Double(vertices[i + 1].getX() - vertices[i].getX(), vertices[i + 1].getY() - vertices[i].getY()));
 						wallSet.add(wall);
 					}
-					Vector wall = new Vector(
-							new Point2D.Double(xPos * ACTUAL_SIZE + vertices[vertices.length - 1].getX(),
-									yPos * ACTUAL_SIZE + vertices[vertices.length - 1].getY()),
-							new Point2D.Double(vertices[0].getX() - vertices[vertices.length - 1].getX(),
-									vertices[0].getY() - vertices[vertices.length - 1].getY()));
+					Vector wall = new Vector(new Point2D.Double(xPos * ACTUAL_SIZE + vertices[vertices.length - 1].getX(), yPos * ACTUAL_SIZE
+							+ vertices[vertices.length - 1].getY()), new Point2D.Double(vertices[0].getX() - vertices[vertices.length - 1].getX(),
+							vertices[0].getY() - vertices[vertices.length - 1].getY()));
 					wallSet.add(wall);
 				}
 			}
@@ -117,16 +119,26 @@ public class Chunk implements IRender
 					}
 				}
 				if (vectorFound == null) manyVectorFound = true;
-				if (!manyVectorFound && targetVector.getDirection().getX() * vectorFound.getDirection().getY()
-						- targetVector.getDirection().getY() * vectorFound.getDirection().getX() == 0)
+				if (!manyVectorFound
+						&& targetVector.getDirection().getX() * vectorFound.getDirection().getY() - targetVector.getDirection().getY()
+								* vectorFound.getDirection().getX() == 0)
 				{
-					vectorFound.setDirection(new Point2D.Double(vectorFound.getDirection().getX() + targetVector.getDirection().getX(),
-							vectorFound.getDirection().getY() + targetVector.getDirection().getY()));
+					vectorFound.setDirection(new Point2D.Double(vectorFound.getDirection().getX() + targetVector.getDirection().getX(), vectorFound
+							.getDirection().getY() + targetVector.getDirection().getY()));
 					this.wallSet.remove(targetVector);
 					done = false;
 				}
 			}
 		}
+	}
+
+	/** @param x - X position.
+	 * @param y - Y position.
+	 * @return The Custom Sprite for the Tile at the given coordinates. */
+	public Sprite getCustomSprite(int x, int y)
+	{
+		if (x < 0 || x >= this.size || y < 0 || y >= this.size) return Sprite.UNKNOWN;
+		return this.customTextures[x][y];
 	}
 
 	/** @param x - X position.
@@ -157,7 +169,8 @@ public class Chunk implements IRender
 	{
 		for (int x = 0; x < this.size; x++)
 			for (int y = 0; y < this.size; y++)
-				this.getTileAt(x, y).renderAt(g, this.map, this.xPos * this.size + x, this.yPos * this.size + y, this.getDataAt(x, y));
+				if (this.getTileAt(x, y) != TileRegistry.DEFAULT) this.getTileAt(x, y).renderAt(g, this.map, this.xPos * this.size + x,
+						this.yPos * this.size + y, this.getDataAt(x, y));
 
 		if (GameSettings.drawHitboxes)
 		{
@@ -165,9 +178,17 @@ public class Chunk implements IRender
 			g.drawRect(this.xPos * ACTUAL_SIZE, this.yPos * ACTUAL_SIZE, ACTUAL_SIZE, ACTUAL_SIZE);
 			g.setColor(Color.ORANGE);
 			for (Vector wall : wallSet)
-				GameUtils.drawArrow(g, wall.getPosition().getX(), wall.getPosition().getY(), wall.getPosition().getX() + wall.getDirection().getX(),
-						wall.getPosition().getY() + wall.getDirection().getY());
+				GameUtils.drawArrow(g, wall.getPosition().getX(), wall.getPosition().getY(), wall.getPosition().getX() + wall.getDirection().getX(), wall
+						.getPosition().getY() + wall.getDirection().getY());
 		}
+	}
+
+	/** @param x - X position.
+	 * @param y - Y position.
+	 * @param sprite - The Custom Sprite for the Tile at the given coordinates. */
+	public void setCustomSprite(int x, int y, Sprite sprite)
+	{
+		if (x >= 0 || x < this.size || y >= 0 || y < this.size) this.customTextures[x][y] = sprite;
 	}
 
 	/** Sets the Tile at x, y to the input Tile.

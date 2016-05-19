@@ -5,7 +5,6 @@ import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
@@ -90,11 +89,13 @@ public class Sprite
 	 * @return An Array containing length sprites from the target SpriteSheet. */
 	public static Sprite[] loadSpriteSheet(String URL, int x, int y, int size, int length, boolean reverse)
 	{
-		ArrayList<Sprite> sprites = new ArrayList<Sprite>();
 		try
 		{
 			BufferedImage sheet = ImageIO.read(new File(URL));
-			for (int i = 0; i < length; ++i)
+			Sprite[] sprites;
+			if (length == -1) sprites = new Sprite[(sheet.getWidth() / size) * (sheet.getHeight() / size)];
+			else sprites = new Sprite[length];
+			for (int i = 0; i < sprites.length; ++i)
 			{
 				BufferedImage img = sheet.getSubimage(x, y, size, size);
 				if (reverse)
@@ -104,7 +105,7 @@ public class Sprite
 					AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
 					img = op.filter(img, null);
 				}
-				sprites.add(new Sprite(img));
+				sprites[i] = new Sprite(img);
 				x += size;
 				if (x >= sheet.getWidth())
 				{
@@ -112,11 +113,13 @@ public class Sprite
 					y += size;
 				}
 			}
+
+			return sprites;
 		} catch (IOException e)
 		{
 			e.printStackTrace();
 		}
-		return sprites.toArray(new Sprite[sprites.size()]);
+		return new Sprite[0];
 	}
 
 	/** The height of the Sprite. */

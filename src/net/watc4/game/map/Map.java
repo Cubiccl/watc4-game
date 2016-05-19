@@ -1,8 +1,10 @@
 package net.watc4.game.map;
 
 import java.awt.Graphics2D;
+import java.io.File;
 
 import net.watc4.game.display.LightManager;
+import net.watc4.game.display.Sprite;
 import net.watc4.game.entity.EntityLumi;
 import net.watc4.game.entity.EntityManager;
 import net.watc4.game.entity.EntityPattou;
@@ -70,6 +72,8 @@ public class Map implements IRender, IUpdate
 	public EntityManager entityManager;
 	/** The instance of the GameState. */
 	public final GameState game;
+	/** True if this Map has a cutsom texture. */
+	public final boolean hasCustomTexture;
 	/** Height of the map in tiles. */
 	public final int height;
 	/** The LightManager */
@@ -102,6 +106,7 @@ public class Map implements IRender, IUpdate
 		this.pattouSpawnY = pattouSpawnY;
 		this.entityManager = new EntityManager(this);
 		this.lightManager = new LightManager(this);
+		this.hasCustomTexture = new File("res/textures/maps/" + this.name + ".png").exists();
 
 		// Creating Chunks
 		int xChunks = this.width / Chunk.SIZE, yChunks = this.height / Chunk.SIZE;
@@ -115,6 +120,20 @@ public class Map implements IRender, IUpdate
 				this.entityManager.registerChunk(this.chunks[x][y]);
 			}
 
+		if (this.hasCustomTexture) this.createCustomTexture();
+	}
+
+	/** Creates the Custom Texture. */
+	private void createCustomTexture()
+	{
+		Sprite[] sheet = Sprite.loadSpriteSheet("res/textures/maps/" + this.name + ".png", 0, 0, 32, -1, false);
+		for (int y = 0; y < this.height; ++y)
+		{
+			for (int x = 0; x < this.width; ++x)
+			{
+				this.setCustomSprite(x, y, sheet[x + y * this.width]);
+			}
+		}
 	}
 
 	private void createWalls()
@@ -140,6 +159,16 @@ public class Map implements IRender, IUpdate
 		int xChunk = x / Chunk.SIZE, yChunk = y / Chunk.SIZE;
 		if (xChunk >= 0 && xChunk < this.chunks.length && yChunk >= 0 && yChunk < this.chunks[xChunk].length) return this.chunks[xChunk][yChunk];
 		return null;
+	}
+
+	/** @param x - X position.
+	 * @param y - Y position.
+	 * @return The Custom Sprite for the Tile at the given coordinates. */
+	public Sprite getCustomSprite(int x, int y)
+	{
+		Chunk chunk = this.getChunk(x, y);
+		if (chunk != null) return chunk.getCustomSprite(x % Chunk.SIZE, y % Chunk.SIZE);
+		return Sprite.UNKNOWN;
 	}
 
 	/** @param x - X position.
@@ -170,6 +199,17 @@ public class Map implements IRender, IUpdate
 				if (this.chunks[x][y].shouldRender()) this.chunks[x][y].render(g);
 		this.entityManager.render(g);
 		this.lightManager.render(g);
+	}
+
+	/** Sets the Tile at x, y to the input Custom Sprite.
+	 * 
+	 * @param x - The X coordinate.
+	 * @param y - The Y coordinate.
+	 * @param sprite - The Custom Sprite to set. */
+	public void setCustomSprite(int x, int y, Sprite sprite)
+	{
+		Chunk chunk = this.getChunk(x, y);
+		if (chunk != null) chunk.setCustomSprite(x % Chunk.SIZE, y % Chunk.SIZE, sprite);
 	}
 
 	/** Sets the Tile data at x, y to the input data.

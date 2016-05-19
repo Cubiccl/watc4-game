@@ -61,7 +61,9 @@ public class Tile
 	 * @param data - This Tile's Data. */
 	public void renderAt(Graphics2D g, Map map, int x, int y, int data)
 	{
-		BufferedImage image = this.getSprite(map, x, y, data);
+		BufferedImage image;
+		if (map.hasCustomTexture) image = map.getCustomSprite(x, y).getImage();
+		else image = this.getSprite(map, x, y, data);
 		if (image != null) g.drawImage(image, x * Map.TILESIZE, y * Map.TILESIZE, null);
 	}
 

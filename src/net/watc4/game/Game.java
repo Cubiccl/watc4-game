@@ -88,7 +88,7 @@ public class Game implements Runnable
 
 	public Game()
 	{
-		this("passageMystereAhhhChalalalalaChut!");
+		this(null);
 	}
 
 	public Game(String map)
