@@ -10,6 +10,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
+import net.watc4.editor.ErrorDialog;
 import net.watc4.editor.MapEditor;
 
 import java.awt.event.ActionListener;
@@ -19,9 +20,19 @@ public class CreateMap extends JDialog
 {
 	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
-	private JTextField widthField;
-	private JTextField heightField;
+	private JTextField widthField, heightField;
+	private JLabel lblVeuillezChoisirLa, lblLargeur, lblHauteur;
+	private JPanel buttonPane;
+	private JButton okButton, cancelButton;
+	@SuppressWarnings("unused")
+	private ErrorDialog ed;
 	private MapEditor mapEd = (MapEditor) MapEditor.getFrames()[0];
+
+	public void colorStyle()
+	{
+		MapEditor.setColor(MapEditor.black2, MapEditor.white, contentPanel, buttonPane, lblVeuillezChoisirLa, lblLargeur, lblHauteur);
+		MapEditor.setColor(MapEditor.black3, MapEditor.white, okButton, cancelButton);
+	}
 
 	/** Create the dialog. */
 	public CreateMap()
@@ -33,11 +44,11 @@ public class CreateMap extends JDialog
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 
-		JLabel lblVeuillezChoisirLa = new JLabel("Veuillez choisir la taille de la carte :");
+		lblVeuillezChoisirLa = new JLabel("Veuillez choisir la taille de la carte :");
 		lblVeuillezChoisirLa.setBounds(10, 11, 284, 14);
 		contentPanel.add(lblVeuillezChoisirLa);
 
-		JLabel lblLargeur = new JLabel("Largeur : ");
+		lblLargeur = new JLabel("Largeur : ");
 		lblLargeur.setBounds(10, 50, 60, 14);
 		contentPanel.add(lblLargeur);
 
@@ -46,7 +57,7 @@ public class CreateMap extends JDialog
 		contentPanel.add(widthField);
 		widthField.setColumns(10);
 
-		JLabel lblHauteur = new JLabel("Hauteur : ");
+		lblHauteur = new JLabel("Hauteur : ");
 		lblHauteur.setBounds(10, 83, 60, 14);
 		contentPanel.add(lblHauteur);
 
@@ -54,17 +65,12 @@ public class CreateMap extends JDialog
 		heightField.setBounds(80, 80, 86, 20);
 		contentPanel.add(heightField);
 		heightField.setColumns(10);
-
-		JLabel lblErreur = new JLabel("Erreur !!");
-		lblErreur.setBounds(210, 60, 46, 14);
-		lblErreur.setVisible(false);
-		contentPanel.add(lblErreur);
 		{
-			JPanel buttonPane = new JPanel();
+			buttonPane = new JPanel();
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				JButton okButton = new JButton("Cr\u00E9er");
+				okButton = new JButton("Cr\u00E9er");
 				okButton.addActionListener(new ActionListener()
 				{
 					public void actionPerformed(ActionEvent e)
@@ -86,7 +92,7 @@ public class CreateMap extends JDialog
 							hf = 0;
 						}
 
-						if (wf <= 0 || hf <= 0) lblErreur.setVisible(true);
+						if (wf <= 0 || hf <= 0) ed = new ErrorDialog("Veuillez remplir les champs correctement.");
 						else
 						{
 							mapEd.createTiles(wf, hf);
@@ -100,7 +106,7 @@ public class CreateMap extends JDialog
 				getRootPane().setDefaultButton(okButton);
 			}
 			{
-				JButton cancelButton = new JButton("Annuler");
+				cancelButton = new JButton("Annuler");
 				cancelButton.addActionListener(new ActionListener()
 				{
 					public void actionPerformed(ActionEvent e)
@@ -111,6 +117,7 @@ public class CreateMap extends JDialog
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}
+			colorStyle();
 		}
 	}
 }

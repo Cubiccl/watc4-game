@@ -31,7 +31,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
@@ -103,7 +102,10 @@ public class MapEditor extends JFrame
 	private JButton[] cutsceneOptions;
 	private JButton[] ajoutCutscene;
 	private JTabbedPane menu;
-	public final static Color black1 = new Color(25, 25, 25), black2 = new Color(50, 50, 50), black3 = new Color(80, 80, 80), white = new Color(255, 255, 255);
+	@SuppressWarnings("unused")
+	private ErrorDialog ed;
+	public final static Color black1 = new Color(25, 25, 25), black2 = new Color(50, 50, 50), black3 = new Color(80, 80, 80), black4 = new Color(90, 90, 90),
+			black5 = new Color(130, 130, 130), white = new Color(255, 255, 255);
 	private final static JFileChooser fc = new JFileChooser(), sceneC = new JFileChooser();
 	private boolean exists = false;
 	private static String[] fileHeader = new String[]
@@ -130,59 +132,43 @@ public class MapEditor extends JFrame
 
 	public void colorStyle()
 	{
-		setColor(this.contentPane, black1, white);
+		setColor(black1, white, this.contentPane);
 		// MenuBar
-		setColor(menuBar, black2, white);
-		setColor(createMapMenu, black2, white);
-		setColor(mntmTester, black2, white);
-		setColor(mntmOuvrirUneCarte, black2, white);
-		setColor(mntmEnregistrer, black2, white);
-		setColor(mntmEnregistrerSous, black2, white);
-		setColor(mntmQuitter, black2, white);
+		setColor(black2, white, menuBar, createMapMenu, mntmTester, mntmOuvrirUneCarte, mntmEnregistrer, mntmEnregistrerSous, mntmQuitter);
 		// Menu
-		for (int i = 0; i < this.menu.getComponentCount(); i++)
-			setColor(this.menu.getComponent(i), black2, white);
-		setColor((Component) tilesMenu.getParent(), white, black1);
+		setColor(white, black1, (Component) tilesMenu.getParent());
+		setColor(black2, white, menu.getComponents());
 		// TilesMenu
-		setColor(lblTiles, black2, white);
-		setColor(tileRegistry, black3, white);
-		setColor(lblTileSelected, black2, white);
-		setColor(selectedTileLabel, black2, white);
-		setColor(mapView, black1, null);
-		for (int i = 0; i < scrollTileRegistry.getHorizontalScrollBar().getComponents().length; i++)
-			setColor(scrollTileRegistry.getHorizontalScrollBar().getComponent(i), black3, white);
+		setColor(black1, null, mapView);
+		setColor(black2, white, lblTiles, lblTileSelected, selectedTileLabel);
+		setColor(black5, white, scrollTileRegistry.getHorizontalScrollBar(), scrollMap.getVerticalScrollBar(), scrollMap.getHorizontalScrollBar());
+		setColor(black3, white, scrollTileRegistry.getHorizontalScrollBar().getComponents());
+		setColor(black3, white, scrollMap.getHorizontalScrollBar().getComponents());
+		setColor(black3, white, scrollMap.getVerticalScrollBar().getComponents());
+		setColor(black3, white, tileRegistry);
 		// EntityMenu
-		setColor(lblEntityName, black2, white);
-		setColor(entityRegistry, black3, white);
-		setColor(selectedEntityLabel, black2, white);
-		setColor(lblEntity, black2, white);
-		setColor(label_2, black2, white);
-		setColor(lblSelectedEntity, black2, white);
+		setColor(black2, white, lblEntityName, selectedEntityLabel, lblEntity, label_2, lblSelectedEntity);
+		setColor(black3, white, entityRegistry);
 		// CharactersMenu
-		setColor(radioPattou, black2, white);
-		setColor(radioLumi, black2, white);
-		setColor(lblPattouX, black2, white);
-		setColor(lblPattouY, black2, white);
-		setColor(lblLumiX, black2, white);
-		setColor(lblLumiY, black2, white);
-		setColor(btnRemoveLumi, black3, white);
-		setColor(btnRemovePattou, black3, white);
+		setColor(black2, white, radioPattou, radioLumi, lblPattouX, lblPattouY, lblLumiX, lblLumiY);
+		setColor(black3, white, btnRemoveLumi, btnRemovePattou);
 		// Cutscene Menu
-		setColor(cutsceneView, black2, white);
-		for (int i = 0; i < cutsceneOptions.length; i++)
-			setColor(cutsceneOptions[i], black3, white);
-			// addButtons colores dans putAddButtons()
+		setColor(black2, white, cutsceneView);
+		setColor(black3, white, cutsceneOptions);
+		// // addButtons colories dans putAddButtons()
 		// Ending Menu
-		setColor(endingsView,black2, white);
-		// TODO
+		setColor(black2, white, endingsView);
 	}
 
-	public void setColor(Component c, Color back, Color fore)
+	public static void setColor(Color back, Color fore, Component... c)
 	{
-		if (c != null)
+		for (int i = 0; i < c.length; i++)
 		{
-			if (back != null) c.setBackground(back);
-			if (fore != null) c.setForeground(fore);
+			if (c[i] != null)
+			{
+				if (back != null) c[i].setBackground(back);
+				if (fore != null) c[i].setForeground(fore);
+			}
 		}
 	}
 
@@ -258,7 +244,7 @@ public class MapEditor extends JFrame
 			ajoutCutscene[i] = new JButton(new ImageIcon(Sprite.PLUS.getImage()));
 			ajoutCutscene[i].setBounds(160, 100 * i + 13, 20, 20);
 			cutsceneView.add(ajoutCutscene[i]);
-			setColor(ajoutCutscene[i],black3,white);
+
 			ajoutCutscene[i].addMouseListener(new MouseAdapter()
 			{
 				@Override
@@ -277,6 +263,7 @@ public class MapEditor extends JFrame
 				}
 			});
 		}
+		setColor(black3, white, ajoutCutscene);
 	}
 
 	public ArrayList<EventLabel> getEventlist()
@@ -930,7 +917,7 @@ public class MapEditor extends JFrame
 
 				if (tilemap == null)
 				{
-					JOptionPane.showMessageDialog(null, "Veuillez cr\u00E9er une carte.", null, JOptionPane.ERROR_MESSAGE);
+					ed = new ErrorDialog("Veuillez cr\u00E9er une carte.");
 				} else
 				{
 					try
@@ -990,7 +977,7 @@ public class MapEditor extends JFrame
 			{
 				if (tilemap == null)
 				{
-					JOptionPane.showMessageDialog(null, "Veuillez cr\u00E9er une carte.", null, JOptionPane.ERROR_MESSAGE);
+					ed = new ErrorDialog("Veuillez cr\u00E9er une carte.");
 				} else if (!exists)
 				{
 					int returnVal = fc.showSaveDialog(MapEditor.this);
@@ -1033,7 +1020,7 @@ public class MapEditor extends JFrame
 			{
 				if (tilemap == null)
 				{
-					JOptionPane.showMessageDialog(null, "Veuillez cr\u00E9er une carte.", null, JOptionPane.ERROR_MESSAGE);
+					ed = new ErrorDialog("Veuillez cr\u00E9er une carte.");
 				} else
 				{
 					int returnVal = fc.showSaveDialog(MapEditor.this);

@@ -6,6 +6,8 @@ import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
+import net.watc4.editor.MapEditor;
+
 @SuppressWarnings("serial")
 public class EventLabelMove extends EventLabel
 {
@@ -44,8 +46,7 @@ public class EventLabelMove extends EventLabel
 		}
 		if (this.relative == null) relative = new JRadioButton("Relatif", false);
 		this.relative.setBounds(100, 20, 80, 20);
-		this.relative.setBackground(new Color(50,50,50));
-		this.relative.setForeground(Color.white);
+		MapEditor.setColor(MapEditor.black2, MapEditor.white, relative);
 		this.add(this.relative);
 	}
 

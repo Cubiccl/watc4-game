@@ -1,5 +1,5 @@
 doors =
-map2	401	map1	2	2	3	3
+map2	401	map1	16	12	2	13
 map2	403	bigmap2	2	2	3	3
 map2	404	map2	16	3	3	9
 map2	405	map1	2	2	3	3

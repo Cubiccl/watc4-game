@@ -10,12 +10,13 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.border.EmptyBorder;
 
+import net.watc4.editor.ErrorDialog;
+import net.watc4.editor.MapEditor;
 import net.watc4.editor.tiles.TileLabel;
 import net.watc4.game.entity.Entity;
 import net.watc4.game.entity.EntityRegistry;
@@ -24,6 +25,9 @@ import net.watc4.game.utils.FileUtils;
 @SuppressWarnings("serial")
 public class EntityValues extends JDialog
 {
+	private final JPanel contentPanel = new JPanel();
+	private JPanel buttonPane;
+	private JButton okButton, supprButton, cancelButton;
 	private static String[] definitions;
 	private static Entity en;
 	private static int enId;
@@ -34,6 +38,18 @@ public class EntityValues extends JDialog
 	private static JLabel[] fieldsName;
 	private static TileLabel tl;
 	private int pointeur = 0;
+	@SuppressWarnings("unused")
+	private ErrorDialog ed;
+	
+	public void colorStyle()
+	{
+		MapEditor.setColor(MapEditor.black2, MapEditor.white, contentPanel, buttonPane);
+		MapEditor.setColor(MapEditor.black2, MapEditor.white, fieldsName);
+		MapEditor.setColor(MapEditor.black3, MapEditor.white, okButton, supprButton, cancelButton);
+		MapEditor.setColor(MapEditor.black3, MapEditor.white, cutsceneFields);
+		MapEditor.setColor(MapEditor.black3, MapEditor.white, mapFields);
+		MapEditor.setColor(MapEditor.black3, MapEditor.white, booleanFields);
+	}
 
 	public static String getText(int i)
 	{
@@ -115,9 +131,7 @@ public class EntityValues extends JDialog
 		}
 		return true;
 	}
-
-	private final JPanel contentPanel = new JPanel();
-
+	
 	/** Create the dialog. */
 	public EntityValues(TileLabel tile)
 	{
@@ -132,11 +146,11 @@ public class EntityValues extends JDialog
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		{
-			JPanel buttonPane = new JPanel();
+			buttonPane = new JPanel();
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				JButton okButton = new JButton("OK");
+				okButton = new JButton("OK");
 				okButton.addMouseListener(new MouseAdapter()
 				{
 					@Override
@@ -167,13 +181,13 @@ public class EntityValues extends JDialog
 							{
 								e1.printStackTrace();
 							}
-						} else JOptionPane.showMessageDialog(null, "Veuillez remplir les champs correctement.", null, JOptionPane.ERROR_MESSAGE);
+						} else ed = new ErrorDialog("Veuillez remplir les champs correctement."); ; 
 					}
 
 				});
 				{
-					JButton btnSupprimer = new JButton("Supprimer");
-					btnSupprimer.addMouseListener(new MouseAdapter()
+					supprButton = new JButton("Supprimer");
+					supprButton.addMouseListener(new MouseAdapter()
 					{
 						@Override
 						public void mouseClicked(MouseEvent arg0)
@@ -185,14 +199,14 @@ public class EntityValues extends JDialog
 							tl.updateUI();
 						}
 					});
-					buttonPane.add(btnSupprimer);
+					buttonPane.add(supprButton);
 				}
 				okButton.setActionCommand("OK");
 				buttonPane.add(okButton);
 				getRootPane().setDefaultButton(okButton);
 			}
 			{
-				JButton cancelButton = new JButton("Annuler");
+				cancelButton = new JButton("Annuler");
 				cancelButton.addMouseListener(new MouseAdapter()
 				{
 					@Override
@@ -290,6 +304,7 @@ public class EntityValues extends JDialog
 			contentPanel.add(fieldsName[i]);
 			currentY += 40;
 		}
+		colorStyle();
 	}
 
 }

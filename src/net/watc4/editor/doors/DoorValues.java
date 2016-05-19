@@ -16,11 +16,11 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import net.watc4.editor.ErrorDialog;
 import net.watc4.editor.MapEditor;
 import net.watc4.game.display.Sprite;
 import net.watc4.game.utils.FileUtils;
@@ -29,18 +29,30 @@ import net.watc4.game.utils.FileUtils;
 public class DoorValues extends JDialog
 {
 
-	private final JPanel contentPanel = new JPanel();
+	private final JPanel contentPanel = new JPanel(), buttonPane;
 	private JTextField fieldLumiX;
 	private JTextField fieldPattouX;
 	private JTextField fieldLumiY;
 	private JTextField fieldPattouY;
+	private JLabel versLabel, labelLumiX, labelLumiY, labelPattouX, labelPattouY, labelLumi, labelPattou, labelUUID;
+	private JButton buttonPlacerLumi, buttonPlacerPattou, okButton, cancelButton, supprButton;
 	private String[] mapList;
 	private JTextField fieldUUID;
 	private MapEditor mapEd = ((MapEditor) MapEditor.getFrames()[0]);
 	private ArrayList<DoorButton> doorsList = mapEd.getDoorList();
 	private JComboBox<String> map1comboBox, map2comboBox;
 	private DoorButton dbtn;
+	@SuppressWarnings("unused")
+	private ErrorDialog ed;
 	private String mapDestination;
+
+	public void colorStyle()
+	{
+		MapEditor.setColor(MapEditor.black2, MapEditor.white, contentPanel, buttonPane, versLabel, labelLumiX, labelLumiY, labelPattouX, labelPattouY,
+				labelUUID);
+		MapEditor.setColor(MapEditor.black3, MapEditor.white, buttonPlacerLumi, buttonPlacerPattou, okButton, supprButton, cancelButton, map1comboBox,
+				map2comboBox);
+	}
 
 	public void updateLore() throws IOException
 	{
@@ -123,7 +135,7 @@ public class DoorValues extends JDialog
 
 		mapDestination = (String) map2comboBox.getSelectedItem();
 
-		JLabel versLabel = new JLabel("vers");
+		versLabel = new JLabel("vers");
 		versLabel.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		versLabel.setBounds(65, 95, 70, 20);
 		contentPanel.add(versLabel);
@@ -135,7 +147,7 @@ public class DoorValues extends JDialog
 		contentPanel.add(fieldLumiX);
 		fieldLumiX.setColumns(10);
 
-		JLabel labelLumiX = new JLabel("X :");
+		labelLumiX = new JLabel("X :");
 		labelLumiX.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		labelLumiX.setBounds(209, 113, 17, 14);
 		contentPanel.add(labelLumiX);
@@ -147,7 +159,7 @@ public class DoorValues extends JDialog
 		fieldPattouX.setEditable(false);
 		contentPanel.add(fieldPattouX);
 
-		JLabel labelPattouX = new JLabel("X :");
+		labelPattouX = new JLabel("X :");
 		labelPattouX.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		labelPattouX.setBounds(209, 191, 17, 14);
 		contentPanel.add(labelPattouX);
@@ -159,7 +171,7 @@ public class DoorValues extends JDialog
 		fieldLumiY.setEditable(false);
 		contentPanel.add(fieldLumiY);
 
-		JLabel labelLumiY = new JLabel("Y :");
+		labelLumiY = new JLabel("Y :");
 		labelLumiY.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		labelLumiY.setBounds(267, 113, 17, 14);
 		contentPanel.add(labelLumiY);
@@ -171,12 +183,12 @@ public class DoorValues extends JDialog
 		fieldPattouY.setEditable(false);
 		contentPanel.add(fieldPattouY);
 
-		JLabel labelPattouY = new JLabel("Y :");
+		labelPattouY = new JLabel("Y :");
 		labelPattouY.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		labelPattouY.setBounds(267, 191, 17, 14);
 		contentPanel.add(labelPattouY);
 
-		JLabel labelLumi = new JLabel("");
+		labelLumi = new JLabel("");
 		labelLumi.setBounds(255, 64, 32, 32);
 		labelLumi.setLayout(null);
 		labelLumi.setIcon(new ImageIcon(Sprite.LUMI.getImage()));
@@ -186,12 +198,12 @@ public class DoorValues extends JDialog
 		labelLumi.add(labelLumiEyes);
 		contentPanel.add(labelLumi);
 
-		JLabel labelPattou = new JLabel("");
+		labelPattou = new JLabel("");
 		labelPattou.setBounds(255, 147, 32, 32);
 		labelPattou.setIcon(new ImageIcon(Sprite.PATTOU_IDLE_RIGHT[0].getImage()));
 		contentPanel.add(labelPattou);
 
-		JButton buttonPlacerLumi = new JButton("Placer");
+		buttonPlacerLumi = new JButton("Placer");
 		buttonPlacerLumi.addMouseListener(new MouseAdapter()
 		{
 			@Override
@@ -212,7 +224,7 @@ public class DoorValues extends JDialog
 		buttonPlacerLumi.setBounds(335, 109, 87, 26);
 		contentPanel.add(buttonPlacerLumi);
 
-		JButton buttonPlacerPattou = new JButton("Placer");
+		buttonPlacerPattou = new JButton("Placer");
 		buttonPlacerPattou.addMouseListener(new MouseAdapter()
 		{
 			@Override
@@ -233,7 +245,7 @@ public class DoorValues extends JDialog
 		buttonPlacerPattou.setBounds(335, 187, 87, 26);
 		contentPanel.add(buttonPlacerPattou);
 
-		JLabel labelUUID = new JLabel("UUID (401-499) :");
+		labelUUID = new JLabel("UUID (401-499) :");
 		labelUUID.setBounds(230, 25, 100, 16);
 		contentPanel.add(labelUUID);
 
@@ -243,11 +255,11 @@ public class DoorValues extends JDialog
 		contentPanel.add(fieldUUID);
 		fieldUUID.setColumns(10);
 		{
-			JPanel buttonPane = new JPanel();
+			buttonPane = new JPanel();
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				JButton okButton = new JButton("OK");
+				okButton = new JButton("OK");
 				okButton.addMouseListener(new MouseAdapter()
 				{
 					@Override
@@ -274,17 +286,16 @@ public class DoorValues extends JDialog
 							switch (check)
 							{
 								case 1:
-									JOptionPane.showMessageDialog(null,
-											"La carte de destination a \u00E9t\u00E9 modifi\u00E9e depuis le placement des personnages.", null,
-											JOptionPane.ERROR_MESSAGE);
+									ed = new ErrorDialog("La carte de destination a \u00E9t\u00E9 modifi\u00E9e", "depuis le placement des personnages.");
 									break;
 								case 2:
-									JOptionPane.showMessageDialog(null, "Veuillez remplir le champ UUID correctement.", null, JOptionPane.ERROR_MESSAGE);
+									ed = new ErrorDialog("Veuillez remplir le champ UUID correctement.");
 									break;
 								case 3:
-									JOptionPane.showMessageDialog(null, "Cet UUID est d\u00E9j\u00E0 utilis\u00E9.", null, JOptionPane.ERROR_MESSAGE);
+									ed = new ErrorDialog("Cet UUID est d\u00E9j\u00E0 utilis\u00E9.");
 									break;
-								default : break;
+								default:
+									break;
 							}
 						}
 					}
@@ -293,8 +304,8 @@ public class DoorValues extends JDialog
 				getRootPane().setDefaultButton(okButton);
 			}
 			{
-				JButton btnSupprimer = new JButton("Supprimer");
-				btnSupprimer.addMouseListener(new MouseAdapter()
+				supprButton = new JButton("Supprimer");
+				supprButton.addMouseListener(new MouseAdapter()
 				{
 					@Override
 					public void mouseClicked(MouseEvent e)
@@ -304,14 +315,14 @@ public class DoorValues extends JDialog
 						dispose();
 					}
 				});
-				buttonPane.add(btnSupprimer);
+				buttonPane.add(supprButton);
 				if (dbtn instanceof AddDoorButton)
 				{
-					buttonPane.remove(btnSupprimer);
+					buttonPane.remove(supprButton);
 				}
 			}
 			{
-				JButton cancelButton = new JButton("Annuler");
+				cancelButton = new JButton("Annuler");
 				cancelButton.addMouseListener(new MouseAdapter()
 				{
 					@Override
@@ -322,6 +333,7 @@ public class DoorValues extends JDialog
 				});
 				buttonPane.add(cancelButton);
 			}
+			colorStyle();
 		}
 	}
 }

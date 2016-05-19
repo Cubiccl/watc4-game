@@ -1,9 +1,8 @@
 package net.watc4.editor.cutscene;
 
-import java.awt.Color;
-
 import javax.swing.JComboBox;
 
+import net.watc4.editor.MapEditor;
 import net.watc4.game.utils.FileUtils;
 
 @SuppressWarnings("serial")
@@ -13,12 +12,12 @@ public class EventLabelCutscene extends EventLabel
 
 	public String getCutsceneText()
 	{
-		return (String)cutscene.getSelectedItem();
+		return (String) cutscene.getSelectedItem();
 	}
 
 	public String getMapText()
 	{
-		return (String)map.getSelectedItem();
+		return (String) map.getSelectedItem();
 	}
 
 	public void init()
@@ -29,10 +28,7 @@ public class EventLabelCutscene extends EventLabel
 		map.setBounds(130, 50, 100, 20);
 		this.add(cutscene);
 		this.add(map);
-		cutscene.setBackground(new Color(80,80,80));
-		cutscene.setForeground(Color.white);
-		map.setBackground(new Color(80,80,80));
-		map.setForeground(Color.white);
+		MapEditor.setColor(MapEditor.black3, MapEditor.white, cutscene, map);
 	}
 
 	public EventLabelCutscene()

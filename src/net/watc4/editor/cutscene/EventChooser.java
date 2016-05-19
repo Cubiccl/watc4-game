@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -24,20 +23,32 @@ public class EventChooser extends JDialog
 	private final JPanel contentPanel = new JPanel();
 	private static JComboBox<String> eventComboBox;
 	private MapEditor mapEd = (MapEditor) MapEditor.getFrames()[0];
-	
-	public static EventLabel getChoice(){
-		switch ((String)eventComboBox.getSelectedItem())
+	private JLabel labelText1, labelText2;
+	private JPanel buttonPane;
+	private JButton okButton, cancelButton;
+
+	public void colorStyle()
+	{
+		MapEditor.setColor(MapEditor.black2, MapEditor.white, contentPanel, labelText1, labelText2, buttonPane);
+		MapEditor.setColor(MapEditor.black3, MapEditor.white, eventComboBox, okButton, cancelButton);
+	}
+
+	public static EventLabel getChoice()
+	{
+		switch ((String) eventComboBox.getSelectedItem())
 		{
-			case "Cutscene" : return new EventLabelCutscene();
-			case "Move" : return new EventLabelMove();
-			case "Text" : return new EventLabelText();
-			default : return null;
+			case "Cutscene":
+				return new EventLabelCutscene();
+			case "Move":
+				return new EventLabelMove();
+			case "Text":
+				return new EventLabelText();
+			default:
+				return null;
 		}
 	}
 
-	/**
-	 * Create the dialog.
-	 */
+	/** Create the dialog. */
 	public EventChooser(int pos)
 	{
 		setModal(true);
@@ -46,35 +57,37 @@ public class EventChooser extends JDialog
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
-		
-		JLabel lblVeuillezChoisirUn = new JLabel("Veuillez choisir un type d'\u00E9v\u00E8nement");
-		lblVeuillezChoisirUn.setBounds(10, 30, 220, 20);
-		contentPanel.add(lblVeuillezChoisirUn);
+
+		labelText1 = new JLabel("Veuillez choisir un type d'\u00E9v\u00E8nement");
+		labelText1.setBounds(10, 30, 220, 20);
+		contentPanel.add(labelText1);
 		{
-			JLabel lblParmiLaListe = new JLabel(" parmi la liste ci-dessous :");
-			lblParmiLaListe.setBounds(41, 57, 158, 14);
-			contentPanel.add(lblParmiLaListe);
+			labelText2 = new JLabel(" parmi la liste ci-dessous :");
+			labelText2.setBounds(41, 57, 158, 14);
+			contentPanel.add(labelText2);
 		}
-		
+
 		eventComboBox = new JComboBox<String>(FileUtils.getEventList());
 		eventComboBox.setBounds(60, 82, 120, 20);
 		contentPanel.add(eventComboBox);
 		{
-			JPanel buttonPane = new JPanel();
+			buttonPane = new JPanel();
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				JButton okButton = new JButton("OK");
-				okButton.addMouseListener(new MouseAdapter() {
+				okButton = new JButton("OK");
+				okButton.addMouseListener(new MouseAdapter()
+				{
 					@Override
-					public void mouseClicked(MouseEvent arg0) {
-						
+					public void mouseClicked(MouseEvent arg0)
+					{
+
 						ArrayList<EventLabel> newList = new ArrayList<EventLabel>(), oldList = mapEd.getEventlist();
-						for(int i = 0; i < oldList.size()+1; i++)
+						for (int i = 0; i < oldList.size() + 1; i++)
 						{
-							if(i < pos) newList.add(oldList.get(i));
-							else if(i == pos) newList.add(getChoice());
-							else newList.add(oldList.get(i-1));
+							if (i < pos) newList.add(oldList.get(i));
+							else if (i == pos) newList.add(getChoice());
+							else newList.add(oldList.get(i - 1));
 						}
 						mapEd.setEventList(newList);
 						mapEd.updateEventList();
@@ -87,16 +100,19 @@ public class EventChooser extends JDialog
 				getRootPane().setDefaultButton(okButton);
 			}
 			{
-				JButton cancelButton = new JButton("Cancel");
-				cancelButton.addMouseListener(new MouseAdapter() {
+				cancelButton = new JButton("Cancel");
+				cancelButton.addMouseListener(new MouseAdapter()
+				{
 					@Override
-					public void mouseClicked(MouseEvent arg0) {
+					public void mouseClicked(MouseEvent arg0)
+					{
 						dispose();
 					}
 				});
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}
+			colorStyle();
 		}
 	}
 }

@@ -19,6 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 
+import net.watc4.editor.MapEditor;
 import net.watc4.editor.tiles.TileLabel;
 import net.watc4.game.display.Sprite;
 import net.watc4.game.entity.Entity;
@@ -34,13 +35,21 @@ public class DoorSpawnChooser extends JDialog
 	private final JPanel contentPanel = new JPanel();
 	private TileLabel[][] tilemap;
 	private GridBagLayout gbl_panel = new GridBagLayout();
-	private JPanel mapView;
+	private JPanel mapView, buttonPane;
+	private JButton okButton, cancelButton;
+	private JScrollPane scrollMap;
 	private GridBagConstraints gbc = new GridBagConstraints();
 	private boolean character;
 	private int PattouX, PattouY, LumiX, LumiY;
 	private static String[] fileHeader = new String[]
 	{ "width = ", "height = ", "lumiSpawnX = ", "lumiSpawnY = ", "pattouSpawnX = ", "pattouSpawnY = ", "tiles =" };
 	private JLabel focusPattou, focusLumi, lumiEyes;
+	
+	public void colorStyle()
+	{
+		MapEditor.setColor(MapEditor.black2, MapEditor.white, contentPanel, mapView, buttonPane, scrollMap, scrollMap.getVerticalScrollBar(), scrollMap.getHorizontalScrollBar());
+		MapEditor.setColor(MapEditor.black3, MapEditor.white, okButton, cancelButton);
+	}
 	
 	public void addTileUpdater(int i, int j)
 	{
@@ -204,7 +213,7 @@ public class DoorSpawnChooser extends JDialog
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(new BorderLayout(0, 0));
 		{
-			JScrollPane scrollMap = new JScrollPane();
+			scrollMap = new JScrollPane();
 			contentPanel.add(scrollMap, BorderLayout.CENTER);
 			{
 				mapView = new JPanel();
@@ -234,11 +243,11 @@ public class DoorSpawnChooser extends JDialog
 			tilemap[LumiX][LumiY].updateUI();
 		}
 		{
-			JPanel buttonPane = new JPanel();
+			buttonPane = new JPanel();
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				JButton okButton = new JButton("OK");
+				okButton = new JButton("OK");
 				okButton.addMouseListener(new MouseAdapter()
 				{
 					@Override
@@ -246,10 +255,14 @@ public class DoorSpawnChooser extends JDialog
 					{
 						if (character)
 						{
+							if(DoorValues.getWindows()[2] instanceof DoorValues)
 							((DoorValues) DoorValues.getWindows()[2]).setSpawnPoint(PattouX, PattouY, character);
+							else ((DoorValues) DoorValues.getWindows()[3]).setSpawnPoint(PattouX, PattouY, character);
 						} else
 						{
+							if(DoorValues.getWindows()[2] instanceof DoorValues)
 							((DoorValues) DoorValues.getWindows()[2]).setSpawnPoint(LumiX, LumiY, character);
+							else ((DoorValues) DoorValues.getWindows()[3]).setSpawnPoint(PattouX, PattouY, character);
 						}
 						dispose();
 					}
@@ -259,7 +272,7 @@ public class DoorSpawnChooser extends JDialog
 				getRootPane().setDefaultButton(okButton);
 			}
 			{
-				JButton cancelButton = new JButton("Annuler");
+				cancelButton = new JButton("Annuler");
 				cancelButton.addMouseListener(new MouseAdapter()
 				{
 					@Override
@@ -271,6 +284,7 @@ public class DoorSpawnChooser extends JDialog
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}
+			colorStyle();
 		}
 	}
 

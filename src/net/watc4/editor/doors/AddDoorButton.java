@@ -1,9 +1,10 @@
 package net.watc4.editor.doors;
 
-import java.awt.Color;
 import java.awt.Dimension;
 
 import javax.swing.JLabel;
+
+import net.watc4.editor.MapEditor;
 
 @SuppressWarnings("serial")
 public class AddDoorButton extends DoorButton
@@ -24,8 +25,8 @@ public class AddDoorButton extends DoorButton
 		add.setFont(add.getFont().deriveFont(20f));
 		add.setBounds(200, 34, 400, 32);
 		add(add);
-		setBackground(new Color(50,50,50));
-		add.setForeground(new Color(255,255,255));
+		MapEditor.setColor(MapEditor.black2, MapEditor.white, this);
+		MapEditor.setColor(null, MapEditor.white, add);
 	}
 
 }
