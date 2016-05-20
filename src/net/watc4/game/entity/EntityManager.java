@@ -165,6 +165,7 @@ public class EntityManager implements IRender, IUpdate, IEntityMovementListener
 		Chunk c;
 		for (Chunk chunk : chunks)
 		{
+			if (chunk == null) entity.kill();
 			x = chunk.xPos;
 			y = chunk.yPos;
 			chunks.add(chunk);
@@ -246,6 +247,7 @@ public class EntityManager implements IRender, IUpdate, IEntityMovementListener
 	{
 		for (Entity entity : this.entities)
 			if (this.shouldUpdate(entity)) entity.update();
+		
 		for (Entity entity : this.toDelete)
 		{
 			this.entities.remove(entity);
