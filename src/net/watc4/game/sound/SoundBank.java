@@ -24,7 +24,7 @@ public class SoundBank
 	public static void creat_All_Sound()
 	{
 		sound_Bank = new HashMap<String, Sound>();
-		add_Sound_to_Bank(new Sound("map2", "res/sound/Track1", ".wav", true));
+		add_Sound_to_Bank(new Sound("Level 1", "res/sound/Track1", ".wav", true));
 	}
 
 	/** add a sound to the SoundBank

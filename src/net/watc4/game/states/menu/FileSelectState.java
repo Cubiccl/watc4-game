@@ -7,7 +7,7 @@ import net.watc4.game.utils.lore.LoreManager;
 
 public class FileSelectState extends MenuState
 {
-	public static final int NEW = 0, DELETE = 1;
+	public static final int NEW = 0, DELETE = 1, BACK = 2;
 
 	private boolean deleting;
 	private Button newFile, deleteFile;
@@ -25,6 +25,7 @@ public class FileSelectState extends MenuState
 			this.addButton(new Button(i + 2, "File " + (i + 1) + " : " + LoreManager.saves[i]));
 		this.addButton(this.newFile = new Button(NEW, "New File"));
 		this.addButton(this.deleteFile = new Button(DELETE, "Delete"));
+		this.addButton(new Button(BACK, "Back to Menu"));
 	}
 
 	@Override
@@ -42,16 +43,18 @@ public class FileSelectState extends MenuState
 			this.updateMode();
 			this.setSelected(0);
 		}
-		if (selected.id > DELETE)
+		if (selected.id == BACK) Game.getGame().setCurrentState(new MainMenuState());
+
+		if (selected.id > BACK)
 		{
 			if (this.deleting)
 			{
-				LoreManager.deleteSave(selected.id - 2);
+				LoreManager.deleteSave(selected.id - 3);
 				this.empty();
 				this.createButtons();
 				this.deleting = false;
 				this.updateMode();
-			} else Game.getGame().setCurrentState(GameState.createNew(LoreManager.saves[selected.id - 2]));
+			} else Game.getGame().setCurrentState(GameState.createNew(LoreManager.saves[selected.id - 3]));
 		}
 	}
 

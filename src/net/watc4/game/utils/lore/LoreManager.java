@@ -14,7 +14,7 @@ public final class LoreManager
 
 	/** List of endings. */
 	private static HashMap<String, Ending> endings;
-	public static final String firstMap = "map2";
+	public static final String firstMap = "Level 1";
 	/** Contains the Save Files. */
 	public static String[] saves;
 

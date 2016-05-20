@@ -4,9 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 
-import net.watc4.game.display.Animation;
 import net.watc4.game.display.Background;
-import net.watc4.game.display.Sprite;
 import net.watc4.game.display.TextRenderer;
 import net.watc4.game.utils.GameSettings;
 import net.watc4.game.utils.GameUtils;
@@ -21,9 +19,7 @@ public abstract class State implements IRender, IUpdate, IRenderHud
 	private IRender background;
 
 	public State()
-	{
-		this.background = new Background(new Animation(Sprite.TILE_WALL), null);
-	}
+	{}
 
 	/** Called when a key is pressed.
 	 * 
