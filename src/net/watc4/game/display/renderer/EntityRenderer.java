@@ -36,7 +36,7 @@ public class EntityRenderer implements IRender
 	@Override
 	public void render(Graphics2D g)
 	{
-		g.drawImage(this.animation.getImage(), (int) this.entity.getX(), (int) this.entity.getY(), null);
+		if (this.animation != null) g.drawImage(this.animation.getImage(), (int) this.entity.getX(), (int) this.entity.getY(), null);
 	}
 
 	/** Changes the current Animation.

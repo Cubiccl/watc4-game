@@ -9,6 +9,8 @@ public class Animation implements IUpdate
 {
 	/** Index of the current Sprite to display. */
 	private int currentSprite;
+	/** True if this animation loops only once. */
+	public boolean loopsOnce;
 	/** The speed of this Animation. Represents the number of ticks between each Sprite. */
 	public final int speed;
 	/** List of all Sprites to display. */
@@ -27,6 +29,7 @@ public class Animation implements IUpdate
 		this.tick = 0;
 		this.speed = speed;
 		this.register();
+		this.loopsOnce = false;
 	}
 
 	/** Creates a new Animation, with one Sprite.
@@ -56,6 +59,7 @@ public class Animation implements IUpdate
 	{
 		this.currentSprite = (this.currentSprite + 1) % this.sprites.length;
 		this.tick = 0;
+		if (this.loopsOnce && this.currentSprite == this.sprites.length - 1) this.dispose();
 		return this.getImage();
 	}
 

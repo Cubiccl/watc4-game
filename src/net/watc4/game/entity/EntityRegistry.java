@@ -43,6 +43,7 @@ public final class EntityRegistry
 				"UnchargeTime", "float");
 		registerEntity(8, EntityRunaway.class, "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 800 - 899", "Run X", "unsigned int", "Run Y",
 				"unsigned int");
+		registerEntity(9, EntityEyes.class, "X", "int", "Y", "int", "UUID", "unsigned int 900 - 999");
 	}
 
 	/** Creates the adequate arguments then spawns an Entity.
