@@ -4,7 +4,11 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashSet;
+
+import javax.imageio.ImageIO;
 
 import net.watc4.game.Game;
 import net.watc4.game.display.Animation;
@@ -43,6 +47,7 @@ public class GameState extends State implements IEntityMovementListener
 	public EntityLumi entityLumi;
 	/** The Shadow Player. */
 	public EntityPattou entityPattou;
+	private Background foreground;
 	/** True if the given Player is used in this State. */
 	public boolean hasLumi, hasPattou;
 	/** True if this State is in a Cutscene, thus the user cannot interact with this State. */
@@ -66,13 +71,34 @@ public class GameState extends State implements IEntityMovementListener
 		this.lightListeners = new HashSet<ILightChangeListener>();
 		this.map = Map.createFrom(this.mapName, this);
 		if (this.hasLumi) this.entityLumi.addMovementListener(this);
-		this.setBackground(new Background(new Animation(Sprite.TILE_WALL), this));
+		this.createForeBackground();
 	}
 
 	/** @param listener - The Listener. Will be called when Lumi's Light changes. */
 	public void addLightChangeListener(ILightChangeListener listener)
 	{
 		this.lightListeners.add(listener);
+	}
+
+	private void createForeBackground()
+	{
+		File fileFg = new File("res/textures/maps/" + this.mapName + "_fg.png");
+		File fileBg = new File("res/textures/maps/" + this.mapName + "_bg.png");
+		if (fileFg.exists()) try
+		{
+			this.foreground = new Background(new Animation(new Sprite(ImageIO.read(fileFg))), this);
+			this.foreground.parallax = 1;
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		if (fileBg.exists()) try
+		{
+			this.setBackground(new Background(new Animation(new Sprite(ImageIO.read(fileBg))), this));
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	/** Draws a Red overlay. It becomes more opaque the more damage the player takes.
@@ -162,6 +188,8 @@ public class GameState extends State implements IEntityMovementListener
 		if (yOffset < 0) g.fillRect(xOffset, yOffset, width, -yOffset);
 		g.fillRect(this.map.width * Map.TILESIZE, yOffset, xOffset, height);
 		g.fillRect(xOffset, this.map.height * Map.TILESIZE, width, height);
+
+		if (this.foreground != null) this.foreground.render(g);
 
 		((Graphics2D) g).scale(1 / this.camera.getScale(), 1 / this.camera.getScale());
 		g.translate(xOffset, yOffset);
