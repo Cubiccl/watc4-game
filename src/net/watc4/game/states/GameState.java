@@ -181,6 +181,7 @@ public class GameState extends State implements IEntityMovementListener
 
 		super.render(g);
 		this.map.render(g);
+		if (this.hasLumi) this.entityLumi.render(g);
 		if (this.hasPattou) this.entityPattou.render(g);
 
 		g.setColor(Color.BLACK);

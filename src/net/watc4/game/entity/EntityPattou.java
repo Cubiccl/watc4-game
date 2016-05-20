@@ -67,13 +67,14 @@ public class EntityPattou extends Entity
 
 	public EntityPattou(GameState game, float xPos, float yPos)
 	{
-		super(game, xPos, yPos, 1);
+		super(game, xPos, yPos - 50, 1);
 		this.setRenderer(new PattouRenderer(this));
-		this.width = 12;
-		this.height = 32;
+		this.width = 30;
+		this.height = 80;
 		this.direction = -1;
 		this.ai = new AIPattou(this);
 		this.setAffectedByLight(true);
+		this.moveSpeed = 5.5f;
 	}
 
 	public int getJumpingTime()
@@ -120,7 +121,7 @@ public class EntityPattou extends Entity
 			this.door.activate();
 			return;
 		}
-		
+
 		this.ai.update();
 
 		for (Entity entity : game.getMap().entityManager.getEntities())

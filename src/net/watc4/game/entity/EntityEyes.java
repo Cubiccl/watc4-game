@@ -28,13 +28,10 @@ public class EntityEyes extends Entity
 	public EntityEyes(GameState game, float xPos, float yPos, int UUID)
 	{
 		super(game, xPos, yPos, UUID);
-		if (game != null)
-		{
-			this.game.entityPattou.addMovementListener(this);
-			this.state = State.CLOSED;
-			this.hasGravity = false;
-			this.setRenderer(new EntityRenderer(this, null));
-		}
+		if (this.game != null) this.game.entityPattou.addMovementListener(this);
+		this.state = State.CLOSED;
+		this.hasGravity = false;
+		this.setRenderer(new EntityRenderer(this, new Animation(Sprite.EYES_OPEN[0])));
 	}
 
 	@Override

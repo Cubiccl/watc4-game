@@ -8,7 +8,7 @@ public class TileLabel extends JLabel
 {
 	private static final long serialVersionUID = 1L;
 	private byte data = 0;
-	private int id = 2;
+	private int id = 0;
 	private Entity en;
 	private int enId;
 	private Object[] entityValues;
