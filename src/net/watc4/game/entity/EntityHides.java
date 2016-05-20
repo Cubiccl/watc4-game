@@ -37,7 +37,7 @@ public class EntityHides extends Entity
 	public void onEnterLight(EntityLumi lumi)
 	{
 		super.onEnterLight(lumi);
-		this.hiding = new Animation(10, Sprite.HIDES);
+		this.hiding = new Animation(5, Sprite.HIDES);
 		this.hiding.loopsOnce = true;
 		this.setRenderer(new EntityRenderer(this, this.hiding));
 	}

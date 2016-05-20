@@ -422,7 +422,7 @@ public abstract class Entity implements IRender, IUpdate, IEntityMovementListene
 	 * @param renderer - The new Renderer to use. */
 	public void setRenderer(EntityRenderer renderer)
 	{
-		this.renderer.setAnimation(null);
+		if (this.renderer != null) this.renderer.setAnimation(null);
 		this.renderer = renderer;
 	}
 
