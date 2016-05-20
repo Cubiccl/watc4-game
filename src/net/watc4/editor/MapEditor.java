@@ -59,7 +59,10 @@ import net.watc4.game.display.AnimationManager;
 import net.watc4.game.display.Sprite;
 import net.watc4.game.entity.Entity;
 import net.watc4.game.entity.EntityCutscene;
+import net.watc4.game.entity.EntityEndLevel;
+import net.watc4.game.entity.EntityEyes;
 import net.watc4.game.entity.EntityRegistry;
+import net.watc4.game.entity.EntityRunaway;
 import net.watc4.game.map.TileRegistry;
 import net.watc4.game.utils.FileUtils;
 import net.watc4.game.utils.lore.LoreManager;
@@ -410,12 +413,14 @@ public class MapEditor extends JFrame
 		entityChoice = new TileLabel[EntityRegistry.getEntities().size()];
 		for (int i = 0; i < entityChoice.length; i++)
 		{
+
 			entityChoice[i] = new TileLabel();
 			entityChoice[i].setLayout(null);
 			entityChoice[i].setPreferredSize(new Dimension(32, 32));
 
 			try
 			{
+
 				entityChoice[i].setEn((Entity) (EntityRegistry.getDefaultConstructor(i)).newInstance());
 			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | SecurityException | InvocationTargetException e)
 			{
@@ -423,6 +428,15 @@ public class MapEditor extends JFrame
 				e.printStackTrace();
 			}
 			if (entityChoice[i].getEn() instanceof EntityCutscene)
+			{
+				entityChoice[i].setIcon(new ImageIcon(Sprite.CUTSCENE.getImage()));
+			} else if (entityChoice[i].getEn() instanceof EntityEyes)
+			{
+				entityChoice[i].setIcon(new ImageIcon(Sprite.EYES_OPEN[3].getImage()));
+			} else if (entityChoice[i].getEn() instanceof EntityRunaway)
+			{
+				entityChoice[i].setIcon(new ImageIcon(Sprite.RUNAWAY_STILL_RIGHT[0].getImage()));
+			} else if (entityChoice[i].getEn() instanceof EntityEndLevel)
 			{
 				entityChoice[i].setIcon(new ImageIcon(Sprite.CUTSCENE.getImage()));
 			} else if (entityChoice[i].getEn().getRenderer() == null)
@@ -434,6 +448,7 @@ public class MapEditor extends JFrame
 			entityRegistry.add(entityChoice[i], gbc);
 			addEntitySelector(i);
 		}
+
 	}
 
 	public void addTileUpdater(int i, int j)
@@ -1289,6 +1304,25 @@ public class MapEditor extends JFrame
 		doorsView.setLayout(gl2);
 		scrollEndings.getVerticalScrollBar().setUnitIncrement(6);
 		scrollEndings.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		endingsView.setLayout(null);
+		JLabel dlc = new JLabel("Disponible en DLC pour 20\u20AC");
+		JButton achat = new JButton("Acheter");
+		achat.addMouseListener(new MouseAdapter()
+		{
+			@Override
+			public void mouseClicked(MouseEvent arg0)
+			{
+				ErrorDialog ed = new ErrorDialog("Votre solde est insuffisant.");
+			}
+		});
+		dlc.setBounds(150, 100, 400, 30);
+		dlc.setFont(dlc.getFont().deriveFont(24f));
+		endingsView.add(dlc);
+		setColor(null, white, dlc);
+		achat.setBounds(240, 200, 150, 30);
+		achat.setFont(achat.getFont().deriveFont(20f));
+		setColor(black3, white, achat);
+		endingsView.add(achat);
 		// TODO
 
 		contentPane.add(scrollMap, BorderLayout.CENTER);
