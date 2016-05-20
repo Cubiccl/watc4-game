@@ -18,6 +18,7 @@ public class Sprite
 	public static Sprite[] PATTOU_JUMPING_RIGHT, PATTOU_JUMPING_LEFT;
 	public static Sprite[] PATTOU_LADDER;
 	public static Sprite[] PATTOU_MOVING_RIGHT, PATTOU_MOVING_LEFT;
+	public static Sprite[] RUNAWAY_STILL_LEFT, RUNAWAY_STILL_RIGHT, RUNAWAY_RUN_LEFT, RUNAWAY_RUN_RIGHT;
 	public static Sprite[] SPIKE_PLATFORM;
 	public static Sprite TILE_DEFAULT, TILE_GROUND, TILE_WALL, TILE_DOOR, TILE_GLASS;
 	public static Sprite TILE_LADDER_BOTTOM, TILE_LADDER_BASE, TILE_LADDER_TOP;
@@ -56,8 +57,12 @@ public class Sprite
 
 		PATTOU_JUMPING_RIGHT = loadSpriteSheet("res/textures/playerPattou.png", 0, 64, 32, 6, false);
 		PATTOU_JUMPING_LEFT = loadSpriteSheet("res/textures/playerPattou.png", 0, 64, 32, 6, true);
-		
+
 		SPIKE_PLATFORM = loadSpriteSheet("res/textures/spikePlatform.png", 0, 0, 32, 4, false);
+		RUNAWAY_STILL_LEFT = loadSpriteSheet("res/textures/runaway.png", 0, 0, 32, 2, true);
+		RUNAWAY_STILL_RIGHT = loadSpriteSheet("res/textures/runaway.png", 0, 0, 32, 2, false);
+		RUNAWAY_RUN_LEFT = loadSpriteSheet("res/textures/runaway.png", 64, 0, 32, 4, true);
+		RUNAWAY_RUN_RIGHT = loadSpriteSheet("res/textures/runaway.png", 64, 0, 32, 4, false);
 
 		BATTERY = new Sprite("res/textures/battery.png", 0, 0, 32, 32);
 		DOOR = new Sprite("res/textures/door.png", 0, 0, 32, 32);

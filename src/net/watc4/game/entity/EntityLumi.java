@@ -4,19 +4,18 @@ import java.awt.Point;
 
 import net.watc4.game.Game;
 import net.watc4.game.display.renderer.LumiRenderer;
+import net.watc4.game.entity.ai.BasicAI;
 import net.watc4.game.map.Map;
-import net.watc4.game.map.TileRegistry;
 import net.watc4.game.states.GameState;
-import net.watc4.game.utils.GameUtils;
 import net.watc4.game.utils.geometry.CircleHitbox;
 import net.watc4.game.utils.geometry.Hitbox;
 
 /** First Player : can fly and spreads light. */
-public class EntityLumi extends EntityPlayer implements ILightSource
+public class EntityLumi extends Entity implements ILightSource
 {
 
 	/** Lumi's AI. */
-	public class AILumi extends AIPlayer
+	public class AILumi extends BasicAI
 	{
 		public AILumi(EntityLumi entity)
 		{
@@ -53,7 +52,6 @@ public class EntityLumi extends EntityPlayer implements ILightSource
 	}
 
 	public static final int LIGHT_INTENSITY = 400;
-	private static final int MOVE_SPEED = 5;
 
 	public EntityLumi()
 	{
@@ -130,27 +128,6 @@ public class EntityLumi extends EntityPlayer implements ILightSource
 	/** Checks for movement input and applies it. */
 	private void manageInput()
 	{
-		boolean up = ((AILumi) this.ai).up(), down = ((AILumi) this.ai).down(), left = ((AILumi) this.ai).left(), right = ((AILumi) this.ai).right();
-
-		float hMove = 0;
-		float vMove = 0;
-
-		if (up) vMove--;
-		if (down) vMove++;
-		if (left) hMove--;
-		if (right) hMove++;
-
-		if (down && this.getAdjacentTile(GameUtils.DOWN) == TileRegistry.LADDER_TOP)
-		{
-			this.onLadder = true;
-			if (!this.placeFree(0, 1)) this.onLadder = false;
-		}
-
-		boolean doubleInput = (up && right) || (up && left) || (down && right) || (down && left);
-		float multiplier = 1;
-		if (doubleInput) multiplier = 0.7f;
-		this.ySpeed = vMove * MOVE_SPEED * multiplier;
-		this.xSpeed = hMove * MOVE_SPEED * multiplier;
 	}
 
 	/** @return True if this Player has reached the end of the level. */

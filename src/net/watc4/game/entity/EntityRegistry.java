@@ -41,6 +41,8 @@ public final class EntityRegistry
 				"Tile Heigth", "unsigned int", "Player	Lumi-Pattou", "boolean");
 		registerEntity(7, EntitySpikePlatform.class, "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 700 - 799", "ChargeTime", "float",
 				"UnchargeTime", "float");
+		registerEntity(8, EntityRunaway.class, "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 800 - 899", "Run X", "unsigned int", "Run Y",
+				"unsigned int");
 	}
 
 	/** Creates the adequate arguments then spawns an Entity.

@@ -7,6 +7,7 @@ import java.util.HashSet;
 
 import net.watc4.game.display.renderer.EntityRenderer;
 import net.watc4.game.entity.ai.AI;
+import net.watc4.game.entity.ai.BasicAI;
 import net.watc4.game.listener.IEntityMovementListener;
 import net.watc4.game.listener.ILightChangeListener;
 import net.watc4.game.map.Map;
@@ -30,10 +31,12 @@ public abstract class Entity implements IRender, IUpdate, IEntityMovementListene
 
 	/** Defines this Entity's behavior. */
 	public AI ai;
+	/** True if Pattou can jump */
+	public boolean canJump;
 	/** A list of the UUIDs this Entity is colliding with. */
 	protected HashSet<Integer> colliding;
 	/** The direction that the entity is facing 1:Right, -1:Left */
-	protected int direction;
+	public int direction;
 	/** Reference to the GameState. */
 	public final GameState game;
 	/** True if this Entity is affected by Gravity. False if it flies. */
@@ -50,12 +53,16 @@ public abstract class Entity implements IRender, IUpdate, IEntityMovementListene
 	protected boolean isMoveable = false;
 	/** True if this Entity is solid, as if it were a Solid Tile. */
 	protected boolean isSolid;
+	/** Time, in UPS, for the begin of the jump */
+	public int jumpingTime;
 	/** The maximum health of this Entity. */
 	private int maxHealth;
 	/** Listeners to this Entity's movement. */
 	private HashSet<IEntityMovementListener> movementListeners;
+	/** This Entity's movement speed. */
+	public int moveSpeed;
 	/** True if this Entity is standing on a Ladder. */
-	protected boolean onLadder;
+	public boolean onLadder;
 	/** Renders the Entity onto the screen. */
 	private EntityRenderer renderer;
 	/** Unique Universal IDentifier for this Entity. Each Entity should have a unique ID in a map. 0 is reserved for Lumi and 1 for Pattou. <br />
@@ -66,7 +73,7 @@ public abstract class Entity implements IRender, IUpdate, IEntityMovementListene
 	/** Its x and y positions. Topleft of the Entity. */
 	private float xPos, yPos;
 	/** Its x and y speed. */
-	protected float xSpeed, ySpeed;
+	public float xSpeed, ySpeed;
 
 	/** Creates a new Entity without parameters. Useful for the level editor. */
 	public Entity()
@@ -92,6 +99,9 @@ public abstract class Entity implements IRender, IUpdate, IEntityMovementListene
 		this.isSolid = false;
 		this.isAffectedByLight = false;
 		this.isInvulnerable = false;
+		this.moveSpeed = 4;
+		this.canJump = true;
+		this.jumpingTime = 0;
 		this.setMaxHealth(20);
 		this.heal(20);
 		this.renderer = new EntityRenderer(this);
@@ -99,6 +109,7 @@ public abstract class Entity implements IRender, IUpdate, IEntityMovementListene
 		this.height = (int) DEFAULT_SIZE;
 		this.colliding = new HashSet<Integer>();
 		this.movementListeners = new HashSet<IEntityMovementListener>();
+		this.ai = new BasicAI(this);
 	}
 
 	/** @param listener - The Listener. Will be called when this Entity moves. */
@@ -429,6 +440,8 @@ public abstract class Entity implements IRender, IUpdate, IEntityMovementListene
 	public void update()
 	{
 		float xPrev = this.xPos, yPrev = this.yPos;
+
+		if (this.ai != null) this.ai.update();
 
 		if (this.isOnLadder() && !(this.getOccupiedTile() instanceof TileLadder))
 		{

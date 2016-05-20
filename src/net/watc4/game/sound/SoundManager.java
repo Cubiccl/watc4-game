@@ -104,6 +104,7 @@ public class SoundManager extends JFrame
 	public void clip_close(String id)
 	{
 		Clip clip = getClip(id);
+		if (clip == null) return;
 		clip.stop();
 		clip.close();
 	}
