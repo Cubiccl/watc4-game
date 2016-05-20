@@ -52,6 +52,11 @@ public class Animation implements IUpdate
 		return this.sprites[this.currentSprite].getImage();
 	}
 
+	public boolean isOver()
+	{
+		return this.loopsOnce && this.currentSprite == this.sprites.length - 1;
+	}
+
 	/** Cycles through the Sprites.
 	 * 
 	 * @return The new Image to display. */
@@ -59,7 +64,7 @@ public class Animation implements IUpdate
 	{
 		this.currentSprite = (this.currentSprite + 1) % this.sprites.length;
 		this.tick = 0;
-		if (this.loopsOnce && this.currentSprite == this.sprites.length - 1) this.dispose();
+		if (this.isOver()) this.dispose();
 		return this.getImage();
 	}
 

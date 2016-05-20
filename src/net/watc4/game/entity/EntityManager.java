@@ -21,12 +21,14 @@ public class EntityManager implements IRender, IUpdate, IEntityMovementListener
 	private ArrayList<Entity> entities;
 	/** The map these Entities are in. */
 	public final Map map;
+	private HashSet<Entity> toDelete;
 
 	public EntityManager(Map map)
 	{
 		this.map = map;
 		this.entities = new ArrayList<Entity>();
 		this.division = new HashMap<Chunk, HashSet<Entity>>();
+		this.toDelete = new HashSet<Entity>();
 	}
 
 	/** @param entity - The Entity to move.
@@ -236,8 +238,7 @@ public class EntityManager implements IRender, IUpdate, IEntityMovementListener
 	 * @param entity - The Entity to remove. */
 	public void unregisterEntity(Entity entity)
 	{
-		this.entities.remove(entity);
-		this.clearEntityChunks(entity);
+		this.toDelete.add(entity);
 	}
 
 	@Override
@@ -245,7 +246,11 @@ public class EntityManager implements IRender, IUpdate, IEntityMovementListener
 	{
 		for (Entity entity : this.entities)
 			if (this.shouldUpdate(entity)) entity.update();
-
+		for (Entity entity : this.toDelete)
+		{
+			this.entities.remove(entity);
+			this.clearEntityChunks(entity);
+		}
 	}
 
 }

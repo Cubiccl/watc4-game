@@ -60,7 +60,7 @@ public abstract class Entity implements IRender, IUpdate, IEntityMovementListene
 	/** Listeners to this Entity's movement. */
 	private HashSet<IEntityMovementListener> movementListeners;
 	/** This Entity's movement speed. */
-	public int moveSpeed;
+	public float moveSpeed;
 	/** True if this Entity is standing on a Ladder. */
 	public boolean onLadder;
 	/** Renders the Entity onto the screen. */

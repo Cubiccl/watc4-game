@@ -21,6 +21,7 @@ public class Sprite
 	public static Sprite[] EYES_OPEN, EYES_CLOSE;
 	public static Sprite[] RUNAWAY_STILL_LEFT, RUNAWAY_STILL_RIGHT, RUNAWAY_RUN_LEFT, RUNAWAY_RUN_RIGHT;
 	public static Sprite[] SPIKE_PLATFORM;
+	public static Sprite[] HIDES;
 	public static Sprite TILE_DEFAULT, TILE_GROUND, TILE_WALL, TILE_DOOR, TILE_GLASS;
 	public static Sprite TILE_LADDER_BOTTOM, TILE_LADDER_BASE, TILE_LADDER_TOP;
 	public static Sprite[] TILE_MIRROR;
@@ -71,6 +72,7 @@ public class Sprite
 		RUNAWAY_STILL_RIGHT = loadSpriteSheet("res/textures/runaway.png", 0, 0, 32, 2, false);
 		RUNAWAY_RUN_LEFT = loadSpriteSheet("res/textures/runaway.png", 64, 0, 32, 4, true);
 		RUNAWAY_RUN_RIGHT = loadSpriteSheet("res/textures/runaway.png", 64, 0, 32, 4, false);
+		HIDES = loadSpriteSheet("res/textures/hides.png", 0, 0, 181, 13, false);
 
 		BATTERY = new Sprite("res/textures/battery.png", 0, 0, 32, 32);
 		DOOR = new Sprite("res/textures/door.png", 0, 0, 32, 32);

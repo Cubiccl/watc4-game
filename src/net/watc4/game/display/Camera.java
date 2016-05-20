@@ -8,6 +8,7 @@ import net.watc4.game.map.Map;
 /** Determines what part of the Map to draw on the Screen. */
 public class Camera
 {
+	public static final double MINSCALE = 1f;
 	public static final int WIDTH = 640, HEIGHT = 480;
 
 	/** The Camera scale. Allows zooming out when Lumi and Pattou are far away from each other. */
@@ -28,7 +29,7 @@ public class Camera
 		this.yOffset = yOffset;
 		this.width = width;
 		this.height = height;
-		this.scale = 1;
+		this.scale = MINSCALE;
 	}
 
 	public Camera(int width, int height)
@@ -83,7 +84,7 @@ public class Camera
 		}
 
 		// double maxX = this.maxXOffset(map), maxY = this.maxYOffset(map);
-		if (distanceY <= this.height && distanceX <= this.width) this.scale = 1;
+		if (distanceY <= this.height && distanceX <= this.width) this.scale = MINSCALE;
 
 		double middleX = (bounds[0] + bounds[2]) / 2;
 		double middleY = (bounds[1] + bounds[3]) / 2;
@@ -152,7 +153,7 @@ public class Camera
 
 	public Rectangle rectangle()
 	{
-		return new Rectangle((int) this.getXOffset(), (int) this.getYOffset(), (int) (this.width / this.scale), (int) (this.height / this.scale));
+		return new Rectangle((int) this.getXOffset(), (int) this.getYOffset(), (int) (this.getWidth()), (int) (this.getHeight()));
 	}
 
 }

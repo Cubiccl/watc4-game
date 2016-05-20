@@ -169,8 +169,7 @@ public class Chunk implements IRender
 	{
 		for (int x = 0; x < this.size; x++)
 			for (int y = 0; y < this.size; y++)
-				if (this.getTileAt(x, y) != TileRegistry.DEFAULT) this.getTileAt(x, y).renderAt(g, this.map, this.xPos * this.size + x,
-						this.yPos * this.size + y, this.getDataAt(x, y));
+				this.getTileAt(x, y).renderAt(g, this.map, this.xPos * this.size + x, this.yPos * this.size + y, this.getDataAt(x, y));
 
 		if (GameSettings.drawHitboxes)
 		{
