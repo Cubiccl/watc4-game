@@ -75,6 +75,7 @@ public class EntityPattou extends Entity
 		this.ai = new AIPattou(this);
 		this.setAffectedByLight(true);
 		this.moveSpeed = 5.5f;
+		this.overShadow = true;
 	}
 
 	public int getJumpingTime()

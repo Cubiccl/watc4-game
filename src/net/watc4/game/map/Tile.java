@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import net.watc4.game.display.Animation;
+import net.watc4.game.display.Sprite;
 import net.watc4.game.utils.geometry.Hitbox;
 import net.watc4.game.utils.geometry.RectangleHitbox;
 
@@ -61,9 +62,12 @@ public class Tile
 	 * @param data - This Tile's Data. */
 	public void renderAt(Graphics2D g, Map map, int x, int y, int data)
 	{
-		BufferedImage image;
-		if (map.hasCustomTexture) image = map.getCustomSprite(x, y).getImage();
-		else image = this.getSprite(map, x, y, data);
+		BufferedImage image = null;
+		if (map.hasCustomTexture)
+		{
+			Sprite s = map.getCustomSprite(x, y);
+			if (s != null) image = s.getImage();
+		} else image = this.getSprite(map, x, y, data);
 		if (image != null) g.drawImage(image, x * Map.TILESIZE, y * Map.TILESIZE, null);
 	}
 

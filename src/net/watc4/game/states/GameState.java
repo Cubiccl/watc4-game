@@ -92,13 +92,16 @@ public class GameState extends State implements IEntityMovementListener
 		{
 			e.printStackTrace();
 		}
-		if (fileBg.exists()) try
+		if (fileBg.exists())
 		{
-			this.setBackground(new Background(new Animation(new Sprite(ImageIO.read(fileBg))), this));
-		} catch (IOException e)
-		{
-			e.printStackTrace();
-		}
+			try
+			{
+				this.setBackground(new Background(new Animation(new Sprite(ImageIO.read(fileBg))), this));
+			} catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+		} else this.setBackground(new Background(new Animation(Sprite.TILE_WALL), this));
 	}
 
 	/** Draws a Red overlay. It becomes more opaque the more damage the player takes.
@@ -181,8 +184,6 @@ public class GameState extends State implements IEntityMovementListener
 
 		super.render(g);
 		this.map.render(g);
-		if (this.hasLumi) this.entityLumi.render(g);
-		if (this.hasPattou) this.entityPattou.render(g);
 
 		g.setColor(Color.BLACK);
 		if (xOffset < 0) g.fillRect(xOffset, yOffset, -xOffset, height);

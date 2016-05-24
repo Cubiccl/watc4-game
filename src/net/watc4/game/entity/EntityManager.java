@@ -255,4 +255,12 @@ public class EntityManager implements IRender, IUpdate, IEntityMovementListener
 		}
 	}
 
+	public void renderOverShadow(Graphics2D g)
+	{
+		for (Entity entity : this.entities)
+		{
+			if (entity.overShadow) entity.render(g);
+		}
+	}
+
 }

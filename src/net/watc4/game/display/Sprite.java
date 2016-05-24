@@ -27,6 +27,7 @@ public class Sprite
 	public static Sprite[] TILE_MIRROR;
 	public static Sprite[] TILE_SLOPE;
 	public static Sprite UNKNOWN;
+	public static Sprite[] PATTOU, PATTOUR;
 
 	/** Creates the main Sprites. */
 	public static void createMainSprites()
@@ -38,7 +39,7 @@ public class Sprite
 		CROSS = new Sprite("res/textures/icons.png", 32, 0, 16, 16);
 		PLUS = new Sprite("res/textures/icons.png", 48, 0, 16, 16);
 
-		LUMI = new Sprite("res/textures/playerLumi.png", 0, 0, 32, 32);
+		LUMI = new Sprite("res/textures/playerLumi.png", 0, 0, 75, 75);
 		LUMI_EYE = new Sprite("res/textures/playerLumi.png", 32, 0, 15, 15);
 
 		PATTOU_IDLE_RIGHT = new Sprite[2];
@@ -66,6 +67,9 @@ public class Sprite
 		EYES_CLOSE[1] = EYES_OPEN[2];
 		EYES_CLOSE[2] = EYES_OPEN[1];
 		EYES_CLOSE[3] = EYES_OPEN[0];
+
+		PATTOU = loadSpriteSheet("res/textures/pattou.png", 0, 0, 96, 5, true);
+		PATTOUR = loadSpriteSheet("res/textures/pattou.png", 0, 0, 96, 5, false);
 
 		SPIKE_PLATFORM = loadSpriteSheet("res/textures/spikePlatform.png", 0, 0, 32, 4, false);
 		RUNAWAY_STILL_LEFT = loadSpriteSheet("res/textures/runaway.png", 0, 0, 32, 2, true);

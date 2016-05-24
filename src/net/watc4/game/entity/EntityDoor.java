@@ -22,6 +22,7 @@ public class EntityDoor extends Entity
 		this.width = tileWidth * Map.TILESIZE;
 		this.height = tileHeight * Map.TILESIZE;
 		this.setRenderer(new EntityRenderer(this, new Animation(Sprite.DOOR)));
+		this.overShadow = true;
 	}
 
 	/** Activates this Door. */

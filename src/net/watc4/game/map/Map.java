@@ -199,6 +199,7 @@ public class Map implements IRender, IUpdate
 				if (this.chunks[x][y].shouldRender()) this.chunks[x][y].render(g);
 		this.entityManager.render(g);
 		this.lightManager.render(g);
+		this.entityManager.renderOverShadow(g);
 	}
 
 	/** Sets the Tile at x, y to the input Custom Sprite.

@@ -64,6 +64,7 @@ public class EntityLumi extends Entity implements ILightSource
 		this.hasGravity = false;
 		this.setRenderer(new LumiRenderer(this));
 		this.ai = new AILumi(this);
+		this.overShadow = true;
 	}
 
 	@Override

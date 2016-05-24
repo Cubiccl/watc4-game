@@ -40,7 +40,6 @@ public class GameOverState extends State
 	public void render(Graphics2D g)
 	{
 		super.render(g);
-
 		int x = Camera.WIDTH / 2, y = Camera.HEIGHT / 2;
 		g.setColor(new Color(0, 0, 0, 200));
 		g.fillRect(0, 0, x * 2, y * 2);

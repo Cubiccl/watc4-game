@@ -41,6 +41,7 @@ public abstract class Entity implements IRender, IUpdate, IEntityMovementListene
 	public final GameState game;
 	/** True if this Entity is affected by Gravity. False if it flies. */
 	protected boolean hasGravity;
+	public boolean overShadow;
 	/** The health points of this Entity. */
 	private int health;
 	/** True if this Entity is affected by Lumi's light. */
@@ -99,6 +100,7 @@ public abstract class Entity implements IRender, IUpdate, IEntityMovementListene
 		this.isSolid = false;
 		this.isAffectedByLight = false;
 		this.isInvulnerable = false;
+		this.overShadow = false;
 		this.moveSpeed = 4;
 		this.canJump = true;
 		this.jumpingTime = 0;

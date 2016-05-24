@@ -45,6 +45,8 @@ public final class EntityRegistry
 				"unsigned int");
 		registerEntity(9, EntityEyes.class, "X", "int", "Y", "int", "UUID", "unsigned int 900 - 999");
 		registerEntity(10, EntityHides.class, "X", "int", "Y", "int", "UUID", "unsigned int 1000 - 1099");
+		registerEntity(11, EntityVoid.class, "X", "unsigned int", "Y", "unsigned int", "UUID", "unsigned int 800 - 899", "Tile Width", "unsigned int",
+				"Tile Height", "unsigned int");
 	}
 
 	/** Creates the adequate arguments then spawns an Entity.

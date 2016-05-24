@@ -88,7 +88,7 @@ public class Game implements Runnable
 
 	public Game()
 	{
-		this("Level 1");
+		this(null);
 	}
 
 	public Game(String map)
