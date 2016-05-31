@@ -11,6 +11,7 @@ import net.watc4.game.entity.EntityPattou;
 public class PattouRenderer extends EntityRenderer
 {
 	/** Different animations to use. */
+	@SuppressWarnings("unused")
 	private Animation idleRight, idleLeft, walkingRight, walkingLeft, ladder;
 	private Animation right, left;
 

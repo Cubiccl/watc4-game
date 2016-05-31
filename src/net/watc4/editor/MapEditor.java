@@ -13,6 +13,9 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
+import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -23,6 +26,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Date;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -364,18 +368,27 @@ public class MapEditor extends JFrame
 		fieldLumiY.setText("");
 	}
 
-	public void createTiles(int width, int height)
+	public void createTiles(int width, int height, String filename) throws IOException
 	{
 		tilemap = new TileLabel[width][height];
 		mapView.removeAll();
-		for (int i = 0; i < tilemap.length; i++)
+		BufferedImage[] tileChain = null;
+		BufferedImage level = null;
+		if (filename != null) level = ImageIO.read(new File(filename));
+		ImageIcon grid = new ImageIcon(ImageIO.read(new File("res/textures/grid.png")));
+		for (int j = 0; j < tilemap[0].length; j++)
 		{
-			for (int j = 0; j < tilemap[0].length; j++)
+			if (filename != null) tileChain = loadImageSheet(level, 0, 32 * j, 32, width, false);
+			for (int i = 0; i < tilemap.length; i++)
 			{
 				tilemap[i][j] = new TileLabel();
 				tilemap[i][j].setLayout(null);
 				tilemap[i][j].setPreferredSize(new Dimension(32, 32));
-				tilemap[i][j].setIcon(new ImageIcon(Sprite.TILE_WALL.getImage()));
+				if (filename != null) tilemap[i][j].setIcon(new ImageIcon(tileChain[i]));
+				else tilemap[i][j].setIcon(new ImageIcon(Sprite.TILE_DEFAULT.getImage()));
+				JLabel gridLabel = new JLabel(grid);
+				gridLabel.setBounds(0, 0, 32, 32);
+				tilemap[i][j].add(gridLabel);
 				tilemap[i][j].setVisible(true);
 				gbc.gridx = i;
 				gbc.gridy = j;
@@ -383,8 +396,35 @@ public class MapEditor extends JFrame
 				addTileUpdater(i, j);
 			}
 		}
+
 		exists = false;
 		mapView.updateUI();
+	}
+
+	public static BufferedImage[] loadImageSheet(BufferedImage sheet, int x, int y, int size, int length, boolean reverse)
+	{
+		BufferedImage[] images;
+		if (length == -1) images = new BufferedImage[(sheet.getWidth() / size) * (sheet.getHeight() / size)];
+		else images = new BufferedImage[length];
+		for (int i = 0; i < images.length; ++i)
+		{
+			BufferedImage img = sheet.getSubimage(x, y, size, size);
+			if (reverse)
+			{
+				AffineTransform tx = AffineTransform.getScaleInstance(-1, 1);
+				tx.translate(-img.getWidth(null), 0);
+				AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+				img = op.filter(img, null);
+			}
+			images[i] = img;
+			x += size;
+			if (x >= sheet.getWidth())
+			{
+				x = 0;
+				y += size;
+			}
+		}
+		return images;
 	}
 
 	public void getTilesFromRegistry()
@@ -451,107 +491,112 @@ public class MapEditor extends JFrame
 
 	}
 
+	public void clickTile(int i, int j, MouseEvent ev)
+	{
+		TileLabel tl = tilemap[i][j];
+		if (mode == MapEditor.MODE_TILES)
+		{
+			if (ev.getButton() == MouseEvent.BUTTON3)
+			{
+				if (TileRegistry.getTileFromId(tl.getId()).maxData > 0)
+				{
+					byte d;
+					if (tl.getData() == TileRegistry.getTileFromId(tl.getId()).maxData) d = 0;
+					else d = (byte) (tl.getData() + 1);
+					tl.setData(d);
+					tl.setIcon(new ImageIcon(TileRegistry.getTileFromId(tl.getId()).getSprite(null, 0, 0, tl.getData())));
+					tl.updateUI();
+				}
+			} else
+			{
+				if (TileRegistry.getTileFromId(selectedTile).sprite == null) tl.setIcon(new ImageIcon(Sprite.TILE_WALL.getImage()));
+				else tl.setIcon(new ImageIcon(TileRegistry.getTileFromId(selectedTile).getSprite(null, 0, 0, tl.getData())));
+				tl.setId(selectedTile);
+			}
+		} else if (mode == MapEditor.MODE_ENTITY)
+		{
+			if (ev.getButton() == MouseEvent.BUTTON3 && tl.getEn() != null && tl.getEntityValues().length <= 3)
+			{
+				tl.setEn(null);
+				tl.setEntityValues(null);
+				tl.removeAll();
+				tl.updateUI();
+			} else if (ev.getButton() == MouseEvent.BUTTON3 && tl.getEn() != null && tl.getEntityValues().length > 3)
+			{
+				try
+				{
+					EntityValues dialog = new EntityValues(tl);
+					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+					dialog.setVisible(true);
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			} else
+			{
+				if (tl.getEn() != null) tl.removeAll();
+				try
+				{
+					tl.setEn(entityChoice[selectedEntity].getEn().getClass().newInstance());
+					tl.setEnId(selectedEntity);
+					tl.getEn().setX(i);
+					tl.getEn().setY(j);
+					tl.initValues();
+				} catch (InstantiationException | IllegalAccessException e)
+				{
+					e.printStackTrace();
+				}
+				JLabel icon = new JLabel();
+				if (tl.getEn() instanceof EntityCutscene)
+				{
+					icon = new JLabel(new ImageIcon(Sprite.CUTSCENE.getImage()));
+				} else if (tl.getEn().getRenderer() == null) icon.setIcon(new ImageIcon(Sprite.UNKNOWN.getImage()));
+				else icon.setIcon(new ImageIcon(tl.getEn().getRenderer().getAnimation().getImage()));
+				icon.setBounds(0, 0, 32, 32);
+				tl.add(icon);
+				tl.updateUI();
+			}
+		} else if (mode == MapEditor.MODE_CHARACTERS)
+		{
+			if (radioPattou.isSelected() & !radioLumi.isSelected())
+			{
+				if (!fieldPattouX.getText().equals("") || !fieldPattouY.getText().equals(""))
+				{
+					int oldX = Integer.valueOf(fieldPattouX.getText());
+					int oldY = Integer.valueOf(fieldPattouY.getText());
+					tilemap[oldX][oldY].remove(focusPattou);
+					tilemap[oldX][oldY].updateUI();
+				}
+				fieldPattouX.setText(String.valueOf(i));
+				fieldPattouY.setText(String.valueOf(j));
+				tl.add(focusPattou);
+				tl.updateUI();
+
+			} else if (radioLumi.isSelected() & !radioPattou.isSelected())
+			{
+				if (!fieldLumiX.getText().equals("") || !fieldLumiY.getText().equals(""))
+				{
+					int oldX = Integer.valueOf(fieldLumiX.getText());
+					int oldY = Integer.valueOf(fieldLumiY.getText());
+					tilemap[oldX][oldY].remove(focusLumi);
+					tilemap[oldX][oldY].updateUI();
+				}
+				fieldLumiX.setText(String.valueOf(i));
+				fieldLumiY.setText(String.valueOf(j));
+				focusLumi.add(lumiEyes);
+				tl.add(focusLumi);
+				tl.updateUI();
+			}
+		}
+	}
+
 	public void addTileUpdater(int i, int j)
 	{
 		tilemap[i][j].addMouseListener(new MouseAdapter()
 		{
 			public void mouseClicked(MouseEvent ev)
 			{
-				TileLabel tl = tilemap[i][j];
-				if (mode == MapEditor.MODE_TILES)
-				{
-					if (ev.getButton() == MouseEvent.BUTTON3)
-					{
-						if (TileRegistry.getTileFromId(tl.getId()).maxData > 0)
-						{
-							byte d;
-							if (tl.getData() == TileRegistry.getTileFromId(tl.getId()).maxData) d = 0;
-							else d = (byte) (tl.getData() + 1);
-							tl.setData(d);
-							tl.setIcon(new ImageIcon(TileRegistry.getTileFromId(tl.getId()).getSprite(null, 0, 0, tl.getData())));
-							tl.updateUI();
-						}
-					} else
-					{
-						if (TileRegistry.getTileFromId(selectedTile).sprite == null) tl.setIcon(new ImageIcon(Sprite.TILE_WALL.getImage()));
-						else tl.setIcon(new ImageIcon(TileRegistry.getTileFromId(selectedTile).getSprite(null, 0, 0, tl.getData())));
-						tl.setId(selectedTile);
-					}
-				} else if (mode == MapEditor.MODE_ENTITY)
-				{
-					if (ev.getButton() == MouseEvent.BUTTON3 && tl.getEn() != null && tl.getEntityValues().length <= 3)
-					{
-						tl.setEn(null);
-						tl.setEntityValues(null);
-						tl.removeAll();
-						tl.updateUI();
-					} else if (ev.getButton() == MouseEvent.BUTTON3 && tl.getEn() != null && tl.getEntityValues().length > 3)
-					{
-						try
-						{
-							EntityValues dialog = new EntityValues(tl);
-							dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-							dialog.setVisible(true);
-						} catch (Exception e)
-						{
-							e.printStackTrace();
-						}
-					} else
-					{
-						if (tl.getEn() != null) tl.removeAll();
-						try
-						{
-							tl.setEn(entityChoice[selectedEntity].getEn().getClass().newInstance());
-							tl.setEnId(selectedEntity);
-							tl.getEn().setX(i);
-							tl.getEn().setY(j);
-							tl.initValues();
-						} catch (InstantiationException | IllegalAccessException e)
-						{
-							e.printStackTrace();
-						}
-						JLabel icon = new JLabel();
-						if (tl.getEn() instanceof EntityCutscene)
-						{
-							icon = new JLabel(new ImageIcon(Sprite.CUTSCENE.getImage()));
-						} else if (tl.getEn().getRenderer() == null) icon.setIcon(new ImageIcon(Sprite.UNKNOWN.getImage()));
-						else icon.setIcon(new ImageIcon(tl.getEn().getRenderer().getAnimation().getImage()));
-						icon.setBounds(0, 0, 32, 32);
-						tl.add(icon);
-						tl.updateUI();
-					}
-				} else if (mode == MapEditor.MODE_CHARACTERS)
-				{
-					if (radioPattou.isSelected() & !radioLumi.isSelected())
-					{
-						if (!fieldPattouX.getText().equals("") || !fieldPattouY.getText().equals(""))
-						{
-							int oldX = Integer.valueOf(fieldPattouX.getText());
-							int oldY = Integer.valueOf(fieldPattouY.getText());
-							tilemap[oldX][oldY].remove(focusPattou);
-							tilemap[oldX][oldY].updateUI();
-						}
-						fieldPattouX.setText(String.valueOf(i));
-						fieldPattouY.setText(String.valueOf(j));
-						tl.add(focusPattou);
-						tl.updateUI();
-
-					} else if (radioLumi.isSelected() & !radioPattou.isSelected())
-					{
-						if (!fieldLumiX.getText().equals("") || !fieldLumiY.getText().equals(""))
-						{
-							int oldX = Integer.valueOf(fieldLumiX.getText());
-							int oldY = Integer.valueOf(fieldLumiY.getText());
-							tilemap[oldX][oldY].remove(focusLumi);
-							tilemap[oldX][oldY].updateUI();
-						}
-						fieldLumiX.setText(String.valueOf(i));
-						fieldLumiY.setText(String.valueOf(j));
-						focusLumi.add(lumiEyes);
-						tl.add(focusLumi);
-						tl.updateUI();
-					}
-				}
+				clickTile(i, j, ev);
 			}
 		});
 	}
@@ -1312,6 +1357,7 @@ public class MapEditor extends JFrame
 			@Override
 			public void mouseClicked(MouseEvent arg0)
 			{
+				@SuppressWarnings("unused")
 				ErrorDialog ed = new ErrorDialog("Votre solde est insuffisant.");
 			}
 		});
