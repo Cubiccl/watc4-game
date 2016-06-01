@@ -14,6 +14,7 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -67,6 +68,7 @@ import net.watc4.game.entity.EntityEndLevel;
 import net.watc4.game.entity.EntityEyes;
 import net.watc4.game.entity.EntityRegistry;
 import net.watc4.game.entity.EntityRunaway;
+import net.watc4.game.map.Map;
 import net.watc4.game.map.TileRegistry;
 import net.watc4.game.utils.FileUtils;
 import net.watc4.game.utils.lore.LoreManager;
@@ -109,6 +111,7 @@ public class MapEditor extends JFrame
 	private JButton[] cutsceneOptions;
 	private JButton[] ajoutCutscene;
 	private JToggleButton[] drawIcons = new JToggleButton[3];
+	private Point rectangleOrigin = new Point(-1, -1), highlightedTile = new Point(0, 0);
 	private JTabbedPane menu;
 	@SuppressWarnings("unused")
 	private ErrorDialog ed;
@@ -119,6 +122,12 @@ public class MapEditor extends JFrame
 	private boolean exists = false, rectangleMode = false;
 	private static String[] fileHeader = new String[]
 	{ "width = ", "height = ", "lumiSpawnX = ", "lumiSpawnY = ", "pattouSpawnX = ", "pattouSpawnY = ", "tiles =" };
+	private static JLabel rectangleModeSelected = new JLabel();
+	{
+		rectangleModeSelected.setBounds(0, 0, 32, 32);
+		rectangleModeSelected.setBackground(new Color(150, 200, 255, 150));
+		rectangleModeSelected.setOpaque(true);
+	}
 
 	/** Launch the application. */
 	public static void main(String[] args)
@@ -489,7 +498,13 @@ public class MapEditor extends JFrame
 
 	}
 
-	public void adjacentSameId(TileLabel source, int id) throws StackOverflowError
+	/** Equivalent to a bucket in a painting software.
+	 * 
+	 * @param source The TileLabel which has been clicked on or called by recursivity.
+	 * @param id The id of the TileLabel which has been clicked on.
+	 * @param direction The way the function is moving to the next Tile (0 Original, 1 North, 2 East, 3 South, 4 West). (A North tile will expand to the North and the East, an East tile will expand to the East and the South...etc)
+	 * @throws StackOverflowError When the map is too big, the stack might be too small, in this case click again on the non-painted tiles. */
+	public void paintAdjacentSameId(TileLabel source, int id, int direction) throws StackOverflowError
 	{
 		if (source.getId() != id || source.isTested()) return;
 		else if (source.getId() == id)
@@ -500,36 +515,38 @@ public class MapEditor extends JFrame
 			} else source.setIcon(new ImageIcon(Sprite.TILE_WALL.getImage()));
 			source.updateUI();
 			source.setTested(true);
-			if (source.getX() / 32 == 0 && source.getY() / 32 == 0) return;
-			else if (source.getX() / 32 == tilemap.length - 1 && source.getY() / 32 == 0) return;
-			else if (source.getX() / 32 == tilemap.length - 1 && source.getY() / 32 == tilemap[0].length - 1) return;
-			else if (source.getX() / 32 == 0 && source.getY() / 32 == tilemap[0].length - 1) return;
-			else if (source.getX() / 32 == 0)
+
+			if (direction == 0 || direction == 4 || direction == 1 || direction == 2)
 			{
-				adjacentSameId(tilemap[source.getX() / 32][source.getY() / 32 - 1], id);
-				adjacentSameId(tilemap[source.getX() / 32 + 1][source.getY() / 32], id);
-				adjacentSameId(tilemap[source.getX() / 32][source.getY() / 32 + 1], id);
-			} else if (source.getY() / 32 == 0)
+				try
+				{
+					paintAdjacentSameId(tilemap[source.getX() / 32][source.getY() / 32 - 1], id, 1);
+				} catch (ArrayIndexOutOfBoundsException e)
+				{}
+			}
+			if (direction == 0 || direction == 1 || direction == 2 || direction == 3)
 			{
-				adjacentSameId(tilemap[source.getX() / 32 - 1][source.getY() / 32], id);
-				adjacentSameId(tilemap[source.getX() / 32 + 1][source.getY() / 32], id);
-				adjacentSameId(tilemap[source.getX() / 32][source.getY() / 32 + 1], id);
-			} else if (source.getX() / 32 == tilemap.length - 1)
+				try
+				{
+					paintAdjacentSameId(tilemap[source.getX() / 32 + 1][source.getY() / 32], id, 2);
+				} catch (ArrayIndexOutOfBoundsException e)
+				{}
+			}
+			if (direction == 0 || direction == 2 || direction == 3 || direction == 4)
 			{
-				adjacentSameId(tilemap[source.getX() / 32 - 1][source.getY() / 32], id);
-				adjacentSameId(tilemap[source.getX() / 32][source.getY() / 32 - 1], id);
-				adjacentSameId(tilemap[source.getX() / 32][source.getY() / 32 + 1], id);
-			} else if (source.getY() / 32 == tilemap[0].length - 1)
+				try
+				{
+					paintAdjacentSameId(tilemap[source.getX() / 32][source.getY() / 32 + 1], id, 3);
+				} catch (ArrayIndexOutOfBoundsException e)
+				{}
+			}
+			if (direction == 0 || direction == 3 || direction == 4 || direction == 1)
 			{
-				adjacentSameId(tilemap[source.getX() / 32 - 1][source.getY() / 32], id);
-				adjacentSameId(tilemap[source.getX() / 32][source.getY() / 32 - 1], id);
-				adjacentSameId(tilemap[source.getX() / 32 + 1][source.getY() / 32], id);
-			} else
-			{
-				adjacentSameId(tilemap[source.getX() / 32 - 1][source.getY() / 32], id);
-				adjacentSameId(tilemap[source.getX() / 32][source.getY() / 32 - 1], id);
-				adjacentSameId(tilemap[source.getX() / 32 + 1][source.getY() / 32], id);
-				adjacentSameId(tilemap[source.getX() / 32][source.getY() / 32 + 1], id);
+				try
+				{
+					paintAdjacentSameId(tilemap[source.getX() / 32 - 1][source.getY() / 32], id, 4);
+				} catch (ArrayIndexOutOfBoundsException e)
+				{}
 			}
 		}
 	}
@@ -575,12 +592,43 @@ public class MapEditor extends JFrame
 
 				case 1:
 				{
-					// TODO
+					if (!rectangleMode)
+					{
+						tl.add(rectangleModeSelected);
+						tl.updateUI();
+						rectangleOrigin.setLocation(tl.getX() / Map.TILESIZE, tl.getY() / Map.TILESIZE);
+						rectangleMode = true;
+					} else
+					{
+						int xO, yO, xT, yT;
+						xO = rectangleOrigin.x;
+						yO = rectangleOrigin.y;
+						xT = tl.getX() / Map.TILESIZE;
+						yT = tl.getY() / Map.TILESIZE;
+
+						tilemap[xO][yO].remove(rectangleModeSelected);
+						tilemap[xO][yO].updateUI();
+
+						for (int i2 = 0; i2 < tilemap.length; i2++)
+						{
+							for (int j2 = 0; j2 < tilemap[0].length; j2++)
+							{
+								if (((i2 == xO || i2 == xT) || (j2 == yO || j2 == yT)) && (i2 >= Math.min(xO, xT)) && (i2 <= Math.max(xO, xT))
+										&& (j2 >= Math.min(yO, yT)) && (j2 <= Math.max(yO, yT)))
+								{
+									tilemap[i2][j2].setId(selectedTile);
+									tilemap[i2][j2].updateUI();
+								}
+							}
+						}
+
+						rectangleMode = false;
+					}
 					break;
 				}
 				case 2:
 				{
-					adjacentSameId(tl, tl.getId());
+					paintAdjacentSameId(tl, tl.getId(), 0);
 					resetTestedTiles();
 					mapView.updateUI();
 					break;
@@ -673,6 +721,21 @@ public class MapEditor extends JFrame
 			public void mouseClicked(MouseEvent ev)
 			{
 				clickTile(i, j, ev);
+			}
+		});
+		tilemap[i][j].addMouseMotionListener(new MouseMotionAdapter()
+		{
+			@Override
+			public void mouseMoved(MouseEvent ev)
+			{
+				if (!highlightedTile.equals(rectangleOrigin))
+				{
+					tilemap[highlightedTile.x][highlightedTile.y].remove(rectangleModeSelected);
+					tilemap[highlightedTile.x][highlightedTile.y].updateUI();
+				}
+				tilemap[i][j].add(rectangleModeSelected);
+				tilemap[i][j].updateUI();
+				highlightedTile.setLocation(i, j);
 			}
 		});
 	}
@@ -996,9 +1059,9 @@ public class MapEditor extends JFrame
 		getTilesFromRegistry();
 
 		drawingCursors = new Cursor[3];
-		drawingCursors[0] = tool.createCustomCursor(Sprite.DRAWING[0].getImage(), new Point(2, 28), "Pen cursor");
-		drawingCursors[1] = tool.createCustomCursor(Sprite.DRAWING[1].getImage(), new Point(0, 4), "Rectangle cursor");
-		drawingCursors[2] = tool.createCustomCursor(Sprite.DRAWING[2].getImage(), new Point(4, 20), "Bucket cursor");
+		drawingCursors[0] = tool.createCustomCursor(Sprite.CURSORS[0].getImage(), new Point(2, 24), "Pen cursor");
+		drawingCursors[1] = tool.createCustomCursor(Sprite.CURSORS[1].getImage(), new Point(0, 4), "Rectangle cursor");
+		drawingCursors[2] = tool.createCustomCursor(Sprite.CURSORS[2].getImage(), new Point(4, 18), "Bucket cursor");
 
 		lblSelected = new JLabel();
 		lblSelected.setBounds(11, 11, 10, 10);
@@ -1235,6 +1298,13 @@ public class MapEditor extends JFrame
 						{
 							drawMode = i;
 							mapView.setCursor(drawingCursors[i]);
+							rectangleMode = false;
+							if (rectangleOrigin.x >= 0 && rectangleOrigin.y >= 0)
+							{
+								tilemap[rectangleOrigin.x][rectangleOrigin.y].remove(rectangleModeSelected);
+								tilemap[rectangleOrigin.x][rectangleOrigin.y].updateUI();
+							}
+							rectangleOrigin.setLocation(-1, -1);
 						}
 				}
 			});

@@ -12,7 +12,7 @@ import javax.imageio.ImageIO;
 public class Sprite
 {
 	public static Sprite ARROW_DOWN, ARROW_UP, CROSS, PLUS;
-	public static Sprite[] DRAWING;
+	public static Sprite[] DRAWING, CURSORS;
 	public static Sprite BATTERY, CUTSCENE, DOOR, FLUORESCENT;
 	public static Sprite LUMI, LUMI_EYE;
 	public static Sprite[] PATTOU_IDLE_RIGHT, PATTOU_IDLE_LEFT;
@@ -40,6 +40,7 @@ public class Sprite
 		CROSS = new Sprite("res/textures/icons.png", 32, 0, 16, 16);
 		PLUS = new Sprite("res/textures/icons.png", 48, 0, 16, 16);
 		DRAWING = loadSpriteSheet("res/textures/drawingIcons.png", 0, 0, 24, 3, false);
+		CURSORS = loadSpriteSheet("res/textures/drawingCursors.png", 0, 0, 32, 3, false);
 
 		LUMI = new Sprite("res/textures/playerLumi.png", 0, 0, 75, 75);
 		LUMI_EYE = new Sprite("res/textures/playerLumi.png", 32, 0, 15, 15);
