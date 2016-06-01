@@ -1,5 +1,7 @@
 package net.watc4.editor.tiles;
 
+import java.awt.Dimension;
+
 import javax.swing.JLabel;
 
 import net.watc4.game.entity.Entity;
@@ -8,10 +10,17 @@ public class TileLabel extends JLabel
 {
 	private static final long serialVersionUID = 1L;
 	private byte data = 0;
-	private int id = 0;
+	private int x, y, id = 0;
 	private Entity en;
 	private int enId;
 	private Object[] entityValues;
+	private boolean tested = false;
+
+	public TileLabel()
+	{
+		setLayout(null);
+		setPreferredSize(new Dimension(32, 32));
+	}
 
 	public void initValues()
 	{
@@ -27,7 +36,7 @@ public class TileLabel extends JLabel
 			else entityValues[i] = "null";
 		}
 	}
-	
+
 	public byte getData()
 	{
 		return data;
@@ -77,4 +86,41 @@ public class TileLabel extends JLabel
 	{
 		this.id = id;
 	}
+
+	public int getX()
+	{
+		return x;
+	}
+
+	public void setX(int x)
+	{
+		this.x = x;
+	}
+
+	public int getY()
+	{
+		return y;
+	}
+
+	public void setY(int y)
+	{
+		this.y = y;
+	}
+	
+	public void setXY(int x, int y)
+	{
+		this.x = x;
+		this.y = y;
+	}
+
+	public boolean isTested()
+	{
+		return tested;
+	}
+
+	public void setTested(boolean tested)
+	{
+		this.tested = tested;
+	}
+
 }

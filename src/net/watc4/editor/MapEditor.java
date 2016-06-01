@@ -10,11 +10,10 @@ import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -41,6 +40,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
@@ -82,7 +82,7 @@ public class MapEditor extends JFrame
 	private static final int MODE_CUTSCENE = 3;
 	private static final int MODE_DOORS = 4;
 	private static final int MODE_ENDINGS = 5;
-	private int mode;
+	private int mode, drawMode;
 	private Game g;
 	private JPanel contentPane;
 	private Toolkit tool = Toolkit.getDefaultToolkit();
@@ -95,7 +95,7 @@ public class MapEditor extends JFrame
 	private ArrayList<DoorButton> doorList = new ArrayList<DoorButton>();
 	private TileLabel[][] tilemap;
 	private TileLabel[] tileChoice, entityChoice;
-	private int selectedTile, selectedEntity;
+	private int selectedTile = 0, selectedEntity;
 	private JPanel tilesMenu, entityMenu, characterMenu, cutsceneMenu, doorsMenu, endingsMenu;
 	private JLabel lblTiles = new JLabel("Tuiles :"), lblEntityName = new JLabel(), lblEntity, label_2, lblSelectedEntity;
 	private JPanel tileRegistry = new JPanel(), entityRegistry = new JPanel();
@@ -108,13 +108,15 @@ public class MapEditor extends JFrame
 	private JButton btnRemovePattou, btnRemoveLumi;
 	private JButton[] cutsceneOptions;
 	private JButton[] ajoutCutscene;
+	private JToggleButton[] drawIcons = new JToggleButton[3];
 	private JTabbedPane menu;
 	@SuppressWarnings("unused")
 	private ErrorDialog ed;
+	public Cursor[] drawingCursors;
 	public final static Color black1 = new Color(25, 25, 25), black2 = new Color(50, 50, 50), black3 = new Color(80, 80, 80), black4 = new Color(90, 90, 90),
 			black5 = new Color(130, 130, 130), white = new Color(255, 255, 255);
 	private final static JFileChooser fc = new JFileChooser(), sceneC = new JFileChooser();
-	private boolean exists = false;
+	private boolean exists = false, rectangleMode = false;
 	private static String[] fileHeader = new String[]
 	{ "width = ", "height = ", "lumiSpawnX = ", "lumiSpawnY = ", "pattouSpawnX = ", "pattouSpawnY = ", "tiles =" };
 
@@ -153,6 +155,7 @@ public class MapEditor extends JFrame
 		setColor(black3, white, scrollMap.getHorizontalScrollBar().getComponents());
 		setColor(black3, white, scrollMap.getVerticalScrollBar().getComponents());
 		setColor(black3, white, tileRegistry);
+		setColor(black3, white, drawIcons);
 		// EntityMenu
 		setColor(black2, white, lblEntityName, selectedEntityLabel, lblEntity, label_2, lblSelectedEntity);
 		setColor(black3, white, entityRegistry);
@@ -162,7 +165,7 @@ public class MapEditor extends JFrame
 		// Cutscene Menu
 		setColor(black2, white, cutsceneView);
 		setColor(black3, white, cutsceneOptions);
-		// // addButtons colories dans putAddButtons()
+		// // addButtons are colored in putAddButtons()
 		// Ending Menu
 		setColor(black2, white, endingsView);
 	}
@@ -374,26 +377,30 @@ public class MapEditor extends JFrame
 		mapView.removeAll();
 		BufferedImage[] tileChain = null;
 		BufferedImage level = null;
-		if (filename != null) level = ImageIO.read(new File(filename));
 		ImageIcon grid = new ImageIcon(ImageIO.read(new File("res/textures/grid.png")));
+		if (filename != null)
+		{
+			level = ImageIO.read(new File(filename));
+			tileChain = loadImageSheet(level, 0, 0, 32, -1);
+		}
+		int it = 0;
 		for (int j = 0; j < tilemap[0].length; j++)
 		{
-			if (filename != null) tileChain = loadImageSheet(level, 0, 32 * j, 32, width, false);
 			for (int i = 0; i < tilemap.length; i++)
 			{
 				tilemap[i][j] = new TileLabel();
-				tilemap[i][j].setLayout(null);
-				tilemap[i][j].setPreferredSize(new Dimension(32, 32));
-				if (filename != null) tilemap[i][j].setIcon(new ImageIcon(tileChain[i]));
+				tilemap[i][j].setXY(i, j);
+				if (filename != null) tilemap[i][j].setIcon(new ImageIcon(tileChain[it]));
 				else tilemap[i][j].setIcon(new ImageIcon(Sprite.TILE_DEFAULT.getImage()));
-				JLabel gridLabel = new JLabel(grid);
-				gridLabel.setBounds(0, 0, 32, 32);
-				tilemap[i][j].add(gridLabel);
+				// TODO JLabel gridLabel = new JLabel(grid);
+				// gridLabel.setBounds(0, 0, 32, 32);
+				// tilemap[i][j].add(gridLabel);
 				tilemap[i][j].setVisible(true);
 				gbc.gridx = i;
 				gbc.gridy = j;
 				mapView.add(tilemap[i][j], gbc);
 				addTileUpdater(i, j);
+				it++;
 			}
 		}
 
@@ -401,7 +408,7 @@ public class MapEditor extends JFrame
 		mapView.updateUI();
 	}
 
-	public static BufferedImage[] loadImageSheet(BufferedImage sheet, int x, int y, int size, int length, boolean reverse)
+	public static BufferedImage[] loadImageSheet(BufferedImage sheet, int x, int y, int size, int length)
 	{
 		BufferedImage[] images;
 		if (length == -1) images = new BufferedImage[(sheet.getWidth() / size) * (sheet.getHeight() / size)];
@@ -409,13 +416,6 @@ public class MapEditor extends JFrame
 		for (int i = 0; i < images.length; ++i)
 		{
 			BufferedImage img = sheet.getSubimage(x, y, size, size);
-			if (reverse)
-			{
-				AffineTransform tx = AffineTransform.getScaleInstance(-1, 1);
-				tx.translate(-img.getWidth(null), 0);
-				AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-				img = op.filter(img, null);
-			}
 			images[i] = img;
 			x += size;
 			if (x >= sheet.getWidth())
@@ -460,7 +460,6 @@ public class MapEditor extends JFrame
 
 			try
 			{
-
 				entityChoice[i].setEn((Entity) (EntityRegistry.getDefaultConstructor(i)).newInstance());
 			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | SecurityException | InvocationTargetException e)
 			{
@@ -491,27 +490,142 @@ public class MapEditor extends JFrame
 
 	}
 
+	public void adjacentSameId(TileLabel source, int id)
+	{
+		if (source.getId() != id || source.isTested()) return;
+		else if (source.getId() == id)
+		{
+			if (TileRegistry.getTileFromId(selectedTile).sprite != null) source.setIcon(new ImageIcon(TileRegistry.getTileFromId(selectedTile).sprite
+					.getImage()));
+			else source.setIcon(new ImageIcon(Sprite.TILE_WALL.getImage()));
+			source.updateUI();
+			source.setTested(true);
+			if (source.getX() == 0 && source.getY() == 0) return;
+			else if (source.getX() == tilemap.length - 1 && source.getY() == 0) return;
+			else if (source.getX() == tilemap.length - 1 && source.getY() == tilemap[0].length - 1) return;
+			else if (source.getX() == 0 && source.getY() == tilemap[0].length - 1) return;
+			else if (source.getX() == 0)
+			{
+				adjacentSameId(tilemap[source.getX()][source.getY() - 1], id);
+				adjacentSameId(tilemap[source.getX() + 1][source.getY()], id);
+				adjacentSameId(tilemap[source.getX()][source.getY() + 1], id);
+			} else if (source.getY() == 0)
+			{
+				adjacentSameId(tilemap[source.getX() - 1][source.getY()], id);
+				adjacentSameId(tilemap[source.getX() + 1][source.getY()], id);
+				adjacentSameId(tilemap[source.getX()][source.getY() + 1], id);
+			} else if (source.getX() == tilemap.length - 1)
+			{
+				adjacentSameId(tilemap[source.getX() - 1][source.getY()], id);
+				adjacentSameId(tilemap[source.getX()][source.getY() - 1], id);
+				adjacentSameId(tilemap[source.getX()][source.getY() + 1], id);
+			} else if (source.getY() == tilemap[0].length - 1)
+			{
+				adjacentSameId(tilemap[source.getX() - 1][source.getY()], id);
+				adjacentSameId(tilemap[source.getX()][source.getY() - 1], id);
+				adjacentSameId(tilemap[source.getX() + 1][source.getY()], id);
+			} else
+			{
+				adjacentSameId(tilemap[source.getX() - 1][source.getY()], id);
+				adjacentSameId(tilemap[source.getX()][source.getY() - 1], id);
+				adjacentSameId(tilemap[source.getX() + 1][source.getY()], id);
+				adjacentSameId(tilemap[source.getX()][source.getY() + 1], id);
+			}
+		}
+	}
+
+	// TODO a enlever si la version void marche bien
+	// public boolean isAdjacentSameId(TileLabel source, int id)
+	// {
+	// if (source.getId() != id || source.isTested()) return false;
+	// else if (source.getId() == id)
+	// {
+	// if (TileRegistry.getTileFromId(selectedTile).sprite != null) source.setIcon(new ImageIcon(TileRegistry.getTileFromId(selectedTile).sprite
+	// .getImage()));
+	// else source.setIcon(new ImageIcon(Sprite.TILE_WALL.getImage()));
+	// source.updateUI();
+	// source.setTested(true);
+	// if (source.getX() == 0 && source.getY() == 0) return true;
+	// else if (source.getX() == tilemap.length - 1 && source.getY() == 0) return true;
+	// else if (source.getX() == tilemap.length - 1 && source.getY() == tilemap[0].length - 1) return true;
+	// else if (source.getX() == 0 && source.getY() == tilemap[0].length - 1) return true;
+	// else if (source.getX() == 0)
+	// {
+	// return isAdjacentSameId(tilemap[source.getX()][source.getY() - 1], id) && isAdjacentSameId(tilemap[source.getX() + 1][source.getY()], id)
+	// && isAdjacentSameId(tilemap[source.getX()][source.getY() + 1], id);
+	// } else if (source.getY() == 0)
+	// {
+	// return isAdjacentSameId(tilemap[source.getX() - 1][source.getY()], id) && isAdjacentSameId(tilemap[source.getX() + 1][source.getY()], id)
+	// && isAdjacentSameId(tilemap[source.getX()][source.getY() + 1], id);
+	// } else if (source.getX() == tilemap.length - 1)
+	// {
+	// return isAdjacentSameId(tilemap[source.getX() - 1][source.getY()], id) && isAdjacentSameId(tilemap[source.getX()][source.getY() - 1], id)
+	// && isAdjacentSameId(tilemap[source.getX()][source.getY() + 1], id);
+	// } else if (source.getY() == tilemap[0].length - 1)
+	// {
+	// return isAdjacentSameId(tilemap[source.getX() - 1][source.getY()], id) && isAdjacentSameId(tilemap[source.getX()][source.getY() - 1], id)
+	// && isAdjacentSameId(tilemap[source.getX() + 1][source.getY()], id);
+	// } else
+	// {
+	// return isAdjacentSameId(tilemap[source.getX() - 1][source.getY()], id) && isAdjacentSameId(tilemap[source.getX()][source.getY() - 1], id)
+	// && isAdjacentSameId(tilemap[source.getX() + 1][source.getY()], id) && isAdjacentSameId(tilemap[source.getX()][source.getY() + 1], id);
+	// }
+	// }
+	// return false;
+	// }
+
+	public void resetTestedTiles()
+	{
+		for (int i = 0; i < tilemap.length; i++)
+		{
+			for (int j = 0; j < tilemap[0].length; j++)
+				tilemap[i][j].setTested(false);
+		}
+	}
+
 	public void clickTile(int i, int j, MouseEvent ev)
 	{
 		TileLabel tl = tilemap[i][j];
 		if (mode == MapEditor.MODE_TILES)
 		{
-			if (ev.getButton() == MouseEvent.BUTTON3)
+
+			switch (drawMode)
 			{
-				if (TileRegistry.getTileFromId(tl.getId()).maxData > 0)
+				case 0:
 				{
-					byte d;
-					if (tl.getData() == TileRegistry.getTileFromId(tl.getId()).maxData) d = 0;
-					else d = (byte) (tl.getData() + 1);
-					tl.setData(d);
-					tl.setIcon(new ImageIcon(TileRegistry.getTileFromId(tl.getId()).getSprite(null, 0, 0, tl.getData())));
-					tl.updateUI();
+					if (ev.getButton() == MouseEvent.BUTTON3)
+					{
+						if (TileRegistry.getTileFromId(tl.getId()).maxData > 0)
+						{
+							byte d;
+							if (tl.getData() == TileRegistry.getTileFromId(tl.getId()).maxData) d = 0;
+							else d = (byte) (tl.getData() + 1);
+							tl.setData(d);
+							tl.setIcon(new ImageIcon(TileRegistry.getTileFromId(tl.getId()).getSprite(null, 0, 0, tl.getData())));
+							tl.updateUI();
+						}
+					} else
+					{
+						if (TileRegistry.getTileFromId(selectedTile).sprite == null) tl.setIcon(new ImageIcon(Sprite.TILE_DEFAULT.getImage()));
+						else tl.setIcon(new ImageIcon(TileRegistry.getTileFromId(selectedTile).getSprite(null, 0, 0, tl.getData())));
+						tl.setId(selectedTile);
+					}
+					break;
 				}
-			} else
-			{
-				if (TileRegistry.getTileFromId(selectedTile).sprite == null) tl.setIcon(new ImageIcon(Sprite.TILE_WALL.getImage()));
-				else tl.setIcon(new ImageIcon(TileRegistry.getTileFromId(selectedTile).getSprite(null, 0, 0, tl.getData())));
-				tl.setId(selectedTile);
+
+				case 1:
+				{
+					break;
+				}
+				case 2:
+				{
+					adjacentSameId(tl, tl.getId());
+					resetTestedTiles();
+					break;
+				}
+				default:
+					break;
+
 			}
 		} else if (mode == MapEditor.MODE_ENTITY)
 		{
@@ -734,8 +848,7 @@ public class MapEditor extends JFrame
 			for (int j = 0; j < tilemap[0].length; j++)
 			{
 				tilemap[i][j] = new TileLabel();
-				tilemap[i][j].setLayout(null);
-				tilemap[i][j].setPreferredSize(new Dimension(32, 32));
+				tilemap[i][j].setXY(i, j);
 				if (ids[i][j].indexOf(",") > 0)
 				{
 					tilemap[i][j].setId(Integer.valueOf(ids[i][j].split(",")[0]));
@@ -920,6 +1033,11 @@ public class MapEditor extends JFrame
 		EntityRegistry.createEntities();
 		getEntityFromRegistry();
 		getTilesFromRegistry();
+
+		drawingCursors = new Cursor[3];
+		drawingCursors[0] = tool.createCustomCursor(Sprite.DRAWING[0].getImage(), new Point(2, 28), "Pen cursor");
+		drawingCursors[1] = tool.createCustomCursor(Sprite.DRAWING[1].getImage(), new Point(0, 4), "Rectangle cursor");
+		drawingCursors[2] = tool.createCustomCursor(Sprite.DRAWING[2].getImage(), new Point(4, 20), "Bucket cursor");
 
 		lblSelected = new JLabel();
 		lblSelected.setBounds(11, 11, 10, 10);
@@ -1138,6 +1256,29 @@ public class MapEditor extends JFrame
 		scrollTileRegistry.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 		scrollTileRegistry.getHorizontalScrollBar().setUnitIncrement(6);
 		tilesMenu.add(scrollTileRegistry);
+
+		for (int i = 0; i < drawIcons.length; i++)
+		{
+			drawIcons[i] = new JToggleButton(new ImageIcon(Sprite.DRAWING[i].getImage()));
+			drawIcons[i].setBounds(390, 9 + i * 24, 24, 24);
+			tilesMenu.add(drawIcons[i]);
+			tilesMenu.updateUI();
+			drawIcons[i].addMouseListener(new MouseAdapter()
+			{
+				@Override
+				public void mouseClicked(MouseEvent e)
+				{
+					for (int i = 0; i < drawIcons.length; i++)
+						if (e.getSource() != drawIcons[i]) drawIcons[i].setSelected(false);
+						else
+						{
+							drawMode = i;
+							mapView.setCursor(drawingCursors[i]);
+						}
+				}
+			});
+		}
+		drawIcons[0].setSelected(true);
 
 		GridBagLayout gbl_panel2 = new GridBagLayout();
 		scrollTileRegistry.setViewportView(tileRegistry);
@@ -1379,29 +1520,42 @@ public class MapEditor extends JFrame
 		gbl_panel.rowWeights = new double[] {};
 		gbl_panel.columnWeights = new double[] {};
 		mapView.setLayout(gbl_panel);
+		mapView.setCursor(drawingCursors[0]);
 
 		menu.addMouseListener(new MouseAdapter()
 		{
 			public void mouseClicked(MouseEvent arg0)
 			{
 				Component selectedCmp = menu.getSelectedComponent();
-				if (selectedCmp == tilesMenu) mode = MapEditor.MODE_TILES;
-				else if (selectedCmp == entityMenu) mode = MapEditor.MODE_ENTITY;
-				else if (selectedCmp == characterMenu) mode = MapEditor.MODE_CHARACTERS;
-				else if (selectedCmp == cutsceneMenu)
+				if (selectedCmp == tilesMenu)
+				{
+					mode = MapEditor.MODE_TILES;
+					mapView.setCursor(drawingCursors[drawMode]);
+				} else if (selectedCmp == entityMenu)
+				{
+					mode = MapEditor.MODE_ENTITY;
+					mapView.setCursor(Cursor.getDefaultCursor());
+				} else if (selectedCmp == characterMenu)
+				{
+					mode = MapEditor.MODE_CHARACTERS;
+					mapView.setCursor(Cursor.getDefaultCursor());
+				} else if (selectedCmp == cutsceneMenu)
 				{
 					mode = MapEditor.MODE_CUTSCENE;
 					menu.setSize(new Dimension(MapEditor.this.getWidth() - 26, MapEditor.this.getHeight() - 72));
+					mapView.setCursor(Cursor.getDefaultCursor());
 					updateEventList();
 					initCutsceneOptions();
 				} else if (selectedCmp == doorsMenu)
 				{
 					mode = MapEditor.MODE_DOORS;
 					menu.setSize(new Dimension(MapEditor.this.getWidth() - 26, MapEditor.this.getHeight() - 72));
+					mapView.setCursor(Cursor.getDefaultCursor());
 				} else if (selectedCmp == endingsMenu)
 				{
 					mode = MapEditor.MODE_ENDINGS;
 					menu.setSize(new Dimension(MapEditor.this.getWidth() - 26, MapEditor.this.getHeight() - 72));
+					mapView.setCursor(Cursor.getDefaultCursor());
 				}
 			}
 		});
