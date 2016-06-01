@@ -2,6 +2,7 @@ package net.watc4.game.map.tiles;
 
 import java.awt.image.BufferedImage;
 
+import net.watc4.game.display.Animation;
 import net.watc4.game.display.Sprite;
 import net.watc4.game.map.Map;
 import net.watc4.game.utils.geometry.Hitbox;
@@ -12,7 +13,7 @@ public class TileSlab extends TileGround
 
 	public TileSlab()
 	{
-		super(12, (byte) 3, null);
+		super(12, (byte) 3, new Animation(Sprite.TILE_SLAB[0]));
 	}
 
 	@Override

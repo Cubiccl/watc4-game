@@ -125,7 +125,7 @@ public class DoorSpawnChooser extends JDialog
 		{
 			for (int j = 0; j < tilemap[0].length; j++)
 			{
-				tilemap[i][j] = new TileLabel();
+				tilemap[i][j] = new TileLabel(i,j);
 				tilemap[i][j].setLayout(null);
 				tilemap[i][j].setPreferredSize(new Dimension(32, 32));
 				if (ids[i][j].indexOf(",") > 0)

@@ -2,24 +2,28 @@ package net.watc4.editor.tiles;
 
 import java.awt.Dimension;
 
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 import net.watc4.game.entity.Entity;
+import net.watc4.game.map.Map;
+import net.watc4.game.map.TileRegistry;
 
 public class TileLabel extends JLabel
 {
 	private static final long serialVersionUID = 1L;
 	private byte data = 0;
-	private int x, y, id = 0;
+	private int xmap, ymap, id = 0;
 	private Entity en;
 	private int enId;
 	private Object[] entityValues;
 	private boolean tested = false;
 
-	public TileLabel()
+	public TileLabel(int i, int j)
 	{
 		setLayout(null);
 		setPreferredSize(new Dimension(32, 32));
+		setXY(i * Map.TILESIZE, j * Map.TILESIZE);
 	}
 
 	public void initValues()
@@ -35,6 +39,12 @@ public class TileLabel extends JLabel
 			else if (en.getClass().getConstructors()[1].getParameters()[i].getType().toString().equals("float")) entityValues[i] = 0;
 			else entityValues[i] = "null";
 		}
+	}
+
+	public void updateUI()
+	{
+		super.updateUI();
+		if (TileRegistry.getTileFromId(id).sprite != null) this.setIcon(new ImageIcon(TileRegistry.getTileFromId(id).sprite.getImage()));
 	}
 
 	public byte getData()
@@ -89,28 +99,28 @@ public class TileLabel extends JLabel
 
 	public int getX()
 	{
-		return x;
+		return xmap;
 	}
 
 	public void setX(int x)
 	{
-		this.x = x;
+		this.xmap = x;
 	}
 
 	public int getY()
 	{
-		return y;
+		return ymap;
 	}
 
 	public void setY(int y)
 	{
-		this.y = y;
+		this.ymap = y;
 	}
-	
+
 	public void setXY(int x, int y)
 	{
-		this.x = x;
-		this.y = y;
+		this.xmap = x;
+		this.ymap = y;
 	}
 
 	public boolean isTested()

@@ -388,13 +388,12 @@ public class MapEditor extends JFrame
 		{
 			for (int i = 0; i < tilemap.length; i++)
 			{
-				tilemap[i][j] = new TileLabel();
-				tilemap[i][j].setXY(i, j);
+				tilemap[i][j] = new TileLabel(i, j);
 				if (filename != null) tilemap[i][j].setIcon(new ImageIcon(tileChain[it]));
 				else tilemap[i][j].setIcon(new ImageIcon(Sprite.TILE_DEFAULT.getImage()));
-				// TODO JLabel gridLabel = new JLabel(grid);
-				// gridLabel.setBounds(0, 0, 32, 32);
-				// tilemap[i][j].add(gridLabel);
+				JLabel gridLabel = new JLabel(grid);
+				gridLabel.setBounds(0, 0, 32, 32);
+				tilemap[i][j].add(gridLabel);
 				tilemap[i][j].setVisible(true);
 				gbc.gridx = i;
 				gbc.gridy = j;
@@ -433,7 +432,7 @@ public class MapEditor extends JFrame
 		tileChoice = new TileLabel[TileRegistry.getTiles().size()];
 		for (int i = 0; i < tileChoice.length; i++)
 		{
-			tileChoice[i] = new TileLabel();
+			tileChoice[i] = new TileLabel(i, 0);
 			tileChoice[i].setLayout(null);
 			tileChoice[i].setPreferredSize(new Dimension(32, 32));
 			if (TileRegistry.getTileFromId(i).sprite == null)
@@ -454,7 +453,7 @@ public class MapEditor extends JFrame
 		for (int i = 0; i < entityChoice.length; i++)
 		{
 
-			entityChoice[i] = new TileLabel();
+			entityChoice[i] = new TileLabel(i, 0);
 			entityChoice[i].setLayout(null);
 			entityChoice[i].setPreferredSize(new Dimension(32, 32));
 
@@ -490,89 +489,50 @@ public class MapEditor extends JFrame
 
 	}
 
-	public void adjacentSameId(TileLabel source, int id)
+	public void adjacentSameId(TileLabel source, int id) throws StackOverflowError
 	{
 		if (source.getId() != id || source.isTested()) return;
 		else if (source.getId() == id)
 		{
-			if (TileRegistry.getTileFromId(selectedTile).sprite != null) source.setIcon(new ImageIcon(TileRegistry.getTileFromId(selectedTile).sprite
-					.getImage()));
-			else source.setIcon(new ImageIcon(Sprite.TILE_WALL.getImage()));
+			if (TileRegistry.getTileFromId(selectedTile).sprite != null)
+			{
+				source.setId(selectedTile);
+			} else source.setIcon(new ImageIcon(Sprite.TILE_WALL.getImage()));
 			source.updateUI();
 			source.setTested(true);
-			if (source.getX() == 0 && source.getY() == 0) return;
-			else if (source.getX() == tilemap.length - 1 && source.getY() == 0) return;
-			else if (source.getX() == tilemap.length - 1 && source.getY() == tilemap[0].length - 1) return;
-			else if (source.getX() == 0 && source.getY() == tilemap[0].length - 1) return;
-			else if (source.getX() == 0)
+			if (source.getX() / 32 == 0 && source.getY() / 32 == 0) return;
+			else if (source.getX() / 32 == tilemap.length - 1 && source.getY() / 32 == 0) return;
+			else if (source.getX() / 32 == tilemap.length - 1 && source.getY() / 32 == tilemap[0].length - 1) return;
+			else if (source.getX() / 32 == 0 && source.getY() / 32 == tilemap[0].length - 1) return;
+			else if (source.getX() / 32 == 0)
 			{
-				adjacentSameId(tilemap[source.getX()][source.getY() - 1], id);
-				adjacentSameId(tilemap[source.getX() + 1][source.getY()], id);
-				adjacentSameId(tilemap[source.getX()][source.getY() + 1], id);
-			} else if (source.getY() == 0)
+				adjacentSameId(tilemap[source.getX() / 32][source.getY() / 32 - 1], id);
+				adjacentSameId(tilemap[source.getX() / 32 + 1][source.getY() / 32], id);
+				adjacentSameId(tilemap[source.getX() / 32][source.getY() / 32 + 1], id);
+			} else if (source.getY() / 32 == 0)
 			{
-				adjacentSameId(tilemap[source.getX() - 1][source.getY()], id);
-				adjacentSameId(tilemap[source.getX() + 1][source.getY()], id);
-				adjacentSameId(tilemap[source.getX()][source.getY() + 1], id);
-			} else if (source.getX() == tilemap.length - 1)
+				adjacentSameId(tilemap[source.getX() / 32 - 1][source.getY() / 32], id);
+				adjacentSameId(tilemap[source.getX() / 32 + 1][source.getY() / 32], id);
+				adjacentSameId(tilemap[source.getX() / 32][source.getY() / 32 + 1], id);
+			} else if (source.getX() / 32 == tilemap.length - 1)
 			{
-				adjacentSameId(tilemap[source.getX() - 1][source.getY()], id);
-				adjacentSameId(tilemap[source.getX()][source.getY() - 1], id);
-				adjacentSameId(tilemap[source.getX()][source.getY() + 1], id);
-			} else if (source.getY() == tilemap[0].length - 1)
+				adjacentSameId(tilemap[source.getX() / 32 - 1][source.getY() / 32], id);
+				adjacentSameId(tilemap[source.getX() / 32][source.getY() / 32 - 1], id);
+				adjacentSameId(tilemap[source.getX() / 32][source.getY() / 32 + 1], id);
+			} else if (source.getY() / 32 == tilemap[0].length - 1)
 			{
-				adjacentSameId(tilemap[source.getX() - 1][source.getY()], id);
-				adjacentSameId(tilemap[source.getX()][source.getY() - 1], id);
-				adjacentSameId(tilemap[source.getX() + 1][source.getY()], id);
+				adjacentSameId(tilemap[source.getX() / 32 - 1][source.getY() / 32], id);
+				adjacentSameId(tilemap[source.getX() / 32][source.getY() / 32 - 1], id);
+				adjacentSameId(tilemap[source.getX() / 32 + 1][source.getY() / 32], id);
 			} else
 			{
-				adjacentSameId(tilemap[source.getX() - 1][source.getY()], id);
-				adjacentSameId(tilemap[source.getX()][source.getY() - 1], id);
-				adjacentSameId(tilemap[source.getX() + 1][source.getY()], id);
-				adjacentSameId(tilemap[source.getX()][source.getY() + 1], id);
+				adjacentSameId(tilemap[source.getX() / 32 - 1][source.getY() / 32], id);
+				adjacentSameId(tilemap[source.getX() / 32][source.getY() / 32 - 1], id);
+				adjacentSameId(tilemap[source.getX() / 32 + 1][source.getY() / 32], id);
+				adjacentSameId(tilemap[source.getX() / 32][source.getY() / 32 + 1], id);
 			}
 		}
 	}
-
-	// TODO a enlever si la version void marche bien
-	// public boolean isAdjacentSameId(TileLabel source, int id)
-	// {
-	// if (source.getId() != id || source.isTested()) return false;
-	// else if (source.getId() == id)
-	// {
-	// if (TileRegistry.getTileFromId(selectedTile).sprite != null) source.setIcon(new ImageIcon(TileRegistry.getTileFromId(selectedTile).sprite
-	// .getImage()));
-	// else source.setIcon(new ImageIcon(Sprite.TILE_WALL.getImage()));
-	// source.updateUI();
-	// source.setTested(true);
-	// if (source.getX() == 0 && source.getY() == 0) return true;
-	// else if (source.getX() == tilemap.length - 1 && source.getY() == 0) return true;
-	// else if (source.getX() == tilemap.length - 1 && source.getY() == tilemap[0].length - 1) return true;
-	// else if (source.getX() == 0 && source.getY() == tilemap[0].length - 1) return true;
-	// else if (source.getX() == 0)
-	// {
-	// return isAdjacentSameId(tilemap[source.getX()][source.getY() - 1], id) && isAdjacentSameId(tilemap[source.getX() + 1][source.getY()], id)
-	// && isAdjacentSameId(tilemap[source.getX()][source.getY() + 1], id);
-	// } else if (source.getY() == 0)
-	// {
-	// return isAdjacentSameId(tilemap[source.getX() - 1][source.getY()], id) && isAdjacentSameId(tilemap[source.getX() + 1][source.getY()], id)
-	// && isAdjacentSameId(tilemap[source.getX()][source.getY() + 1], id);
-	// } else if (source.getX() == tilemap.length - 1)
-	// {
-	// return isAdjacentSameId(tilemap[source.getX() - 1][source.getY()], id) && isAdjacentSameId(tilemap[source.getX()][source.getY() - 1], id)
-	// && isAdjacentSameId(tilemap[source.getX()][source.getY() + 1], id);
-	// } else if (source.getY() == tilemap[0].length - 1)
-	// {
-	// return isAdjacentSameId(tilemap[source.getX() - 1][source.getY()], id) && isAdjacentSameId(tilemap[source.getX()][source.getY() - 1], id)
-	// && isAdjacentSameId(tilemap[source.getX() + 1][source.getY()], id);
-	// } else
-	// {
-	// return isAdjacentSameId(tilemap[source.getX() - 1][source.getY()], id) && isAdjacentSameId(tilemap[source.getX()][source.getY() - 1], id)
-	// && isAdjacentSameId(tilemap[source.getX() + 1][source.getY()], id) && isAdjacentSameId(tilemap[source.getX()][source.getY() + 1], id);
-	// }
-	// }
-	// return false;
-	// }
 
 	public void resetTestedTiles()
 	{
@@ -615,12 +575,14 @@ public class MapEditor extends JFrame
 
 				case 1:
 				{
+					// TODO
 					break;
 				}
 				case 2:
 				{
 					adjacentSameId(tl, tl.getId());
 					resetTestedTiles();
+					mapView.updateUI();
 					break;
 				}
 				default:
@@ -847,8 +809,7 @@ public class MapEditor extends JFrame
 		{
 			for (int j = 0; j < tilemap[0].length; j++)
 			{
-				tilemap[i][j] = new TileLabel();
-				tilemap[i][j].setXY(i, j);
+				tilemap[i][j] = new TileLabel(i, j);
 				if (ids[i][j].indexOf(",") > 0)
 				{
 					tilemap[i][j].setId(Integer.valueOf(ids[i][j].split(",")[0]));
