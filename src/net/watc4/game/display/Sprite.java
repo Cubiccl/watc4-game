@@ -25,7 +25,7 @@ public class Sprite
 	public static Sprite TILE_DEFAULT, TILE_GROUND, TILE_WALL, TILE_DOOR, TILE_GLASS;
 	public static Sprite TILE_LADDER_BOTTOM, TILE_LADDER_BASE, TILE_LADDER_TOP;
 	public static Sprite[] TILE_MIRROR;
-	public static Sprite[] TILE_SLOPE;
+	public static Sprite[] TILE_SLOPE, TILE_SIDE, TILE_SLAB;
 	public static Sprite UNKNOWN;
 	public static Sprite[] PATTOU, PATTOUR;
 
@@ -94,6 +94,8 @@ public class Sprite
 		TILE_LADDER_BOTTOM = new Sprite("res/textures/tileset.png", 192, 0, 32, 32);
 
 		TILE_SLOPE = loadSpriteSheet("res/textures/tileset.png", 32, 32, 32, 4, false);
+		TILE_SIDE = loadSpriteSheet("res/textures/tileset.png", 192, 32, 32, 4, false);
+		TILE_SLAB = loadSpriteSheet("res/textures/tileset.png", 0, 64, 32, 4, false);
 
 		TILE_MIRROR = new Sprite[4];
 		TILE_MIRROR[0] = new Sprite("res/textures/tileset.png", 0, 32, 32, 32);

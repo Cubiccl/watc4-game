@@ -197,7 +197,7 @@ public class Chunk implements IRender
 	 * @param data - The Tile Data to set. */
 	public void setDataAt(int x, int y, byte data)
 	{
-		if (x >= 0 && x < this.size && y >= 0 && y < this.size) if (data >= 0 && this.getTileAt(x, y).maxData > data) this.data[x][y] = data;
+		if (x >= 0 && x < this.size && y >= 0 && y < this.size) if (data >= 0 && this.getTileAt(x, y).maxData >= data) this.data[x][y] = data;
 	}
 
 	/** Sets the Tile at x, y to the input Tile.

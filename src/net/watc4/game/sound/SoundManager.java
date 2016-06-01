@@ -57,7 +57,7 @@ public class SoundManager extends JFrame
 
 	public void play(String id)
 	{
-		if (SoundBank.getSound_from_ID(id).isLoopable()) play_loop(id);
+		if (SoundBank.getSound_from_ID(id) != null && SoundBank.getSound_from_ID(id).isLoopable()) play_loop(id);
 		else play_once(id);
 	}
 

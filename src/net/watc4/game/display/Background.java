@@ -25,7 +25,6 @@ public class Background implements IRender
 	@Override
 	public void render(Graphics2D g)
 	{
-		/*
 		int width = this.animation.getImage().getWidth(), height = this.animation.getImage().getHeight();
 		int xOffset = 0, yOffset = 0;
 		if (this.game != null)
@@ -39,8 +38,7 @@ public class Background implements IRender
 			{
 				g.drawImage(this.animation.getImage(), x * width - xOffset, y * height - yOffset, null);
 			}
-		}*/
-		g.drawImage(this.animation.getImage(), 0, 0, null);
+		}
 	}
 
 }
