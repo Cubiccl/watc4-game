@@ -15,6 +15,8 @@ import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowStateListener;
 import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -503,51 +505,68 @@ public class MapEditor extends JFrame
 	 * @param source The TileLabel which has been clicked on or called by recursivity.
 	 * @param id The id of the TileLabel which has been clicked on.
 	 * @param direction The way the function is moving to the next Tile (0 Original, 1 North, 2 East, 3 South, 4 West). (A North tile will expand to the North and the East, an East tile will expand to the East and the South...etc)
+	 * @param dataChange if true change the data number of the tiles if it's possible
 	 * @throws StackOverflowError When the map is too big, the stack might be too small, in this case click again on the non-painted tiles. */
-	public void paintAdjacentSameId(TileLabel source, int id, int direction) throws StackOverflowError
+	public void paintAdjacentSameId(TileLabel source, int id, int direction, boolean dataChange) throws StackOverflowError
 	{
 		if (source.getId() != id || source.isTested()) return;
 		else if (source.getId() == id)
 		{
-			if (TileRegistry.getTileFromId(selectedTile).sprite != null)
+			if (dataChange)
 			{
-				source.setId(selectedTile);
-			} else source.setIcon(new ImageIcon(Sprite.TILE_WALL.getImage()));
-			source.updateUI();
+				if (TileRegistry.getTileFromId(source.getId()).maxData > 0)
+				{
+					byte d;
+					if (source.getData() == TileRegistry.getTileFromId(source.getId()).maxData) d = 0;
+					else d = (byte) (source.getData() + 1);
+					source.setData(d);
+					source.setIcon(new ImageIcon(TileRegistry.getTileFromId(source.getId()).getSprite(null, 0, 0, source.getData())));
+					source.updateSuperUI();
+				} else return;
+			} else
+			{
+				if (TileRegistry.getTileFromId(selectedTile).sprite != null)
+				{
+					source.setId(selectedTile);
+				} else source.setIcon(new ImageIcon(Sprite.TILE_WALL.getImage()));
+				source.updateUI();
+			}
 			source.setTested(true);
+			if (direction < 0 || direction > 4) return;
 
-			if (direction == 0 || direction == 4 || direction == 1 || direction == 2)
+			if (direction != 1)
 			{
 				try
 				{
-					paintAdjacentSameId(tilemap[source.getX() / 32][source.getY() / 32 - 1], id, 1);
+					paintAdjacentSameId(tilemap[source.getX() / 32][source.getY() / 32 + 1], id, 3, dataChange);
 				} catch (ArrayIndexOutOfBoundsException e)
 				{}
 			}
-			if (direction == 0 || direction == 1 || direction == 2 || direction == 3)
+			if (direction != 2)
 			{
 				try
 				{
-					paintAdjacentSameId(tilemap[source.getX() / 32 + 1][source.getY() / 32], id, 2);
+					paintAdjacentSameId(tilemap[source.getX() / 32 - 1][source.getY() / 32], id, 4, dataChange);
 				} catch (ArrayIndexOutOfBoundsException e)
 				{}
 			}
-			if (direction == 0 || direction == 2 || direction == 3 || direction == 4)
+			if (direction != 3)
 			{
 				try
 				{
-					paintAdjacentSameId(tilemap[source.getX() / 32][source.getY() / 32 + 1], id, 3);
+					paintAdjacentSameId(tilemap[source.getX() / 32][source.getY() / 32 - 1], id, 1, dataChange);
 				} catch (ArrayIndexOutOfBoundsException e)
 				{}
 			}
-			if (direction == 0 || direction == 3 || direction == 4 || direction == 1)
+			if (direction != 4)
 			{
 				try
 				{
-					paintAdjacentSameId(tilemap[source.getX() / 32 - 1][source.getY() / 32], id, 4);
+					paintAdjacentSameId(tilemap[source.getX() / 32 + 1][source.getY() / 32], id, 2, dataChange);
 				} catch (ArrayIndexOutOfBoundsException e)
 				{}
 			}
+
 		}
 	}
 
@@ -579,7 +598,7 @@ public class MapEditor extends JFrame
 							else d = (byte) (tl.getData() + 1);
 							tl.setData(d);
 							tl.setIcon(new ImageIcon(TileRegistry.getTileFromId(tl.getId()).getSprite(null, 0, 0, tl.getData())));
-							tl.updateUI();
+							tl.updateSuperUI();
 						}
 					} else
 					{
@@ -616,8 +635,20 @@ public class MapEditor extends JFrame
 								if (((i2 == xO || i2 == xT) || (j2 == yO || j2 == yT)) && (i2 >= Math.min(xO, xT)) && (i2 <= Math.max(xO, xT))
 										&& (j2 >= Math.min(yO, yT)) && (j2 <= Math.max(yO, yT)))
 								{
-									tilemap[i2][j2].setId(selectedTile);
-									tilemap[i2][j2].updateUI();
+									if (ev.getButton() == MouseEvent.BUTTON3 && TileRegistry.getTileFromId(tilemap[i2][j2].getId()).maxData > 0)
+									{
+										byte d;
+										if (tilemap[i2][j2].getData() == TileRegistry.getTileFromId(tilemap[i2][j2].getId()).maxData) d = 0;
+										else d = (byte) (tilemap[i2][j2].getData() + 1);
+										tilemap[i2][j2].setData(d);
+										tilemap[i2][j2].setIcon(new ImageIcon(TileRegistry.getTileFromId(tilemap[i2][j2].getId()).getSprite(null, 0, 0,
+												tilemap[i2][j2].getData())));
+										tilemap[i2][j2].updateSuperUI();
+									} else
+									{
+										tilemap[i2][j2].setId(selectedTile);
+										tilemap[i2][j2].updateUI();
+									}
 								}
 							}
 						}
@@ -628,9 +659,17 @@ public class MapEditor extends JFrame
 				}
 				case 2:
 				{
-					paintAdjacentSameId(tl, tl.getId(), 0);
-					resetTestedTiles();
-					mapView.updateUI();
+					if (ev.getButton() == MouseEvent.BUTTON3)
+					{
+						paintAdjacentSameId(tl, tl.getId(), 0, true);
+						resetTestedTiles();
+						mapView.updateUI();
+					} else
+					{
+						paintAdjacentSameId(tl, tl.getId(), 0, false);
+						resetTestedTiles();
+						mapView.updateUI();
+					}
 					break;
 				}
 				default:
@@ -731,10 +770,10 @@ public class MapEditor extends JFrame
 				if (!highlightedTile.equals(rectangleOrigin))
 				{
 					tilemap[highlightedTile.x][highlightedTile.y].remove(rectangleModeSelected);
-					tilemap[highlightedTile.x][highlightedTile.y].updateUI();
+					tilemap[highlightedTile.x][highlightedTile.y].updateSuperUI();
 				}
 				tilemap[i][j].add(rectangleModeSelected);
-				tilemap[i][j].updateUI();
+				tilemap[i][j].updateSuperUI();
 				highlightedTile.setLocation(i, j);
 			}
 		});
@@ -781,7 +820,7 @@ public class MapEditor extends JFrame
 				}
 				lblSelectedEntityIndex = i;
 				entityChoice[i].add(lblSelected);
-				entityChoice[i].updateUI();
+				entityChoice[i].updateSuperUI();
 				String name = entityChoice[i].getEn().getClass().getSimpleName();
 				lblEntityName.setText(name.substring(6, name.length()));
 			}
@@ -836,6 +875,11 @@ public class MapEditor extends JFrame
 		updateEventList();
 		updateScrollCutscene();
 		return true;
+	}
+
+	private static boolean isMaximized(int state)
+	{
+		return (state & MapEditor.MAXIMIZED_BOTH) == MapEditor.MAXIMIZED_BOTH;
 	}
 
 	public boolean openMapFile(File mapFile)
@@ -1587,6 +1631,22 @@ public class MapEditor extends JFrame
 					mode = MapEditor.MODE_ENDINGS;
 					menu.setSize(new Dimension(MapEditor.this.getWidth() - 26, MapEditor.this.getHeight() - 72));
 					mapView.setCursor(Cursor.getDefaultCursor());
+				}
+			}
+		});
+		addWindowStateListener(new WindowStateListener()
+		{
+			public void windowStateChanged(WindowEvent event)
+			{
+				boolean isMaximized = isMaximized(event.getNewState());
+				boolean wasMaximized = isMaximized(event.getOldState());
+
+				if (isMaximized && !wasMaximized)
+				{
+					// TODO maximized window
+				} else if (wasMaximized && !isMaximized)
+				{
+					// TODO unmaximized window
 				}
 			}
 		});

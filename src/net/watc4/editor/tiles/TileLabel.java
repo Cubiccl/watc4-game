@@ -46,6 +46,14 @@ public class TileLabel extends JLabel
 		super.updateUI();
 		if (TileRegistry.getTileFromId(id).sprite != null) this.setIcon(new ImageIcon(TileRegistry.getTileFromId(id).sprite.getImage()));
 	}
+	
+	/**
+	 * Calls the JLabel udpateUI function.
+	 */
+	public void updateSuperUI()
+	{
+		super.updateUI();
+	}
 
 	public byte getData()
 	{
